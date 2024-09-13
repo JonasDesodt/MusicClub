@@ -1,0 +1,13 @@
+﻿@layout MainLayout
+
+@inherits LayoutComponentBase
+
+@implements IDisposable
+
+@inject MemoryService MemoryService
+
+@Body
+
+@code {
+    public void Dispose() => MemoryService.DisposeArtistData();
+}

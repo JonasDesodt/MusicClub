@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35027.167
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicClub.DbServices", "MusicClub.DbServices\MusicClub.DbServices.csproj", "{6B48624D-98C3-46BB-A453-90DE85E6CCBE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicClub.ApiServices", "MusicClub.ApiServices\MusicClub.ApiServices.csproj", "{AB429BB1-7FC9-4C27-8347-6D3C7A7EDF7D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicClub.DbCore", "MusicClub.DbCore\MusicClub.DbCore.csproj", "{680B5905-2355-49BD-A31B-6F11C74A3BAE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicClub.Api", "MusicClub.Api\MusicClub.Api.csproj", "{342F7A41-4DBD-4111-8BA4-BD0532AFA7D1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicClub.Dto", "MusicClub.Dto\MusicClub.Dto.csproj", "{A2B46805-CA7E-4A7B-9B63-20ED7F7764FD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicClub.Cms.Blazor", "MusicClub.Cms.Blazor\MusicClub.Cms.Blazor.csproj", "{30559686-58F8-4B82-B6F0-9AB70902065D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6B48624D-98C3-46BB-A453-90DE85E6CCBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B48624D-98C3-46BB-A453-90DE85E6CCBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B48624D-98C3-46BB-A453-90DE85E6CCBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B48624D-98C3-46BB-A453-90DE85E6CCBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB429BB1-7FC9-4C27-8347-6D3C7A7EDF7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB429BB1-7FC9-4C27-8347-6D3C7A7EDF7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB429BB1-7FC9-4C27-8347-6D3C7A7EDF7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB429BB1-7FC9-4C27-8347-6D3C7A7EDF7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{680B5905-2355-49BD-A31B-6F11C74A3BAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{680B5905-2355-49BD-A31B-6F11C74A3BAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{680B5905-2355-49BD-A31B-6F11C74A3BAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{680B5905-2355-49BD-A31B-6F11C74A3BAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{342F7A41-4DBD-4111-8BA4-BD0532AFA7D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{342F7A41-4DBD-4111-8BA4-BD0532AFA7D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{342F7A41-4DBD-4111-8BA4-BD0532AFA7D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{342F7A41-4DBD-4111-8BA4-BD0532AFA7D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2B46805-CA7E-4A7B-9B63-20ED7F7764FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2B46805-CA7E-4A7B-9B63-20ED7F7764FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2B46805-CA7E-4A7B-9B63-20ED7F7764FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2B46805-CA7E-4A7B-9B63-20ED7F7764FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30559686-58F8-4B82-B6F0-9AB70902065D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30559686-58F8-4B82-B6F0-9AB70902065D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30559686-58F8-4B82-B6F0-9AB70902065D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30559686-58F8-4B82-B6F0-9AB70902065D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2736CDB3-B7F5-4F48-BC8B-AFD65CEE03E8}
+	EndGlobalSection
+EndGlobal

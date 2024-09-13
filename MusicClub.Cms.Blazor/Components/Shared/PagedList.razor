@@ -1,0 +1,38 @@
+﻿@typeparam TEntity
+
+@if (PagedServiceResult?.Data is { } results)
+{
+    <div>
+        @if (PagedServiceResult.TotalCount == 1)
+        {
+            <h4>@PagedServiceResult.TotalCount result</h4>
+        }
+        else
+        {
+            <h4>@PagedServiceResult.TotalCount results</h4>
+        }
+
+        <ul>
+            @foreach (var result in results)
+            {
+                <li>
+                    @ItemTemplate(result)
+                </li>
+            }
+        </ul>
+
+        <Pagination Model="new PaginationResult { Page = PagedServiceResult.Page, PageSize = PagedServiceResult.PageSize, TotalCount = PagedServiceResult.TotalCount }"
+                    OnPageChanged="(model) => OnPageChanged.InvokeAsync(model)" />
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public PagedServiceResult<IList<TEntity>>? PagedServiceResult { get; set; }
+
+    [Parameter, EditorRequired]
+    public RenderFragment<TEntity> ItemTemplate { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public EventCallback<PaginationResult> OnPageChanged { get; set; }
+}

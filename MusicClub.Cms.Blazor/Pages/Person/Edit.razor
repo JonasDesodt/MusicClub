@@ -1,0 +1,88 @@
+﻿@page "/person/edit/{id:int}"
+
+@using MusicClub.Dto.Requests
+
+@inject IPersonService PersonApiService
+@inject NavigationManager NavigationManager
+
+<h3>Edit person</h3>
+
+@if (model is not null)
+{
+    <EditForm Model="model" OnValidSubmit="Post">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+
+        <ValidationSummary></ValidationSummary>
+
+        <div>
+            <div>
+                <label for="firstname">Firstname</label>
+
+                <InputText @bind-Value="model.Firstname" id="firstname" />
+            </div>
+
+            <div>
+                <label for="lastname">Lastname</label>
+
+                <InputText @bind-Value="model.Lastname" id="lastname" />
+            </div>
+
+            <div>
+                <label for="imageId">ImageId</label>
+
+                <InputNumber @bind-Value="model.ImageId" id="imageId" />
+            </div>
+        </div>
+
+        <button type="submit">Submit</button>
+    </EditForm>
+}
+
+
+
+@code {
+    private PersonRequest? model { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchPerson(3);
+
+        await base.OnInitializedAsync();
+    }
+
+
+    private async Task FetchPerson(int id)
+    {
+        var personServiceResult = await PersonApiService.Get(id);
+
+        if (personServiceResult?.Data is { } personResult)
+        {
+            model = new PersonRequest
+                {
+                    Firstname = personResult.Firstname,
+                    Lastname = personResult.Lastname,
+                    ImageId = personResult.Image?.Id
+                };
+
+        }
+    }
+
+
+    private async Task Post()
+    {
+        if (model is null)
+        {
+            return;
+        }
+
+        var serviceResult = await PersonApiService.Update(Id, model);
+        if (serviceResult.Messages is null)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+}

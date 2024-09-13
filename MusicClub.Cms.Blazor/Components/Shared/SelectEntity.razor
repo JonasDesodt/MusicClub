@@ -1,0 +1,16 @@
+﻿@* <div>
+    <label for="personId">Person</label>
+
+    <div>
+        <p>@formModel.PersonResult?.Firstname @formModel.PersonResult?.Lastname</p>
+
+        <InputNumber @bind-Value="formModel.PersonId" id="personId" hidden />
+
+        <button type="button" @onclick="() => FetchPeople(new PaginationRequest { Page = 1, PageSize = 1}, new PersonFilter {})">Change</button>
+    </div>
+</div>
+
+@code {
+
+}
+ *@

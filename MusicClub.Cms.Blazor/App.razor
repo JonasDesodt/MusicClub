@@ -1,0 +1,47 @@
+﻿@* @inject NavigationManager NavigationManager
+@inject DataControllerService DataControllerService *@
+
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p role="alert">Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
+
+@* @code {
+    private IDisposable? _registration;
+    public void Dispose() => _registration?.Dispose();
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await DataControllerService.HandleLocationChanged(NavigationManager.Uri);
+
+        _registration = NavigationManager.RegisterLocationChangingHandler(async args =>
+            {
+                // isLoading = true;
+                StateHasChanged();
+
+                await DataControllerService.HandleLocationChanged(args.TargetLocation);
+                // isLoading = false;
+                StateHasChanged();
+            });
+
+
+        await base.OnInitializedAsync();
+    }
+} *@
+@* <CascadingValue Value="DataControllerService.Data">
+    <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+    <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+</CascadingValue> *@

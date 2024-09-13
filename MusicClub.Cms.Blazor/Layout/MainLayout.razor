@@ -1,0 +1,33 @@
+﻿@inherits LayoutComponentBase
+
+@inject NavigationManager NavigationManager
+@inject DataControllerService DataControllerService
+
+@if (isLoading)
+{
+    <Spinner />
+}
+<NavLink href="/"> Home</NavLink>
+<main>
+    @Body
+</main>
+
+@code {
+    [CascadingParameter]
+    public object? Data { get; set; }
+
+    private bool isLoading;
+
+    protected override void OnInitialized()
+    {
+        DataControllerService.OnFetchStateChanged += FetchStateChanged;
+
+        base.OnInitialized();
+    }
+
+    private void FetchStateChanged(object? sender, bool state)
+    {
+        isLoading = state;
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,85 @@
+﻿@page "/artist/delete/{id:int}"
+
+@layout ArtistLayout
+
+@inject IArtistService ArtistApiService
+
+<h2>Delete artist</h2>
+
+@if (artistResult is not null && artistResult.PerformancesCount == 0)
+{
+    <p>Are you want to delete the following artist?</p>
+
+    <ul>
+        <li>
+            <p class="label">Id</p>
+            <p class="input">
+                @artistResult.Id
+            </p>
+        </li>
+
+        <li>
+            <p class="label">Alias</p>
+            <p class="input">@artistResult.Alias</p>
+        </li>
+
+        <li>
+            <p class="label">Person</p>
+            <p class="input">@artistResult.Person?.Firstname @artistResult.Person?.Lastname</p>
+        </li>
+
+        <li>
+            <p class="label">Performances</p>
+            <p class="input">0</p>
+        </li>
+
+        <li>
+            <p class="label">Image</p>
+            <p class="input">
+                @artistResult.Image?.Alt
+                <img src="@($"https://localhost:7061/image/download/{artistResult.Image?.Id}")" />
+            </p>
+        </li>
+    </ul>
+
+    <div>
+        <NavLink href="@($"artist/edit/{Id}")" class="button">No</NavLink>
+        <button class="danger">Yes</button>
+    </div>
+}
+else if (artistResult is not null)
+{
+    <p>This following cannot be deleted. The artist has one or more performances.</p>
+
+    <ul>
+        <li>Id: @artistResult.Id</li>
+        <li>Alias: @artistResult.Alias</li>
+        <li>Person: @artistResult.Person?.Firstname @artistResult.Person?.Lastname</li>
+        <li>Performances: @artistResult.PerformancesCount</li>
+    </ul>
+
+    <div>
+        <NavLink href="@($"artist/edit/{Id}")" class="button">Return</NavLink>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    public ArtistResult? artistResult { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchArtist(Id);
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task FetchArtist(int id)
+    {
+        var artistServiceResult = await ArtistApiService.Get(id);
+
+        artistResult = artistServiceResult.Data;
+    }
+}

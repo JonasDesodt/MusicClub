@@ -1,0 +1,25 @@
+﻿section {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+    section > ::deep a {
+        align-self: flex-start;
+    }
+
+ul > li > div {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+ul > li > div > img {
+    aspect-ratio: 3/2;
+    max-width: 100%;
+    object-fit: cover;
+}
+
+ul > li > div > ::deep a {
+    align-self: flex-end;
+}

@@ -1,0 +1,210 @@
+﻿@page "/artist/edit/{id:int}"
+
+@layout ArtistLayout
+
+@implements IDisposable
+
+@inject IArtistService ArtistApiService
+@inject IPersonService PersonApiService
+@inject NavigationManager NavigationManager
+@inject DataControllerService DataControllerService
+@inject MemoryService MemoryService
+
+<section>
+    <h2>Edit artist</h2>
+
+    <NavLink href="@("artist" + NavigationManager.GetQueryString())" class="button">Return</NavLink>
+
+    <div class="@(PeoplePagedServiceResult == null ? "select-closed" : "select-open")">
+
+        @if (formModel is not null)
+        {
+            <EditForm EditContext="@editContext" OnValidSubmit="Post">
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+
+                <ValidationSummary></ValidationSummary>
+
+                <div>
+                    <div>
+                        <label for="alias">Alias</label>
+
+                        <InputText @bind-Value="formModel.Alias" id="alias" />
+                    </div>
+
+                    <div>
+                        <label for="personId">Person</label>
+
+                        <div>
+                            <p>@formModel.PersonResult?.Firstname @formModel.PersonResult?.Lastname</p>
+
+                            <InputNumber @bind-Value="formModel.PersonId" id="personId" hidden @ref="inputNumber" />
+
+                            <button type="button" @onclick="() => FetchPeople(new PaginationRequest { Page = 1, PageSize = 2}, new PersonFilter {})">Change</button>
+                        </div>
+                    </div>
+
+                    <SelectImage Model="formModel.ImageResult" OnClicked="FetchImages" />
+                </div>
+
+                <div>
+                    <button type="submit">Submit</button>
+
+                    <button type="button" @onclick="() => FetchArtist(Id)" class="warning">Undo changes</button>
+
+                    <NavLink href="@($"artist/delete/{Id}")" class="button danger">Delete</NavLink>
+                </div>
+            </EditForm>
+
+            @if (PeoplePagedServiceResult is not null)
+            {
+                <section>
+                    <h3>Select person</h3>
+
+                    <div>
+                        <button @onclick="()=> PeoplePagedServiceResult = null" class="warning">Close</button>
+
+                        <PagedList OnPageChanged="(model) => FetchPeople(new PaginationRequest { Page = model.Page, PageSize = model.PageSize}, new PersonFilter ())"
+                                   PagedServiceResult="PeoplePagedServiceResult" Context="PersonResult">
+
+                            <ItemTemplate>
+                                <div>
+                                    <h4>@PersonResult.Firstname @PersonResult.Lastname</h4>
+
+                                    <button @onclick="() => SelectPerson(PersonResult)">Select</button>
+
+   @*                                  <button @onclick="() => { formModel.PersonId = PersonResult.Id; formModel.PersonResult = PersonResult; PeoplePagedServiceResult = null; }">Select</button> *@
+                                </div>
+                            </ItemTemplate>
+                        </PagedList>
+                    </div>
+                </section>
+            }
+        }
+    </div>
+</section>
+
+
+
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private EditContext? editContext;
+
+    private ArtistFormModel? formModel { get; set; }
+
+    private PagedServiceResult<IList<PersonResult>>? PeoplePagedServiceResult { get; set; }
+    private PagedServiceResult<IList<ImageResult>>? ImagesPagedServiceResult { get; set; }
+
+    private InputNumber<int?> inputNumber = default!;
+
+    protected override void OnInitialized()
+    {
+        var artistServiceResult = (ServiceResult<ArtistResult>?)DataControllerService.Data;
+        if (artistServiceResult?.Data is { } artistResult)
+        {
+            formModel = new()
+                {
+                    ImageId = artistResult.Image?.Id,
+                    ImageResult = artistResult.Image,
+                    PersonId = artistResult.Person?.Id,
+                    PersonResult = artistResult.Person,
+                    Alias = artistResult.Alias
+                };
+
+            editContext = new(formModel);
+        }
+        else
+        {
+            formModel = new();
+            editContext = new EditContext(formModel);
+        }
+        editContext.ShouldUseFieldIdentifiers = true;
+
+        editContext.OnFieldChanged += HandleFieldChanged;
+
+        base.OnInitialized();
+    }
+
+    private async Task FetchArtist(int id)
+    {
+        var artistServiceResult = await ArtistApiService.Get(id);
+
+        if (artistServiceResult?.Data is { } artistResult)
+        {
+            formModel = new ArtistFormModel
+                {
+                    ImageId = artistResult.Image?.Id,
+                    ImageResult = artistResult.Image,
+                    PersonId = artistResult.Person?.Id,
+                    PersonResult = artistResult.Person,
+                    Alias = artistResult.Alias
+                };
+
+        }
+    }
+
+
+    private async Task Post()
+    {
+        if (formModel?.PersonId is null)
+        {
+            return;
+        }
+
+
+
+        var serviceResult = await ArtistApiService.Update(Id, new ArtistRequest { PersonId = (int)formModel.PersonId, ImageId = formModel.ImageId, Alias = formModel.Alias });
+        if (serviceResult.Messages is null)
+        {
+            MemoryService.HasUnsavedData = false;
+
+            NavigationManager.NavigateTo("/artist");
+
+            // NavigationManager.NavigateTo("artist" + NavigationManager.GetQueryString());
+        }
+    }
+
+
+    private async Task FetchPeople(PaginationRequest paginationRequest, PersonFilter personFilter)
+    {
+        ImagesPagedServiceResult = null;
+
+        PeoplePagedServiceResult = await PersonApiService.GetAll(paginationRequest, personFilter);
+    }
+
+    private async Task FetchImages()
+    {
+        PeoplePagedServiceResult = null;
+    }
+
+    private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        // Log or process field changes
+        Console.WriteLine($"{e.FieldIdentifier.FieldName} field changed.");
+
+        MemoryService.HasUnsavedData = true;
+    }
+
+    private void SelectPerson(PersonResult personResult)
+    {
+        if (editContext is null || formModel is null) return;
+
+        formModel.PersonId = personResult.Id;
+        formModel.PersonResult = personResult;
+
+        editContext.NotifyFieldChanged(FieldIdentifier.Create(() => formModel.PersonId));
+
+        PeoplePagedServiceResult = null;
+    }
+
+    public void Dispose()
+    {
+        if(editContext is not null)
+        {
+            editContext.OnFieldChanged -= HandleFieldChanged;
+        }
+    }
+}

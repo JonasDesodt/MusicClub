@@ -1,0 +1,10 @@
+﻿@code {
+    protected int Page { get; set; }
+
+    protected override Task OnParametersSetAsync()
+    {
+        Page = 666;
+
+        return base.OnParametersSetAsync();
+    }
+}
