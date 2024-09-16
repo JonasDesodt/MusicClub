@@ -6,6 +6,7 @@
 
 @inject IArtistService ArtistApiService
 @inject IPersonService PersonApiService
+@inject IImageService ImageApiService
 @inject NavigationManager NavigationManager
 @inject DataControllerService DataControllerService
 @inject MemoryService MemoryService
@@ -43,15 +44,15 @@
                         </div>
                     </div>
 
-                    <SelectImage Model="formModel.ImageResult" OnClicked="FetchImages" />
+                    <SelectImage Model="formModel.ImageResult" OnClicked="async () => await FetchImages(new PaginationRequest { Page = 1, PageSize = 2}, new ImageFilter ())" />
                 </div>
 
                 <div>
                     <button type="submit">Submit</button>
 
-                    <button type="button" @onclick="() => FetchArtist(Id)" class="warning">Undo changes</button>
+                    <button type="button" @onclick="async () => {MemoryService.HasUnsavedData = false; await FetchArtist(Id);}" class="warning">Undo changes</button>
 
-                    <NavLink href="@($"artist/delete/{Id}")" class="button danger">Delete</NavLink>
+                    <NavLink href="@($"artist/delete/{Id}")" class="button danger" >Delete</NavLink>
                 </div>
             </EditForm>
 
@@ -67,18 +68,38 @@
                                    PagedServiceResult="PeoplePagedServiceResult" Context="PersonResult">
 
                             <ItemTemplate>
-                                <div>
-                                    <h4>@PersonResult.Firstname @PersonResult.Lastname</h4>
-
-                                    <button @onclick="() => SelectPerson(PersonResult)">Select</button>
-
-   @*                                  <button @onclick="() => { formModel.PersonId = PersonResult.Id; formModel.PersonResult = PersonResult; PeoplePagedServiceResult = null; }">Select</button> *@
-                                </div>
+                                <SelectPersonItem 
+                                    Model="PersonResult"
+                                    OnSelected="(selectedPerson) => SelectPerson(selectedPerson)"/>
                             </ItemTemplate>
                         </PagedList>
                     </div>
                 </section>
             }
+
+            @if(ImagesPagedServiceResult is not null)
+            {
+                <section>
+                    <h3>Select image</h3>
+
+                    <div>
+                        <button @onclick="() => ImagesPagedServiceResult = null" class="warning">Close</button>
+                  
+                        <PagedList
+                            OnPageChanged="(model) => FetchImages(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, new ImageFilter())"
+                            PagedServiceResult="ImagesPagedServiceResult" Context="ImageResult">
+                            
+                            <ItemTemplate>
+                                <SelectImageItem
+                                    Model="ImageResult"
+                                    OnSelected="(selectedImage) => SelectImage(selectedImage)"
+                                    />
+                            </ItemTemplate>
+                        </PagedList>
+                    </div>
+                </section>
+            }
+
         }
     </div>
 </section>
@@ -90,6 +111,9 @@
 @code {
     [Parameter]
     public int Id { get; set; }
+
+    [CascadingParameter]
+    public bool IsOpen { get; set; }
 
     private EditContext? editContext;
 
@@ -121,6 +145,8 @@
             formModel = new();
             editContext = new EditContext(formModel);
         }
+
+        //what is this for?
         editContext.ShouldUseFieldIdentifiers = true;
 
         editContext.OnFieldChanged += HandleFieldChanged;
@@ -149,12 +175,16 @@
 
     private async Task Post()
     {
-        if (formModel?.PersonId is null)
+        if (IsOpen)
         {
             return;
         }
 
 
+        if (formModel?.PersonId is null)
+        {
+            return;
+        }
 
         var serviceResult = await ArtistApiService.Update(Id, new ArtistRequest { PersonId = (int)formModel.PersonId, ImageId = formModel.ImageId, Alias = formModel.Alias });
         if (serviceResult.Messages is null)
@@ -167,7 +197,6 @@
         }
     }
 
-
     private async Task FetchPeople(PaginationRequest paginationRequest, PersonFilter personFilter)
     {
         ImagesPagedServiceResult = null;
@@ -175,16 +204,15 @@
         PeoplePagedServiceResult = await PersonApiService.GetAll(paginationRequest, personFilter);
     }
 
-    private async Task FetchImages()
+    private async Task FetchImages(PaginationRequest paginationRequest, ImageFilter imageFilter)
     {
         PeoplePagedServiceResult = null;
+
+        ImagesPagedServiceResult = await ImageApiService.GetAll(paginationRequest, imageFilter);
     }
 
     private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
     {
-        // Log or process field changes
-        Console.WriteLine($"{e.FieldIdentifier.FieldName} field changed.");
-
         MemoryService.HasUnsavedData = true;
     }
 
@@ -198,6 +226,18 @@
         editContext.NotifyFieldChanged(FieldIdentifier.Create(() => formModel.PersonId));
 
         PeoplePagedServiceResult = null;
+    }
+
+    private void SelectImage(ImageResult imageResult)
+    {
+        if (editContext is null || formModel is null) return;
+
+        formModel.ImageId = imageResult.Id;
+        formModel.ImageResult = imageResult;
+
+        editContext.NotifyFieldChanged(FieldIdentifier.Create(() => formModel.ImageId));
+
+        ImagesPagedServiceResult = null;
     }
 
     public void Dispose()

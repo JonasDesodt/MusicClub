@@ -1,0 +1,38 @@
+﻿div.select-image-item {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+    div.select-image-item > div {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+div.select-image-item > img {
+    aspect-ratio: 3/2;
+    max-width: 100%;
+    object-fit: cover;
+}
+
+div#image-modal {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(250,250,250,.6);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2em;
+    left: 0;
+    top: 0;
+}
+
+    div#image-modal.is-closed {
+        display: none;
+    }
+
+div#image-modal.is-open{
+    display: flex;
+}

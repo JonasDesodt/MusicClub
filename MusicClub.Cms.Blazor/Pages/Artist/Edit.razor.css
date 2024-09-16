@@ -58,7 +58,6 @@ div.select-open > ::deep form {
 }
 
 div > section {
-    flex-grow: 1;
     gap: 0;
 }
 
@@ -91,5 +90,9 @@ li > div {
 @media (min-width: 768px) {
     div.select-open > ::deep form {
         display: flex;
+    }
+
+    div > section {
+        width: 25%;
     }
 }

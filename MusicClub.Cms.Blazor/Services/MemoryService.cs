@@ -1,4 +1,5 @@
-﻿using MusicClub.Dto.Filters;
+﻿using Microsoft.AspNetCore.Components;
+using MusicClub.Dto.Filters;
 using MusicClub.Dto.Transfer;
 
 namespace MusicClub.Cms.Blazor.Services
@@ -17,7 +18,14 @@ namespace MusicClub.Cms.Blazor.Services
             HasUnsavedData = false;
         }
 
-
         public bool HasUnsavedData { get; set; } = false;
+        public event EventHandler? OnConfirmationRequired;
+
+        public void RequireConfirmation()
+        {
+            OnConfirmationRequired?.Invoke(this, EventArgs.Empty);
+        }
+
+        public string? NavigationRequest { get; set; }
     }
 }

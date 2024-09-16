@@ -5,3 +5,36 @@
     gap: 2em;
     padding: 1em;
 }
+div#modal {
+    background: rgba(250,250,250, .5);
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+    div#modal > div {
+        /*    align-self: center;*/
+        background: rgb(250,250,250);
+        /*    margin-top: calc(100vh / 3);*/
+
+        border: 1px solid rgb(200,200,200);
+        padding: 1em;
+        display: flex;
+        flex-direction: column;
+        gap: 2em;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+
+div#modal > div >  p {
+    font-weight: bold;
+}
+
+div#modal > div  > div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

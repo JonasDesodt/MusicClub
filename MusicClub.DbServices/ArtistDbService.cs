@@ -33,9 +33,23 @@ namespace MusicClub.DbServices
             return await Get(artist.Id);
         }
 
-        public Task<ServiceResult<ArtistResult>> Delete(int id)
+        public async Task<ServiceResult<ArtistResult>> Delete(int id)
         {
-            throw new NotImplementedException();
+            if (await dbContext.Artists.FindAsync(id) is not { } artist)
+            {
+                return ((ArtistResult?)null).Wrap(new ServiceMessages().AddNotFound(nameof(Artist), id).AddNotDeleted(nameof(Artist), id));
+            }
+
+            if (await dbContext.Performances.HasReferenceToArtist(id))
+            {
+                return ((ArtistResult?)null).Wrap(new ServiceMessages().AddReferenceFound(nameof(Artist), id, nameof(Performance)).AddNotDeleted(nameof(Artist), id));
+            }
+
+            dbContext.Artists.Remove(artist);
+
+            await dbContext.SaveChangesAsync();
+
+            return ((ArtistResult?)null).Wrap();
         }
 
         public Task<ServiceResult<bool>> Exists(int id)

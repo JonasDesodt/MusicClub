@@ -1,0 +1,24 @@
+﻿<div class="select-image-item">
+    <div>
+        <h4>@Model.Alt</h4>
+
+        <button @onclick="() => OnSelected.InvokeAsync(Model)">Select</button>
+    </div>
+
+    <img src="@($"https://localhost:7061/image/download/{Model.Id}")" @onclick="() => imageModalIsOpen = true"/>
+</div>
+
+<div id="image-modal" class="@(imageModalIsOpen ? "is-open" : "is-closed")">
+    <img src="@($"https://localhost:7061/image/download/{Model.Id}")" />
+</div>
+
+
+@code {
+    [Parameter, EditorRequired]
+    public required ImageResult Model { get; set; }
+
+    [Parameter, EditorRequired]
+    public required EventCallback<ImageResult> OnSelected { get; set; }
+
+    private bool imageModalIsOpen { get; set; } = false;
+ }

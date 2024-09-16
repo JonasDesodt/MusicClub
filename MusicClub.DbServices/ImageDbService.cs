@@ -36,9 +36,20 @@ namespace MusicClub.DbServices
                 .Wrap(new ServiceMessages().AddNotFound(nameof(Person), id));
         }
 
-        public Task<PagedServiceResult<IList<ImageResult>>> GetAll(PaginationRequest paginationRequest, ImageFilter filter)
+        public async Task<PagedServiceResult<IList<ImageResult>>> GetAll(PaginationRequest paginationRequest, ImageFilter filter)
         {
-            throw new NotImplementedException();
+            var totalCount = await dbContext.Images
+                .IncludeAll()
+                .Filter(filter)
+                .CountAsync();
+
+            return (await dbContext.Images
+                .IncludeAll()
+                .Filter(filter)
+                .GetPage(paginationRequest)
+                .ToResults()
+                .ToListAsync())
+                .Wrap(paginationRequest, totalCount, filter);
         }
 
         public async Task<ServiceResult<bool>> IsReferenced(int id)

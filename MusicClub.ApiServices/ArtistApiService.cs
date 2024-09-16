@@ -28,9 +28,21 @@ namespace MusicClub.ApiServices
             return result;
         }
 
-        public Task<ServiceResult<ArtistResult>> Delete(int id)
+        public async Task<ServiceResult<ArtistResult>> Delete(int id)
         {
-            throw new NotImplementedException();
+            var httpClient = httpClientFactory.CreateClient("MusicClubApi");
+
+            var httpResponseMessage = await httpClient.DeleteAsync("Artist/" + id);
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<ArtistResult>>() is not { } result)
+            {
+                return new ServiceResult<ArtistResult>
+                {
+                    Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Failed to fetch the Artist." }],
+                };
+            }
+
+            return result;
         }
 
         public Task<ServiceResult<bool>> Exists(int id)

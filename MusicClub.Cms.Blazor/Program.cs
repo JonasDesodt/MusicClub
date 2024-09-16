@@ -36,7 +36,11 @@ navigationManager.RegisterLocationChangingHandler(async args =>
 {
     if (memoryService.HasUnsavedData)
     {
+        memoryService.NavigationRequest = args.TargetLocation;
+
         args.PreventNavigation();
+
+        memoryService.RequireConfirmation();
     }
     else
     {

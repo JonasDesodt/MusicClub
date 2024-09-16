@@ -1,4 +1,5 @@
-﻿using MusicClub.Dto.Abstractions;
+﻿using MusicClub.ApiServices.Extensions;
+using MusicClub.Dto.Abstractions;
 using MusicClub.Dto.Enums;
 using MusicClub.Dto.Filters;
 using MusicClub.Dto.Requests;
@@ -56,9 +57,25 @@ namespace MusicClub.ApiServices
             return result;
         }
 
-        public Task<PagedServiceResult<IList<ImageResult>>> GetAll(PaginationRequest paginationRequest, ImageFilter filter)
+        public async Task<PagedServiceResult<IList<ImageResult>>> GetAll(PaginationRequest paginationRequest, ImageFilter filter)
         {
-            throw new NotImplementedException();
+            var httpClient = httpClientFactory.CreateClient("MusicClubApi");
+
+            var httpResponseMessage = await httpClient.GetAsync("Image?" + paginationRequest.ToQueryString() + filter.ToQueryString());
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<PagedServiceResult<IList<ImageResult>>>() is not { } result)
+            {
+                return new PagedServiceResult<IList<ImageResult>>
+                {
+                    Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Failed to fetch the Images." }],
+                    Page = paginationRequest.Page,
+                    PageSize = paginationRequest.PageSize,
+                    TotalCount = 0,
+                    Filter = filter
+                };
+            }
+
+            return result;
         }
 
         public Task<ServiceResult<bool>> IsReferenced(int id)

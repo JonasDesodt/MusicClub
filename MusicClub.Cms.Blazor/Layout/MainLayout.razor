@@ -2,25 +2,48 @@
 
 @inject NavigationManager NavigationManager
 @inject DataControllerService DataControllerService
+@inject MemoryService MemoryService
 
 @if (isLoading)
 {
     <Spinner />
 }
+
+@if (isOpen)
+{
+    <div id="modal">
+        <div>
+            <p>You have unsaved data.</p>
+
+            <div>
+                <button @onclick="() => isOpen = false">Stay</button>
+                <button @onclick="HandleContinue" class="danger">Leave</button>
+            </div>
+        </div>
+    </div>
+}
+
+
 <NavLink href="/"> Home</NavLink>
 <main>
-    @Body
+    <CascadingValue Value="isOpen">
+        @Body
+    </CascadingValue>
 </main>
 
 @code {
-    [CascadingParameter]
-    public object? Data { get; set; }
+    // [CascadingParameter]
+    // public object? Data { get; set; }
 
     private bool isLoading;
 
     protected override void OnInitialized()
     {
         DataControllerService.OnFetchStateChanged += FetchStateChanged;
+
+        MemoryService.OnConfirmationRequired += (sender, args) => { isOpen = true; StateHasChanged(); };
+        // MemoryService.OnConfirmationRequired += (sender, args) => { isOpen = args; StateHasChanged(); };
+
 
         base.OnInitialized();
     }
@@ -29,5 +52,18 @@
     {
         isLoading = state;
         StateHasChanged();
+    }
+
+    private bool isOpen;
+
+    private void HandleContinue()
+    {
+        if(!string.IsNullOrWhiteSpace(MemoryService.NavigationRequest))
+        {
+            isOpen = MemoryService.HasUnsavedData = false;
+            NavigationManager.NavigateTo(MemoryService.NavigationRequest);
+        }
+
+
     }
 }

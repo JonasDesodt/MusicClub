@@ -55,5 +55,16 @@ namespace MusicClub.Api.Controllers
 
             return Ok(await artistDbService.Update(id, personRequest));
         }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete([Min(1), FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            return Ok(await artistDbService.Delete(id));
+        }
     }
 }

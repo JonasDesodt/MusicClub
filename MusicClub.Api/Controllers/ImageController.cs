@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using MusicClub.Dto.Abstractions;
 using MusicClub.Dto.Attributes;
 using MusicClub.Dto.Requests;
@@ -7,6 +6,7 @@ using MusicClub.Dto.Results;
 using MusicClub.Dto.Transfer;
 using MusicClub.DbCore.Models;
 using MusicClub.DbCore;
+using MusicClub.Dto.Filters;
 
 namespace MusicClub.Api.Controllers
 {
@@ -23,6 +23,17 @@ namespace MusicClub.Api.Controllers
             }
 
             return Ok(await imageDbService.Get(id));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll([FromQuery] PaginationRequest paginationRequest, [FromQuery] ImageFilter filter)
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            return Ok(await imageDbService.GetAll(paginationRequest, filter));
         }
 
         [HttpGet("Exists/{id:int}")]

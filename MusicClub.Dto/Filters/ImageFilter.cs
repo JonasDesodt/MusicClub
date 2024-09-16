@@ -1,6 +1,7 @@
 ﻿namespace MusicClub.Dto.Filters
 {
-    public class ImageFilter
+    public class ImageFilter : Sort
     {
+        public string? Alt { get; set; }
     }
 }

@@ -3,6 +3,8 @@
 @layout ArtistLayout
 
 @inject IArtistService ArtistApiService
+@inject MemoryService MemoryService
+@inject NavigationManager NavigationManager
 
 <h2>Delete artist</h2>
 
@@ -38,13 +40,13 @@
             <p class="input">
                 @artistResult.Image?.Alt
                 <img src="@($"https://localhost:7061/image/download/{artistResult.Image?.Id}")" />
-            </p>
+            </p>+
         </li>
     </ul>
 
     <div>
         <NavLink href="@($"artist/edit/{Id}")" class="button">No</NavLink>
-        <button class="danger">Yes</button>
+        <button class="danger" @onclick="() => DeleteArtist(Id)">Yes</button>
     </div>
 }
 else if (artistResult is not null)
@@ -81,5 +83,16 @@ else if (artistResult is not null)
         var artistServiceResult = await ArtistApiService.Get(id);
 
         artistResult = artistServiceResult.Data;
+    }
+
+    private async Task DeleteArtist(int id)
+    {
+        var serviceResult = await ArtistApiService.Delete(Id);
+        if (serviceResult.Messages is null)
+        {
+            MemoryService.HasUnsavedData = false;
+
+            NavigationManager.NavigateTo("/artist");
+        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MusicClub.DbCore.Models;
+using MusicClub.Dto.Enums;
+using MusicClub.Dto.Filters;
 using MusicClub.Dto.Results;
 
 namespace MusicClub.DbServices.Extensions
@@ -47,6 +49,37 @@ namespace MusicClub.DbServices.Extensions
                         .Include(q => q.People)
                         .Include(q => q.Performances)
                         .Include(q => q.Lineups);
+        }
+
+        public static IQueryable<Image> Filter(this IQueryable<Image> images, ImageFilter filter)
+        {
+            if (!string.IsNullOrWhiteSpace(filter.Alt))
+            {
+                images = images.Where(p => p.Alt == filter.Alt);
+            }
+
+
+            if (!string.IsNullOrWhiteSpace(filter.SortProperty))
+            {
+                if (filter.SortDirection is SortDirection.Descending)
+                {
+                    images = filter.SortProperty switch
+                    {
+                        nameof(ImageResult.Alt) => images.OrderByDescending(a => a.Alt),
+                        _ => images.OrderByDescending(a => a.Id),
+                    };
+                }
+                else
+                {
+                    images = filter.SortProperty switch
+                    {
+                        nameof(ImageResult.Alt) => images.OrderBy(a => a.Alt),
+                        _ => images.OrderBy(a => a.Id),
+                    };
+                }
+            }
+
+            return images;
         }
     }
 }
