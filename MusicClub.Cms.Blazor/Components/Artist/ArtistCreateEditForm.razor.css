@@ -1,0 +1,30 @@
+﻿div.select-closed, div.select-open {
+    display: flex;
+    flex-direction: row;
+    gap: 2em;
+}
+
+
+
+
+    div.select-closed > ::deep form {
+        display: flex;
+    }
+
+    div.select-open > ::deep form {
+        display: none;
+    }
+
+    div.select-open > ::deep form, div.select-closed > ::deep form {
+        flex-grow: 1;
+    }
+
+@media (min-width: 768px) {
+    div.select-open > ::deep form {
+        display: flex;
+    }
+
+    div > section {
+        width: 25%;
+    }
+}

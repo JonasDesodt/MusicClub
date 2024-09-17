@@ -40,7 +40,7 @@ navigationManager.RegisterLocationChangingHandler(async args =>
 
         args.PreventNavigation();
 
-        memoryService.RequireConfirmation();
+        memoryService.RequestConfirmation();
     }
     else
     {

@@ -2,110 +2,22 @@
 
 @layout ArtistLayout
 
-@implements IDisposable
-
 @inject IArtistService ArtistApiService
-@inject IPersonService PersonApiService
-@inject IImageService ImageApiService
 @inject NavigationManager NavigationManager
 @inject DataControllerService DataControllerService
 @inject MemoryService MemoryService
 
-<section>
-    <h2>Edit artist</h2>
+<h3>Edit</h3>
 
-    <NavLink href="@("artist" + NavigationManager.GetQueryString())" class="button">Return</NavLink>
+<ArtistCreateEditForm ArtistFormModel="artistFormModel" OnValidSubmit="() => Post()">
+    <Buttons>
+        <button type="submit">Submit</button>
 
-    <div class="@(PeoplePagedServiceResult == null ? "select-closed" : "select-open")">
+        <button type="button" @onclick="async () => {MemoryService.HasUnsavedData = false; await FetchArtist(Id);}" class="warning">Undo changes</button>
 
-        @if (formModel is not null)
-        {
-            <EditForm EditContext="@editContext" OnValidSubmit="Post">
-                <DataAnnotationsValidator></DataAnnotationsValidator>
-
-                <ValidationSummary></ValidationSummary>
-
-                <div>
-                    <div>
-                        <label for="alias">Alias</label>
-
-                        <InputText @bind-Value="formModel.Alias" id="alias" />
-                    </div>
-
-                    <div>
-                        <label for="personId">Person</label>
-
-                        <div>
-                            <p>@formModel.PersonResult?.Firstname @formModel.PersonResult?.Lastname</p>
-
-                            <InputNumber @bind-Value="formModel.PersonId" id="personId" hidden @ref="inputNumber" />
-
-                            <button type="button" @onclick="() => FetchPeople(new PaginationRequest { Page = 1, PageSize = 2}, new PersonFilter {})">Change</button>
-                        </div>
-                    </div>
-
-                    <SelectImage Model="formModel.ImageResult" OnClicked="async () => await FetchImages(new PaginationRequest { Page = 1, PageSize = 2}, new ImageFilter ())" />
-                </div>
-
-                <div>
-                    <button type="submit">Submit</button>
-
-                    <button type="button" @onclick="async () => {MemoryService.HasUnsavedData = false; await FetchArtist(Id);}" class="warning">Undo changes</button>
-
-                    <NavLink href="@($"artist/delete/{Id}")" class="button danger" >Delete</NavLink>
-                </div>
-            </EditForm>
-
-            @if (PeoplePagedServiceResult is not null)
-            {
-                <section>
-                    <h3>Select person</h3>
-
-                    <div>
-                        <button @onclick="()=> PeoplePagedServiceResult = null" class="warning">Close</button>
-
-                        <PagedList OnPageChanged="(model) => FetchPeople(new PaginationRequest { Page = model.Page, PageSize = model.PageSize}, new PersonFilter ())"
-                                   PagedServiceResult="PeoplePagedServiceResult" Context="PersonResult">
-
-                            <ItemTemplate>
-                                <SelectPersonItem 
-                                    Model="PersonResult"
-                                    OnSelected="(selectedPerson) => SelectPerson(selectedPerson)"/>
-                            </ItemTemplate>
-                        </PagedList>
-                    </div>
-                </section>
-            }
-
-            @if(ImagesPagedServiceResult is not null)
-            {
-                <section>
-                    <h3>Select image</h3>
-
-                    <div>
-                        <button @onclick="() => ImagesPagedServiceResult = null" class="warning">Close</button>
-                  
-                        <PagedList
-                            OnPageChanged="(model) => FetchImages(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, new ImageFilter())"
-                            PagedServiceResult="ImagesPagedServiceResult" Context="ImageResult">
-                            
-                            <ItemTemplate>
-                                <SelectImageItem
-                                    Model="ImageResult"
-                                    OnSelected="(selectedImage) => SelectImage(selectedImage)"
-                                    />
-                            </ItemTemplate>
-                        </PagedList>
-                    </div>
-                </section>
-            }
-
-        }
-    </div>
-</section>
-
-
-
+        <NavLink href="@($"artist/delete/{Id}")" class="button danger">Delete</NavLink>
+    </Buttons>
+</ArtistCreateEditForm>
 
 
 @code {
@@ -115,21 +27,19 @@
     [CascadingParameter]
     public bool IsOpen { get; set; }
 
-    private EditContext? editContext;
+    private EditContext? artistEditContext;
 
-    private ArtistFormModel? formModel { get; set; }
+    private ArtistFormModel? artistFormModel { get; set; }
 
-    private PagedServiceResult<IList<PersonResult>>? PeoplePagedServiceResult { get; set; }
-    private PagedServiceResult<IList<ImageResult>>? ImagesPagedServiceResult { get; set; }
-
-    private InputNumber<int?> inputNumber = default!;
+    private PagedServiceResult<IList<PersonResult>>? peoplePagedServiceResult { get; set; }
+    private PagedServiceResult<IList<ImageResult>>? imagesPagedServiceResult { get; set; }
 
     protected override void OnInitialized()
     {
         var artistServiceResult = (ServiceResult<ArtistResult>?)DataControllerService.Data;
         if (artistServiceResult?.Data is { } artistResult)
         {
-            formModel = new()
+            artistFormModel = new()
                 {
                     ImageId = artistResult.Image?.Id,
                     ImageResult = artistResult.Image,
@@ -138,18 +48,13 @@
                     Alias = artistResult.Alias
                 };
 
-            editContext = new(formModel);
+            artistEditContext = new(artistFormModel);
         }
         else
         {
-            formModel = new();
-            editContext = new EditContext(formModel);
+            artistFormModel = new();
+            artistEditContext = new EditContext(artistFormModel);
         }
-
-        //what is this for?
-        editContext.ShouldUseFieldIdentifiers = true;
-
-        editContext.OnFieldChanged += HandleFieldChanged;
 
         base.OnInitialized();
     }
@@ -160,7 +65,7 @@
 
         if (artistServiceResult?.Data is { } artistResult)
         {
-            formModel = new ArtistFormModel
+            artistFormModel = new ArtistFormModel
                 {
                     ImageId = artistResult.Image?.Id,
                     ImageResult = artistResult.Image,
@@ -181,12 +86,12 @@
         }
 
 
-        if (formModel?.PersonId is null)
+        if (artistFormModel?.PersonId is null)
         {
             return;
         }
 
-        var serviceResult = await ArtistApiService.Update(Id, new ArtistRequest { PersonId = (int)formModel.PersonId, ImageId = formModel.ImageId, Alias = formModel.Alias });
+        var serviceResult = await ArtistApiService.Update(Id, new ArtistRequest { PersonId = (int)artistFormModel.PersonId, ImageId = artistFormModel.ImageId, Alias = artistFormModel.Alias });
         if (serviceResult.Messages is null)
         {
             MemoryService.HasUnsavedData = false;
@@ -197,54 +102,6 @@
         }
     }
 
-    private async Task FetchPeople(PaginationRequest paginationRequest, PersonFilter personFilter)
-    {
-        ImagesPagedServiceResult = null;
 
-        PeoplePagedServiceResult = await PersonApiService.GetAll(paginationRequest, personFilter);
-    }
 
-    private async Task FetchImages(PaginationRequest paginationRequest, ImageFilter imageFilter)
-    {
-        PeoplePagedServiceResult = null;
-
-        ImagesPagedServiceResult = await ImageApiService.GetAll(paginationRequest, imageFilter);
-    }
-
-    private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
-    {
-        MemoryService.HasUnsavedData = true;
-    }
-
-    private void SelectPerson(PersonResult personResult)
-    {
-        if (editContext is null || formModel is null) return;
-
-        formModel.PersonId = personResult.Id;
-        formModel.PersonResult = personResult;
-
-        editContext.NotifyFieldChanged(FieldIdentifier.Create(() => formModel.PersonId));
-
-        PeoplePagedServiceResult = null;
-    }
-
-    private void SelectImage(ImageResult imageResult)
-    {
-        if (editContext is null || formModel is null) return;
-
-        formModel.ImageId = imageResult.Id;
-        formModel.ImageResult = imageResult;
-
-        editContext.NotifyFieldChanged(FieldIdentifier.Create(() => formModel.ImageId));
-
-        ImagesPagedServiceResult = null;
-    }
-
-    public void Dispose()
-    {
-        if(editContext is not null)
-        {
-            editContext.OnFieldChanged -= HandleFieldChanged;
-        }
-    }
 }

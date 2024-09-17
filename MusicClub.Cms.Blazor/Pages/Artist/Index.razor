@@ -9,93 +9,71 @@
 @inject DataControllerService DataControllerService
 @inject MemoryService MemoryService
 
-<section>
-    <h2>Artists</h2>
 
-    <NavLink class="button" href="artist/create">Create</NavLink>
+<h3>Index</h3>
 
-    @if (artistFilter is not null && ArtistsPagedServiceResult is not null) 
-    {
-        <EditForm Model="artistFilter" OnValidSubmit="@(async (model) => {NavigationManager.NavigateTo($"artist?page={ArtistsPagedServiceResult.Page}" + artistFilter.ToQueryString()); })">
-            <DataAnnotationsValidator></DataAnnotationsValidator>
-            <ValidationSummary></ValidationSummary>
+<NavLink class="button" href="artist/create">Create</NavLink>
 
-            <div>
-                <div>
-                    <div>
-                        <label for="alias">Alias</label>
+<ArtistFilterForm EditContext="editContext" OnValidSubmit="() => FetchArtists(new PaginationRequest { Page = MemoryService.ArtistPagination?.Page ?? MemoryService.DefaultPage, PageSize = MemoryService.ArtistPagination?.PageSize ?? MemoryService.DefaultPageSize}, (ArtistFilter)editContext?.Model ?? new ArtistFilter())" />
 
-                        <InputText @bind-Value="artistFilter.Alias" id="alias" />
-                    </div>
+@if (ArtistsPagedServiceResult is not null)
+{
+<PagedList OnPageChanged="@(async (model) => { MemoryService.ArtistPagination = model; await FetchArtists(new PaginationRequest { Page = model.Page, PageSize = model.PageSize}, MemoryService.ArtistFilter);})"
+           PagedServiceResult="ArtistsPagedServiceResult" Context="ArtistResult">
+    <ItemTemplate>
+        <div>
+            @if (ArtistResult.Image is not null)
+            {
+                <img src="@($"https://localhost:7061/image/download/{ArtistResult.Image?.Id}")" />
 
-                    <div>
-                        <label for="firstName">Firstname</label>
+            }
 
-                        <InputText @bind-Value="artistFilter.Firstname" id="firstName" />
-                    </div>
+            @if (!string.IsNullOrWhiteSpace(ArtistResult.Alias))
+            {
+                <h4>@ArtistResult.Alias</h4>
+            }
+            else if (ArtistResult.Person is not null)
+            {
+                <h4>@ArtistResult.Person.Firstname @ArtistResult.Person.Lastname</h4>
+            }
 
-                    <div>
-                        <label for="lastName">Lastname</label>
+            <NavLink href="@($"artist/edit/{ArtistResult.Id}")" class="button">Edit</NavLink>
+        </div>
+    </ItemTemplate>
+</PagedList>
+}
+else
+{
+<Spinner />
+}
 
-                        <InputText @bind-Value="artistFilter.Lastname" id="lastName" />
-                    </div>
-                </div>
-
-                <div>
-                    <button type="submit">Filter</button>
-                </div>
-            </div>
-        </EditForm>
-
-        <PagedList OnPageChanged="@(async (model) => { MemoryService.ArtistPagination = model; ArtistsPagedServiceResult = await ArtistApiService.GetAll(new PaginationRequest { Page = model.Page, PageSize = model.PageSize}, new ArtistFilter());})"
-                   PagedServiceResult="ArtistsPagedServiceResult" Context="ArtistResult">
-            <ItemTemplate>
-                <div>
-                    @if (ArtistResult.Image is not null)
-                    {
-                        <img src="@($"https://localhost:7061/image/download/{ArtistResult.Image?.Id}")" />
-
-                    }
-
-                    @if (!string.IsNullOrWhiteSpace(ArtistResult.Alias))
-                    {
-                        <h4>@ArtistResult.Alias</h4>
-                    }
-                    else if (ArtistResult.Person is not null)
-                    {
-                        <h4>@ArtistResult.Person.Firstname @ArtistResult.Person.Lastname</h4>
-                    }
-
-                    <NavLink href="@($"artist/edit/{ArtistResult.Id}?page={ArtistsPagedServiceResult.Page}" + artistFilter.ToQueryString())" class="button">Edit</NavLink>
-                </div>
-            </ItemTemplate>
-        </PagedList>
-    }
-    
-    else
-    {
-        <Spinner />
-    }
-</section>
 
 @code {
     private PagedServiceResult<IList<ArtistResult>>? ArtistsPagedServiceResult;
 
-    private ArtistFilter? artistFilter;
+private int page;
 
-    private int page;
+private EditContext? editContext { get; set; }
 
-    protected override void OnInitialized()
-    {
-        // artistFilter = NavigationManager.GetArtistFilter();
-        artistFilter = new ArtistFilter { };
-        ArtistsPagedServiceResult = (PagedServiceResult<IList<ArtistResult>>?)DataControllerService.Data;
+protected override void OnInitialized()
+{
+    editContext = new(MemoryService.ArtistFilter);
 
-        base.OnInitialized();
-    }
+    ArtistsPagedServiceResult = (PagedServiceResult<IList<ArtistResult>>?)DataControllerService.Data;
 
-    public void Dispose()
-    {
-        DataControllerService.Data = null;
-    }
+    base.OnInitialized();
+}
+
+private async Task FetchArtists(PaginationRequest paginationRequest, ArtistFilter artistFilter)
+{
+    DataControllerService.Data = null;
+
+    ArtistsPagedServiceResult = await ArtistApiService.GetAll(paginationRequest, artistFilter);
+}
+
+
+public void Dispose()
+{
+    DataControllerService.Data = null;
+}
 }

@@ -6,7 +6,7 @@
 @inject MemoryService MemoryService
 @inject NavigationManager NavigationManager
 
-<h2>Delete artist</h2>
+<h3>Delete</h3>
 
 @if (artistResult is not null && artistResult.PerformancesCount == 0)
 {
@@ -46,6 +46,7 @@
 
     <div>
         <NavLink href="@($"artist/edit/{Id}")" class="button">No</NavLink>
+
         <button class="danger" @onclick="() => DeleteArtist(Id)">Yes</button>
     </div>
 }

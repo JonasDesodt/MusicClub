@@ -5,8 +5,23 @@
 @implements IDisposable
 
 @inject MemoryService MemoryService
+@inject NavigationManager NavigationManager
 
-@Body
+<section>
+    @if(NavigationManager.ToBaseRelativePath(NavigationManager.Uri) == "artist")
+    {
+        <NavLink href="/">Home</NavLink>
+    } else
+    {
+        <NavLink href="/artist">Index</NavLink>
+    }
+
+    <h2>Artist</h2>
+
+    <section>
+        @Body
+    </section>
+</section>
 
 @code {
     public void Dispose() => MemoryService.DisposeArtistData();

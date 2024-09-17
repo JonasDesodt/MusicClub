@@ -3,109 +3,57 @@
 @layout ArtistLayout
 
 @inject IArtistService ArtistApiService
-@inject IPersonService PersonApiService
 @inject NavigationManager NavigationManager
+@inject MemoryService MemoryService
 
-<h3>Create artist</h3>
+<h3>Create</h3>
 
-<div class="@(PeoplePagedServiceResult == null ? "select-closed" : "select-open")">
+<ArtistCreateEditForm ArtistFormModel="artistFormModel" OnValidSubmit="() => Post()">
+    <Buttons>
+        <button type="submit">Submit</button>
 
-    @if (formModel is not null)
-    {
-        <EditForm Model="formModel" OnValidSubmit="Post">
-            <DataAnnotationsValidator></DataAnnotationsValidator>
-
-            <ValidationSummary></ValidationSummary>
-
-            <div>
-                <div>
-                    <label for="alias">Alias</label>
-
-                    <InputText @bind-Value="formModel.Alias" id="alias" />
-                </div>
-
-                <div>
-                    <label for="personId">Person</label>
-
-                    <div>
-                        <p>@formModel.PersonResult?.Firstname @formModel.PersonResult?.Lastname</p>
-
-                        <InputNumber @bind-Value="formModel.PersonId" id="personId" hidden />
-
-                        <button type="button" @onclick="() => FetchPeople(new PaginationRequest { Page = 1, PageSize = 2}, new PersonFilter {})">Change</button>
-                    </div>
-                </div>
-
-                <SelectImage Model="formModel.ImageResult" OnClicked="FetchImages" />
-            </div>
-
-            <div>
-                <button type="submit">Submit</button>
-
-                <button type="reset">Clear</button>
-
-                <NavLink href="@($"artist/delete/{Id}")" class="button danger">Delete</NavLink>
-            </div>
-        </EditForm>
-
-
-
-        @if (PeoplePagedServiceResult is not null)
-        {
-            <section>
-                <button @onclick="()=> PeoplePagedServiceResult = null" class="warning">Close</button>
-
-                <h3>People</h3>
-
-                <PagedList OnPageChanged="(model) => FetchPeople(new PaginationRequest { Page = model.Page, PageSize = model.PageSize}, new PersonFilter ())"
-                           PagedServiceResult="PeoplePagedServiceResult" Context="PersonResult">
-
-                    <ItemTemplate>
-                        <div>
-                            <h4>@PersonResult.Firstname @PersonResult.Lastname</h4>
-
-                            <button @onclick="() => {formModel.PersonId = PersonResult.Id; formModel.PersonResult = PersonResult; PeoplePagedServiceResult = null; }">Select</button>
-                        </div>
-                    </ItemTemplate>
-                </PagedList>
-            </section>
-        }
-    }
-</div>
+        <button type="reset">Clear</button>
+    </Buttons>
+</ArtistCreateEditForm>
 
 @code {
     [Parameter]
     public int Id { get; set; }
 
-    private ArtistFormModel? formModel { get; set; } = new() { };
+    [CascadingParameter]
+    public bool IsOpen { get; set; }
 
-    private PagedServiceResult<IList<PersonResult>>? PeoplePagedServiceResult { get; set; }
-    private PagedServiceResult<IList<ImageResult>>? ImagesPagedServiceResult { get; set; }
+    private ArtistFormModel? artistFormModel { get; set; }
+
+    private PagedServiceResult<IList<PersonResult>>? peoplePagedServiceResult { get; set; }
+    private PagedServiceResult<IList<ImageResult>>? imagesPagedServiceResult { get; set; }
+
+    protected override void OnInitialized()
+    {
+        artistFormModel = new();
+
+        base.OnInitialized();
+    }
 
     private async Task Post()
     {
-        if (formModel?.PersonId is null)
+        if (IsOpen)
         {
             return;
         }
 
-        var serviceResult = await ArtistApiService.Create(new ArtistRequest { PersonId = (int)formModel.PersonId, ImageId = formModel.ImageId, Alias = formModel.Alias });
+
+        if (artistFormModel?.PersonId is null)
+        {
+            return;
+        }
+
+        var serviceResult = await ArtistApiService.Create(new ArtistRequest { PersonId = (int)artistFormModel.PersonId, ImageId = artistFormModel.ImageId, Alias = artistFormModel.Alias });
         if (serviceResult.Messages is null)
         {
-            NavigationManager.NavigateTo("/");
+            MemoryService.HasUnsavedData = false;
+
+            NavigationManager.NavigateTo("/artist");
         }
-    }
-
-
-    private async Task FetchPeople(PaginationRequest paginationRequest, PersonFilter personFilter)
-    {
-        ImagesPagedServiceResult = null;
-
-        PeoplePagedServiceResult = await PersonApiService.GetAll(paginationRequest, personFilter);
-    }
-
-    private async Task FetchImages()
-    {
-        PeoplePagedServiceResult = null;
     }
 }

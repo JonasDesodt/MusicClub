@@ -1,0 +1,163 @@
+﻿@implements IDisposable
+
+@inject IImageService ImageApiService
+@inject IPersonService PersonApiService
+@inject MemoryService MemoryService
+
+<div class="@(peoplePagedServiceResult == null && imagesPagedServiceResult == null ? "select-closed" : "select-open")">
+
+    <EditForm EditContext="artistEditContext" OnValidSubmit="() => OnValidSubmit.InvokeAsync(ArtistFormModel)">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+
+        <ValidationSummary></ValidationSummary>
+
+        <div>
+            <div>
+                <label for="alias">Alias</label>
+
+                <InputText @bind-Value="ArtistFormModel.Alias" id="alias" />
+            </div>
+
+            <div>
+                <label for="personId">Person</label>
+
+                <div>
+                    <p>@ArtistFormModel.PersonResult?.Firstname @ArtistFormModel.PersonResult?.Lastname</p>
+
+                    <InputNumber @bind-Value="ArtistFormModel.PersonId" id="personId" hidden />
+
+                    <button type="button" @onclick="() => FetchPeople(new PaginationRequest { Page = 1, PageSize = 2}, new PersonFilter {})">@(ArtistFormModel.PersonId == null ? "Add" : "Change")</button>
+                </div>
+            </div>
+
+            <SelectImage Model="ArtistFormModel.ImageResult"
+                         OnClicked="async () => await FetchImages(new PaginationRequest { Page = 1, PageSize = 2}, new ImageFilter ())"
+                         OnRemoveRequest="() => { ArtistFormModel.ImageId = null; ArtistFormModel.ImageResult = null; }" />
+        </div>
+
+        <div>
+            @Buttons
+        </div>
+    </EditForm>
+
+    @if (peoplePagedServiceResult is not null)
+    {
+        <section>
+            <h3>Select person</h3>
+
+            <div>
+                <button @onclick="() => peoplePagedServiceResult = null" class="warning">Close</button>
+
+                <PagedList OnPageChanged="(model) => FetchPeople(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, new PersonFilter {})"
+                           PagedServiceResult="peoplePagedServiceResult" Context="PersonResult">
+
+                    <ItemTemplate>
+                        <SelectPersonItem Model="PersonResult"
+                                          OnSelected="(selectedPerson) => SelectPerson(selectedPerson)" />
+                    </ItemTemplate>
+                </PagedList>
+            </div>
+        </section>
+    }
+
+    @if (imagesPagedServiceResult is not null)
+    {
+        <section>
+            <h3>Select image</h3>
+
+            <div>
+                <button @onclick="() => imagesPagedServiceResult = null" class="warning">Close</button>
+
+                <PagedList OnPageChanged="(model) => FetchImages(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, new ImageFilter {})"
+                           PagedServiceResult="imagesPagedServiceResult" Context="ImageResult">
+
+                    <ItemTemplate>
+                        <SelectImageItem Model="ImageResult"
+                                         OnSelected="(selectedImage) => SelectImage(selectedImage)" />
+                    </ItemTemplate>
+                </PagedList>
+            </div>
+        </section>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public required EventCallback<ArtistFormModel> OnValidSubmit { get; set; }
+
+    [Parameter, EditorRequired]
+    public required ArtistFormModel ArtistFormModel { get; set; }
+
+    [Parameter, EditorRequired]
+    public required RenderFragment Buttons { get; set; }
+
+    private EditContext? artistEditContext { get; set; }
+
+    private PagedServiceResult<IList<PersonResult>>? peoplePagedServiceResult { get; set; }
+
+    private PagedServiceResult<IList<ImageResult>>? imagesPagedServiceResult { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        artistEditContext = new(ArtistFormModel);
+
+        //what is this for?
+        artistEditContext.ShouldUseFieldIdentifiers = true;
+
+        artistEditContext.OnFieldChanged += HandleFieldChanged;
+
+        base.OnInitialized();
+    }
+
+    private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        MemoryService.HasUnsavedData = true;
+    }
+
+    private async Task FetchPeople(PaginationRequest paginationRequest, PersonFilter personFilter)
+    {
+        imagesPagedServiceResult = null;
+
+        peoplePagedServiceResult = await PersonApiService.GetAll(paginationRequest, personFilter);
+    }
+
+    private async Task FetchImages(PaginationRequest paginationRequest, ImageFilter imageFilter)
+    {
+        peoplePagedServiceResult = null;
+
+        imagesPagedServiceResult = await ImageApiService.GetAll(paginationRequest, imageFilter);
+    }
+
+    private void SelectPerson(PersonResult personResult)
+    {
+        if (artistEditContext is null || artistEditContext.Model is not ArtistFormModel formModel) return;
+
+        formModel.PersonId = personResult.Id;
+        formModel.PersonResult = personResult;
+
+        artistEditContext.NotifyFieldChanged(FieldIdentifier.Create(() => formModel.PersonId));
+
+        peoplePagedServiceResult = null;
+    }
+
+    private void SelectImage(ImageResult imageResult)
+    {
+        if (artistEditContext is null || artistEditContext.Model is not ArtistFormModel formModel) return;
+
+        formModel.ImageId = imageResult.Id;
+        formModel.ImageResult = imageResult;
+
+        artistEditContext.NotifyFieldChanged(FieldIdentifier.Create(() => formModel.ImageId));
+
+        imagesPagedServiceResult = null;
+    }
+
+    public void Dispose()
+    {
+        if (artistEditContext is not null)
+        {
+            artistEditContext.OnFieldChanged -= HandleFieldChanged;
+        }
+    }
+}

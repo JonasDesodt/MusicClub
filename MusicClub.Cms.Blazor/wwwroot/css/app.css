@@ -102,8 +102,42 @@ p.label, label {
 
 p.input, input {
     border: 1px solid rgb(200,200,200);
-    padding: 1em;
+    padding: .5em;
 }
+
+form > div, form > div > div, form > div > div > div {
+    display: flex;
+}
+
+form, form {
+    gap: 2em;
+    flex-direction: column;
+}
+    form > div:first-of-type, form > div > div {
+   
+        flex-direction: column;
+    }
+    form > div:first-of-type {
+        border-top: 1px solid #1b6ec2;
+    }
+
+        form > div:last-of-type {
+            justify-content: flex-end;
+            flex-direction: row;
+            gap: 1em;
+        }
+
+    form > div > div {
+        padding: 1em 0;
+        gap: 1em;
+        flex-direction: column;
+        border-bottom: 1px solid #1b6ec2;
+    }
+
+        form > div > div > div {
+            align-items: center;
+            justify-content: space-between;
+        }
 
 a.button, button {
     background-color: #1b6ec2;
@@ -119,6 +153,7 @@ a.button, button {
 a.button {
     text-decoration: none;
 }
+
     a.button:hover, button:hover {
         opacity: 1;
     }
@@ -127,14 +162,40 @@ a.button {
         background-color: red;
     }
 
-    button.warning {
-        background-color: orange;
-    }
+button.warning {
+    background-color: orange;
+}
 
 h1 {
     font-size: 2em;
 }
 
 h2 {
+    font-size: 1.75em;
+}
+
+h3 {
     font-size: 1.5em;
 }
+
+ul.tags {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1em;
+    list-style-type: none;
+}
+
+    ul.tags > li {
+        border-radius: 5px;
+        background: rgb(200,200,200);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: .5em;
+        padding: 0 0 0 .5em;
+    }
+
+        ul.tags > li > button {
+            border-radius: 0 5px 5px 0;
+        }

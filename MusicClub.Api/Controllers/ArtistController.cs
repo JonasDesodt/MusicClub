@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MusicClub.DbServices;
 using MusicClub.Dto.Abstractions;
 using MusicClub.Dto.Attributes;
 using MusicClub.Dto.Filters;

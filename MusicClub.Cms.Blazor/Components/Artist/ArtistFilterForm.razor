@@ -1,0 +1,97 @@
+﻿@inject MemoryService MemoryService
+
+<EditForm @ref="EditForm"
+    
+    EditContext="EditContext"
+          OnValidSubmit="() => { tags = GetTags(); MemoryService.ArtistFilter = (ArtistFilter)EditContext.Model; OnValidSubmit.InvokeAsync(); }">
+
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+
+    <div>
+        <div>
+            <div>
+                <label for="alias">Alias</label>
+
+                <InputText @bind-Value="((ArtistFilter)EditContext.Model).Alias" id="alias" />
+            </div>
+
+            <div>
+                <label for="firstName">Firstname</label>
+
+                <InputText @bind-Value="((ArtistFilter)EditContext.Model).Firstname" id="firstName" />
+            </div>
+
+            <div>
+                <label for="lastName">Lastname</label>
+
+                <InputText @bind-Value="((ArtistFilter)EditContext.Model).Lastname" id="lastName" />
+            </div>
+        </div>
+
+        <div>
+            <button type="submit">Filter</button>
+        </div>
+    </div>
+</EditForm>
+
+@if (tags is not null)
+{
+    <ul class="tags">
+        @foreach (var tag in tags)
+        {
+            <li>
+                <span>@tag.Key</span>
+
+                <button @onclick="@(async () => { tag.Value.Invoke(null); await OnValidSubmit.InvokeAsync(); tags = GetTags(); })">x</button>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public required EditContext EditContext { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnValidSubmit { get; set; }
+
+    public EditForm EditForm { get; set; } = default!;
+
+    private Dictionary<string, Action<string?>>? tags { get; set; }
+
+    protected override void OnInitialized()
+    {
+        tags = GetTags();
+
+
+        base.OnInitialized();
+    }
+
+    private Dictionary<string, Action<string?>>? GetTags()
+    {
+        var test = () => ((ArtistFilter)EditContext.Model).Alias;
+
+        var tags = new Dictionary<string, Action<string?>>();
+
+
+        if (((ArtistFilter)EditContext.Model).Alias is { } alias && alias.Count() > 0)
+        {
+
+            tags.Add(alias, (value) => ((ArtistFilter)EditContext.Model).Alias = value);
+        }
+
+        if (((ArtistFilter)EditContext.Model).Firstname is { } firstname && firstname.Count() > 0)
+        {
+            tags.Add(firstname, (value) => ((ArtistFilter)EditContext.Model).Firstname = value);
+
+        }
+
+        if (((ArtistFilter)EditContext.Model).Lastname is { } lastname && lastname.Count() > 0)
+        {
+            tags.Add(lastname, (value) => ((ArtistFilter)EditContext.Model).Lastname = value);
+        }
+
+        return tags;
+    }
+}

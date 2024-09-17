@@ -1,29 +1,22 @@
-﻿div {
+﻿div.select-image {
     display: flex;
+    flex-direction: column;
+    gap: .5em;
 }
 
-    div.select-image {
-        flex-direction: column;
+    div.select-image > div {
+        display: flex;
+        flex-direction: row;
+        gap: 1em;
     }
 
-        div.select-image > div {
-            border: 1px solid rgb(200,200,200);
+        div.select-image > div > div {
+            display: flex;
             flex-direction: column;
-            padding: 1em;
             gap: 1em;
         }
 
-        div.select-image > div > div {
-            align-items: center;
-            flex-direction: row;
-            justify-content: space-between;
-        }
-
-            div.select-image > div > div > p {
-                color: rgb(100,100,100);
-            }
-
-        div.select-image > div > img {
+        div.select-image > div > div > img {
             aspect-ratio: 3/2;
             object-fit: cover;
             max-width: 100%;

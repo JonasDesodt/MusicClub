@@ -41,7 +41,7 @@
     {
         DataControllerService.OnFetchStateChanged += FetchStateChanged;
 
-        MemoryService.OnConfirmationRequired += (sender, args) => { isOpen = true; StateHasChanged(); };
+        MemoryService.OnConfirmationRequested += (sender, args) => { isOpen = true; StateHasChanged(); };
         // MemoryService.OnConfirmationRequired += (sender, args) => { isOpen = args; StateHasChanged(); };
 
 

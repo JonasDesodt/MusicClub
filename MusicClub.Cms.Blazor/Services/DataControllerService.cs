@@ -1,8 +1,6 @@
 ﻿using MusicClub.Dto.Abstractions;
 using MusicClub.Dto.Transfer;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.WebUtilities;
-using MusicClub.Cms.Blazor.Extensions;
 using Microsoft.AspNetCore.Components;
 using MusicClub.Dto.Filters;
 
@@ -36,20 +34,13 @@ namespace MusicClub.Cms.Blazor.Services
 
                 OnFetchStateChanged?.Invoke(this, true);
 
-                //var parsedQuery = QueryHelpers.ParseQuery(uri.Query);
-                //var page = parsedQuery.GetPage();
-                //if(page is null)
-                //{
-                //    page = 1;
-                //}
-
                 var paginationRequest = new PaginationRequest
                 {
                     Page = memoryService.ArtistPagination?.Page ?? 1,
                     PageSize = memoryService.ArtistPagination?.PageSize ?? 2
                 };
                 
-                Data = await artistApiService.GetAll(paginationRequest, memoryService.ArtistFilter ?? new ArtistFilter { });
+                Data = await artistApiService.GetAll(paginationRequest, memoryService.ArtistFilter ?? memoryService.ArtistFilter ?? new ArtistFilter());
 
                 OnFetchStateChanged?.Invoke(this, false);
 
