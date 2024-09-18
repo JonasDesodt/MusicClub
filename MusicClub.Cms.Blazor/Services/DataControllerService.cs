@@ -7,9 +7,12 @@ using MusicClub.Dto.Results;
 
 namespace MusicClub.Cms.Blazor.Services
 {
-    public partial class DataControllerService(NavigationManager NavigationManager, MemoryService memoryService, IArtistService artistApiService)
+    public partial class DataControllerService(NavigationManager NavigationManager, MemoryService memoryService, IArtistService artistApiService, IPersonService personApiService)
     {
         public object? Data { get; set; }
+
+        public event EventHandler<bool>? OnFetchStateChanged;
+
 
         public async Task HandleLocationChanged(string targetLocation)
         {
@@ -20,7 +23,6 @@ namespace MusicClub.Cms.Blazor.Services
             if (!targetLocation.StartsWith(domain))
             {
                 uri = new Uri(domain + targetLocation);
-
             }
             else
             {
@@ -29,6 +31,7 @@ namespace MusicClub.Cms.Blazor.Services
 
             var route = uri.GetLeftPart(UriPartial.Path).Replace(domain, string.Empty);
 
+            //ARTIST
             if (ArtistIndexRoute().IsMatch(route))
             {
                 var paginationRequest = new PaginationRequest
@@ -37,26 +40,34 @@ namespace MusicClub.Cms.Blazor.Services
                     PageSize = memoryService.ArtistPagination?.PageSize ?? 2
                 };
 
-                Data = await Fetch(async () => await artistApiService.GetAll(paginationRequest, memoryService.ArtistFilter ?? new ArtistFilter()));
+                Data = await Fetch<PagedServiceResult<IList<ArtistResult>, ArtistFilter>>(async () => await artistApiService.GetAll(paginationRequest, memoryService.ArtistFilter ?? new ArtistFilter()));
 
                 return;
             }
 
             if (ArtistEditRoute().IsMatch(route))
             {
-                Data = await Fetch(async () => await artistApiService.Get(int.Parse(route.Split('/').Last())));
+                Data = await Fetch<ServiceResult<ArtistResult>>(async () => await artistApiService.Get(int.Parse(route.Split('/').Last())));
 
                 return;
             }
+
+            //PERSON
+            if (PersonIndexRoute().IsMatch(route))
+            {
+                var paginationRequest = new PaginationRequest
+                {
+                    Page = memoryService.ArtistPagination?.Page ?? 1,
+                    PageSize = memoryService.ArtistPagination?.PageSize ?? 2
+                };
+
+                Data = await Fetch<PagedServiceResult<IList<PersonResult>, PersonFilter>>(async () => await personApiService.GetAll(paginationRequest, memoryService.PersonFilter ?? new PersonFilter()));
+
+                return;
+            }
+
         }
 
-        public event EventHandler<bool>? OnFetchStateChanged;
-
-        [GeneratedRegex(@"^/artist/edit/\d+$", RegexOptions.IgnoreCase, "nl-AW")]
-        private static partial Regex ArtistEditRoute();
-
-        [GeneratedRegex(@"^/artist$", RegexOptions.IgnoreCase, "nl-AW")]
-        private static partial Regex ArtistIndexRoute();
 
         public async Task<TResult> Fetch<TResult>(Func<Task<TResult>> function)
         {
@@ -70,5 +81,16 @@ namespace MusicClub.Cms.Blazor.Services
 
             return data;
         }
+
+        
+        [GeneratedRegex(@"^/artist/edit/\d+$", RegexOptions.IgnoreCase, "nl-AW")]
+        private static partial Regex ArtistEditRoute();
+
+        [GeneratedRegex(@"^/artist$", RegexOptions.IgnoreCase, "nl-AW")]
+        private static partial Regex ArtistIndexRoute();
+
+
+        [GeneratedRegex(@"^/person$", RegexOptions.IgnoreCase, "nl-AW")]
+        private static partial Regex PersonIndexRoute();
     }
 }

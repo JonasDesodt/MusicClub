@@ -1,7 +1,10 @@
 ﻿@page "/person"
 
+@implements IDisposable
+
 @inject MemoryService MemoryService
 @inject IPersonService PersonApiService
+@inject DataControllerService DataControllerService
 
 <h3>Index</h3>
 
@@ -19,18 +22,29 @@
 @code {
     private PagedServiceResult<IList<PersonResult>, PersonFilter>? PeoplePagedServiceResult;
 
-    public override async Task SetParametersAsync(ParameterView parameters)
+    protected override void OnInitialized()
     {
-        parameters.SetParameterProperties(this);
+        // editContext = new(MemoryService.ArtistFilter);
 
-        await FetchPeople(new PaginationRequest { Page = MemoryService.PersonPagination?.Page ?? MemoryService.DefaultPage, PageSize = MemoryService.PersonPagination?.PageSize ?? MemoryService.DefaultPageSize }, MemoryService.PersonFilter);
+        PeoplePagedServiceResult = (PagedServiceResult<IList<PersonResult>, PersonFilter>?)DataControllerService.Data;
 
-        await base.SetParametersAsync(ParameterView.Empty);
+        // if (PeoplePagedServiceResult is null) return;
 
+        // editContext = new(PeoplePagedServiceResult.Filter);
+
+        base.OnInitialized();
     }
+
 
     private async Task FetchPeople(PaginationRequest paginationRequest, PersonFilter personFilter)
     {
-        PeoplePagedServiceResult = await PersonApiService.GetAll(paginationRequest, personFilter);
+        PeoplePagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<PersonResult>, PersonFilter>>(async () => await PersonApiService.GetAll(paginationRequest, personFilter));
+  
+        // editContext = new(PeoplePagedServiceResult.Filter);
+    }
+
+    public void Dispose()
+    {
+        DataControllerService.Data = null;
     }
 }

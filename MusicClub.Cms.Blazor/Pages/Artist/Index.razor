@@ -75,7 +75,7 @@ else
 
     private async Task FetchArtists(PaginationRequest paginationRequest, ArtistFilter artistFilter)
     {
-        ArtistsPagedServiceResult = await DataControllerService.Fetch(async () => await ArtistApiService.GetAll(paginationRequest, artistFilter));
+        ArtistsPagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<ArtistResult>, ArtistFilter>>(async () => await ArtistApiService.GetAll(paginationRequest, artistFilter));
 
         editContext = new(ArtistsPagedServiceResult.Filter);
     }
