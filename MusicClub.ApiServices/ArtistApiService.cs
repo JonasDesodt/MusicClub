@@ -67,15 +67,17 @@ namespace MusicClub.ApiServices
             return result;
         }
 
-        public async Task<PagedServiceResult<IList<ArtistResult>>> GetAll(PaginationRequest paginationRequest, ArtistFilter filter)
+        public async Task<PagedServiceResult<IList<ArtistResult>, ArtistFilter>> GetAll(PaginationRequest paginationRequest, ArtistFilter filter)
         {
+            await Task.Delay(5000);
+
             var httpClient = httpClientFactory.CreateClient("MusicClubApi");
 
             var httpResponseMessage = await httpClient.GetAsync("Artist?" + paginationRequest.ToQueryString() + filter.ToQueryString());
 
-            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<PagedServiceResult<IList<ArtistResult>>>() is not { } result)
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<PagedServiceResult<IList<ArtistResult>, ArtistFilter>>() is not { } result)
             {
-                return new PagedServiceResult<IList<ArtistResult>>
+                return new PagedServiceResult<IList<ArtistResult>, ArtistFilter>
                 {
                     Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Failed to fetch the Artists." }],
                     Page = paginationRequest.Page,

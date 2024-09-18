@@ -66,7 +66,7 @@ namespace MusicClub.DbServices
                 .Wrap(new ServiceMessages().AddNotFound(nameof(Person), id));
         }
 
-        public async Task<PagedServiceResult<IList<PersonResult>>> GetAll(PaginationRequest paginationRequest, PersonFilter filter)
+        public async Task<PagedServiceResult<IList<PersonResult>, PersonFilter>> GetAll(PaginationRequest paginationRequest, PersonFilter filter)
         {
             var totalCount = await dbContext.People
                 .IncludeAll()

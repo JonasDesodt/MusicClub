@@ -1,9 +1,36 @@
 ﻿@page "/person"
 
-@inherits IndexBase
-
+@inject MemoryService MemoryService
+@inject IPersonService PersonApiService
 
 <h3>Index</h3>
 
-<p>@Page</p>
+<PagedList OnPageChanged="@(async (model) => { MemoryService.ArtistPagination = model; await FetchPeople(new PaginationRequest { Page = model.Page, PageSize = model.PageSize}, MemoryService.PersonFilter);})"
+           PagedServiceResult="PeoplePagedServiceResult" Context="PersonResult">
+    <ItemTemplate>
+        <div>
+            <h4>@PersonResult.Firstname @PersonResult.Lastname</h4>
 
+            <NavLink href="@($"person/edit/{PersonResult.Id}")" class="button">Edit</NavLink>
+        </div>
+    </ItemTemplate>
+</PagedList>
+
+@code {
+    private PagedServiceResult<IList<PersonResult>, PersonFilter>? PeoplePagedServiceResult;
+
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        parameters.SetParameterProperties(this);
+
+        await FetchPeople(new PaginationRequest { Page = MemoryService.PersonPagination?.Page ?? MemoryService.DefaultPage, PageSize = MemoryService.PersonPagination?.PageSize ?? MemoryService.DefaultPageSize }, MemoryService.PersonFilter);
+
+        await base.SetParametersAsync(ParameterView.Empty);
+
+    }
+
+    private async Task FetchPeople(PaginationRequest paginationRequest, PersonFilter personFilter)
+    {
+        PeoplePagedServiceResult = await PersonApiService.GetAll(paginationRequest, personFilter);
+    }
+}

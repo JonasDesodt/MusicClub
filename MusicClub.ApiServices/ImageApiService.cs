@@ -57,15 +57,15 @@ namespace MusicClub.ApiServices
             return result;
         }
 
-        public async Task<PagedServiceResult<IList<ImageResult>>> GetAll(PaginationRequest paginationRequest, ImageFilter filter)
+        public async Task<PagedServiceResult<IList<ImageResult>, ImageFilter>> GetAll(PaginationRequest paginationRequest, ImageFilter filter)
         {
             var httpClient = httpClientFactory.CreateClient("MusicClubApi");
 
             var httpResponseMessage = await httpClient.GetAsync("Image?" + paginationRequest.ToQueryString() + filter.ToQueryString());
 
-            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<PagedServiceResult<IList<ImageResult>>>() is not { } result)
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<PagedServiceResult<IList<ImageResult>, ImageFilter>>() is not { } result)
             {
-                return new PagedServiceResult<IList<ImageResult>>
+                return new PagedServiceResult<IList<ImageResult>, ImageFilter>
                 {
                     Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Failed to fetch the Images." }],
                     Page = paginationRequest.Page,

@@ -1,39 +1,46 @@
 ﻿@inject MemoryService MemoryService
 
-<EditForm @ref="EditForm"
-    
-    EditContext="EditContext"
-          OnValidSubmit="() => { tags = GetTags(); MemoryService.ArtistFilter = (ArtistFilter)EditContext.Model; OnValidSubmit.InvokeAsync(); }">
+@if (ShowFilters)
+{
+    <button @onclick="() => ShowFilters = false">Close filters</button>
 
-    <DataAnnotationsValidator></DataAnnotationsValidator>
-    <ValidationSummary></ValidationSummary>
+    <EditForm @ref="EditForm"
+              EditContext="EditContext"
+              OnValidSubmit="() => { MemoryService.ArtistFilter = (ArtistFilter)EditContext.Model; OnValidSubmit.InvokeAsync(); }">
 
-    <div>
-        <div>
-            <div>
-                <label for="alias">Alias</label>
-
-                <InputText @bind-Value="((ArtistFilter)EditContext.Model).Alias" id="alias" />
-            </div>
-
-            <div>
-                <label for="firstName">Firstname</label>
-
-                <InputText @bind-Value="((ArtistFilter)EditContext.Model).Firstname" id="firstName" />
-            </div>
-
-            <div>
-                <label for="lastName">Lastname</label>
-
-                <InputText @bind-Value="((ArtistFilter)EditContext.Model).Lastname" id="lastName" />
-            </div>
-        </div>
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
 
         <div>
-            <button type="submit">Filter</button>
+            <div>
+                <div>
+                    <label for="alias">Alias</label>
+
+                    <InputText @bind-Value="((ArtistFilter)EditContext.Model).Alias" id="alias" />
+                </div>
+
+                <div>
+                    <label for="firstName">Firstname</label>
+
+                    <InputText @bind-Value="((ArtistFilter)EditContext.Model).Firstname" id="firstName" />
+                </div>
+
+                <div>
+                    <label for="lastName">Lastname</label>
+
+                    <InputText @bind-Value="((ArtistFilter)EditContext.Model).Lastname" id="lastName" />
+                </div>
+            </div>
+
+            <div>
+                <button type="submit">Filter</button>
+            </div>
         </div>
-    </div>
-</EditForm>
+    </EditForm>
+} else
+{
+    <button @onclick="() => ShowFilters = true">Open filters</button>
+}
 
 @if (tags is not null)
 {
@@ -43,7 +50,7 @@
             <li>
                 <span>@tag.Key</span>
 
-                <button @onclick="@(async () => { tag.Value.Invoke(null); await OnValidSubmit.InvokeAsync(); tags = GetTags(); })">x</button>
+                <button @onclick="@(async () => { tag.Value.Invoke(null); await OnValidSubmit.InvokeAsync(); })">x</button>
             </li>
         }
     </ul>
@@ -60,20 +67,33 @@
 
     private Dictionary<string, Action<string?>>? tags { get; set; }
 
-    protected override void OnInitialized()
+    private bool ShowFilters { get; set; } = false;
+
+    public override Task SetParametersAsync(ParameterView parameters)    
     {
-        tags = GetTags();
+        var shouldGetTags = false;
 
+        if(parameters.TryGetValue(nameof(this.EditContext), out EditContext? editContext))
+        {
+            if(editContext != EditContext)
+            {
+                shouldGetTags = true;
+            }
+        }
 
-        base.OnInitialized();
+        parameters.SetParameterProperties(this);
+
+        if (shouldGetTags)
+        {
+            tags = GetTags();
+        }
+
+        return base.SetParametersAsync(ParameterView.Empty);
     }
 
     private Dictionary<string, Action<string?>>? GetTags()
     {
-        var test = () => ((ArtistFilter)EditContext.Model).Alias;
-
         var tags = new Dictionary<string, Action<string?>>();
-
 
         if (((ArtistFilter)EditContext.Model).Alias is { } alias && alias.Count() > 0)
         {

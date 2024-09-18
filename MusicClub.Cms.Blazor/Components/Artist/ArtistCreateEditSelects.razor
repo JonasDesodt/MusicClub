@@ -43,10 +43,10 @@
     public required EditContext EditContext { get; set; }
 
     [Parameter, EditorRequired]
-    public required PagedServiceResult<IList<PersonResult>>? PeoplePagedServiceResult { get; set; }
+    public required PagedServiceResult<IList<PersonResult>, PersonFilter>? PeoplePagedServiceResult { get; set; }
 
     [Parameter, EditorRequired]
-    public required PagedServiceResult<IList<ImageResult>>? ImagesPagedServiceResult { get; set; }
+    public required PagedServiceResult<IList<ImageResult>, ImageFilter>? ImagesPagedServiceResult { get; set; }
 
     [Parameter, EditorRequired]
     public required EventCallback<PageChangedArgs<PersonFilter>> OnPeoplePageChanged { get; set; }

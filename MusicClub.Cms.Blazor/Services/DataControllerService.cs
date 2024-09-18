@@ -3,6 +3,7 @@ using MusicClub.Dto.Transfer;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
 using MusicClub.Dto.Filters;
+using MusicClub.Dto.Results;
 
 namespace MusicClub.Cms.Blazor.Services
 {
@@ -30,30 +31,20 @@ namespace MusicClub.Cms.Blazor.Services
 
             if (ArtistIndexRoute().IsMatch(route))
             {
-                Data = null;
-
-                OnFetchStateChanged?.Invoke(this, true);
-
                 var paginationRequest = new PaginationRequest
                 {
                     Page = memoryService.ArtistPagination?.Page ?? 1,
                     PageSize = memoryService.ArtistPagination?.PageSize ?? 2
                 };
-                
-                Data = await artistApiService.GetAll(paginationRequest, memoryService.ArtistFilter ?? memoryService.ArtistFilter ?? new ArtistFilter());
 
-                OnFetchStateChanged?.Invoke(this, false);
+                Data = await Fetch(async () => await artistApiService.GetAll(paginationRequest, memoryService.ArtistFilter ?? new ArtistFilter()));
 
                 return;
             }
 
             if (ArtistEditRoute().IsMatch(route))
             {
-                OnFetchStateChanged?.Invoke(this, true);
-
-                Data = await artistApiService.Get(int.Parse(route.Split('/').Last()));
-
-                OnFetchStateChanged?.Invoke(this, false);
+                Data = await Fetch(async () => await artistApiService.Get(int.Parse(route.Split('/').Last())));
 
                 return;
             }
@@ -66,5 +57,18 @@ namespace MusicClub.Cms.Blazor.Services
 
         [GeneratedRegex(@"^/artist$", RegexOptions.IgnoreCase, "nl-AW")]
         private static partial Regex ArtistIndexRoute();
+
+        public async Task<TResult> Fetch<TResult>(Func<Task<TResult>> function)
+        {
+            Data = null;
+
+            OnFetchStateChanged?.Invoke(this, true);
+
+            var data = await function();
+
+            OnFetchStateChanged?.Invoke(this, false);
+
+            return data;
+        }
     }
 }

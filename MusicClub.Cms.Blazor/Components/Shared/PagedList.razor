@@ -1,4 +1,5 @@
-﻿@typeparam TEntity
+﻿@typeparam TModel
+@typeparam TFilter
 
 @if (PagedServiceResult?.Data is { } results)
 {
@@ -28,10 +29,10 @@
 
 @code {
     [Parameter, EditorRequired]
-    public PagedServiceResult<IList<TEntity>>? PagedServiceResult { get; set; }
+    public PagedServiceResult<IList<TModel>, TFilter>? PagedServiceResult { get; set; }
 
     [Parameter, EditorRequired]
-    public RenderFragment<TEntity> ItemTemplate { get; set; } = default!;
+    public RenderFragment<TModel> ItemTemplate { get; set; } = default!;
 
     [Parameter, EditorRequired]
     public EventCallback<PaginationResult> OnPageChanged { get; set; }

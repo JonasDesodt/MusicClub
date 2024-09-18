@@ -32,9 +32,6 @@
 </main>
 
 @code {
-    // [CascadingParameter]
-    // public object? Data { get; set; }
-
     private bool isLoading;
 
     protected override void OnInitialized()
@@ -42,8 +39,6 @@
         DataControllerService.OnFetchStateChanged += FetchStateChanged;
 
         MemoryService.OnConfirmationRequested += (sender, args) => { isOpen = true; StateHasChanged(); };
-        // MemoryService.OnConfirmationRequired += (sender, args) => { isOpen = args; StateHasChanged(); };
-
 
         base.OnInitialized();
     }
@@ -63,7 +58,5 @@
             isOpen = MemoryService.HasUnsavedData = false;
             NavigationManager.NavigateTo(MemoryService.NavigationRequest);
         }
-
-
     }
 }

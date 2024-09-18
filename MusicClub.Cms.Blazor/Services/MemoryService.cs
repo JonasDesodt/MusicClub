@@ -10,9 +10,7 @@ namespace MusicClub.Cms.Blazor.Services
         public const int DefaultPageSize = 24;
 
         public PaginationResult? ArtistPagination { get; set; }
-
         public required ArtistFilter ArtistFilter { get; set; } = new ArtistFilter();
-
         public void DisposeArtistData() 
         {
             ArtistPagination = null;
@@ -20,6 +18,17 @@ namespace MusicClub.Cms.Blazor.Services
 
             HasUnsavedData = false;
         }
+
+        public PaginationResult? PersonPagination { get; set; }
+        public required PersonFilter PersonFilter { get; set; } = new PersonFilter();
+        public void DisposePersonData()
+        {
+            PersonPagination = null;
+            PersonFilter = new PersonFilter();
+
+            HasUnsavedData = false;
+        }
+
 
         public bool HasUnsavedData { get; set; } = false;
         public event EventHandler? OnConfirmationRequested;
