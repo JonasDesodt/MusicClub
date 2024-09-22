@@ -9,43 +9,46 @@
 @inject DataController DataControllerService
 @inject MemoryService MemoryService
 
-<h3>Index</h3>
+<h3 >Index</h3>
 
 <NavLink class="button" href="artist/create">Create</NavLink>
 
 <ArtistFilterForm EditContext="editContext" OnValidSubmit="() => FetchArtists(new PaginationRequest { Page = MemoryService.DefaultPage, PageSize = MemoryService.DefaultPageSize}, (ArtistFilter?)editContext?.Model ?? new ArtistFilter())" />
 
+    <div @ref="wrapper" id="paged-list">
 @if (ArtistsPagedServiceResult is not null)
 {
-    <PagedList OnPageChanged="@(async (request) => { await FetchArtists(request, ArtistsPagedServiceResult.Filter);})"
-               PagedServiceResult="ArtistsPagedServiceResult" Context="ArtistResult">
-        <ItemTemplate>
-            <div>
-                @if (ArtistResult.Image is not null)
-                {
-                    <img src="@($"https://localhost:7061/image/download/{ArtistResult.Image?.Id}")" />
 
-                }
+        <PagedList OnPageChanged="@(async (request) => { await FetchArtists(request, ArtistsPagedServiceResult.Filter);  })"
+                   PagedServiceResult="ArtistsPagedServiceResult" Context="ArtistResult">
+            <ItemTemplate>
+                <div>
+                    @if (ArtistResult.Image is not null)
+                    {
+                        <img src="@($"https://localhost:7061/image/download/{ArtistResult.Image?.Id}")" />
 
-                @if (!string.IsNullOrWhiteSpace(ArtistResult.Alias))
-                {
-                    <h4>@ArtistResult.Alias</h4>
-                }
-                else if (ArtistResult.Person is not null)
-                {
-                    <h4>@ArtistResult.Person.Firstname @ArtistResult.Person.Lastname</h4>
-                }
+                    }
 
-                <NavLink href="@($"artist/edit/{ArtistResult.Id}")" class="button">Edit</NavLink>
-            </div>
-        </ItemTemplate>
-    </PagedList>
+                    @if (!string.IsNullOrWhiteSpace(ArtistResult.Alias))
+                    {
+                        <h4>@ArtistResult.Alias</h4>
+                    }
+                    else if (ArtistResult.Person is not null)
+                    {
+                        <h4>@ArtistResult.Person.Firstname @ArtistResult.Person.Lastname</h4>
+                    }
+
+                    <NavLink href="@($"artist/edit/{ArtistResult.Id}")" class="button">Edit</NavLink>
+                </div>
+            </ItemTemplate>
+        </PagedList>
+
 }
 else
 {
     <p>Unable to load data.</p>
 }
-
+    </div>
 
 @code {
     private PagedServiceResult<IList<ArtistResult>, ArtistFilter>? ArtistsPagedServiceResult;
@@ -53,6 +56,8 @@ else
     // private int page;
 
     private EditContext? editContext { get; set; }
+
+    private ElementReference wrapper = default!;
 
     public override Task SetParametersAsync(ParameterView parameters)
     {
@@ -63,7 +68,7 @@ else
     {
         ArtistsPagedServiceResult = (PagedServiceResult<IList<ArtistResult>, ArtistFilter>?)DataControllerService.Data;
 
-        if(ArtistsPagedServiceResult is null) return;
+        if (ArtistsPagedServiceResult is null) return;
 
         //Create new ArtistFilter instance to prevent binding the ArtistFilter properties in the form to the ArtistFilter properties in the PagedServiceResult
         editContext = new(ArtistsPagedServiceResult.Filter.GetCopy());
@@ -74,13 +79,13 @@ else
     private async Task FetchArtists(PaginationRequest paginationRequest, ArtistFilter artistFilter)
     {
         ArtistsPagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<ArtistResult>, ArtistFilter>>(async () => await ArtistApiService.GetAll(paginationRequest, artistFilter));
-  
+
         MemoryService.ArtistFilter = ArtistsPagedServiceResult.Filter;
         MemoryService.ArtistPagination = ArtistsPagedServiceResult.Pagination;
 
-        editContext = new(ArtistsPagedServiceResult.Filter.GetCopy());
+        editContext = new(ArtistsPagedServiceResult.Filter.GetCopy());    
     }
-    
+
     public void Dispose()
     {
         DataControllerService.Data = null;

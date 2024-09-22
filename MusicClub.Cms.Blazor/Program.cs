@@ -23,6 +23,8 @@ builder.Services.AddScoped<IPersonService, PersonApiService>();
 builder.Services.AddScoped<DataController>();
 builder.Services.AddScoped<MemoryService>();
 
+builder.Services.AddTransient<JsFunctions>();
+
 var app = builder.Build();
 
 await builder.Build().RunAsync();

@@ -4,6 +4,7 @@
 @inject DataController DataControllerService
 @inject MemoryService MemoryService
 
+@inject JsFunctions JsFunctions
 
 @if (isLoading)
 {
@@ -61,6 +62,8 @@ else if (isInitCompleted is false)
     </div>
 }
 
+<button id="scroll-to-top" @onclick="() => JsFunctions.ScrollToTop()">&#11205;</button>
+
 @code {
     private bool isLoading;
 
@@ -70,6 +73,7 @@ else if (isInitCompleted is false)
 
     protected override async Task OnInitializedAsync()
     {
+        await JsFunctions.HandleOnScroll();
 
         NavigationManager.RegisterLocationChangingHandler(async args =>
     {
