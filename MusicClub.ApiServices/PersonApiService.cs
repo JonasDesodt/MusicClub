@@ -1,6 +1,7 @@
 ﻿using MusicClub.ApiServices.Extensions;
 using MusicClub.Dto.Abstractions;
 using MusicClub.Dto.Enums;
+using MusicClub.Dto.Extensions;
 using MusicClub.Dto.Filters;
 using MusicClub.Dto.Requests;
 using MusicClub.Dto.Results;
@@ -45,8 +46,6 @@ namespace MusicClub.ApiServices
 
         public async Task<PagedServiceResult<IList<PersonResult>, PersonFilter>> GetAll(PaginationRequest paginationRequest, PersonFilter filter)
         {
-            await Task.Delay(2000);
-
             var httpClient = httpClientFactory.CreateClient("MusicClubApi");
 
             var httpResponseMessage = await httpClient.GetAsync("Person?" + paginationRequest.ToQueryString() + filter.ToQueryString());
@@ -56,9 +55,7 @@ namespace MusicClub.ApiServices
                 return new PagedServiceResult<IList<PersonResult>, PersonFilter>
                 {
                     Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Failed to fetch the People." }],
-                    Page = paginationRequest.Page,
-                    PageSize = paginationRequest.PageSize,
-                    TotalCount = 0,
+                    Pagination = paginationRequest.ToResult(0),
                     Filter = filter
                 };
             }

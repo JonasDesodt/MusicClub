@@ -1,4 +1,4 @@
-﻿using MusicClub.Dto.Results;
+﻿using MusicClub.Dto.Extensions;
 using MusicClub.Dto.Transfer;
 
 namespace MusicClub.DbServices.Extensions
@@ -11,9 +11,7 @@ namespace MusicClub.DbServices.Extensions
             {
                 Data = data,
                 Messages = data == null ? messages : null,
-                Page = paginationRequest.Page,
-                PageSize = paginationRequest.PageSize,
-                TotalCount = totalCount,
+                Pagination = paginationRequest.ToResult(totalCount),
                 Filter = filter
             };
         }

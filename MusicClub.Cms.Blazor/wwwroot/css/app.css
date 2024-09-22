@@ -204,3 +204,31 @@ ul.tags {
         ul.tags > li > button {
             border-radius: 0 5px 5px 0;
         }
+
+div.modal {
+    align-items: center;
+    background-color: rgba(250,250,250,.75);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    justify-content: center;
+    position: fixed;
+    width: 100vw;
+    z-index: 9;
+}
+
+    div.modal > div {
+        align-items: center;
+        background-color: rgb(250,250,250);
+        border: 1px solid rgba(250,250,250,.5);
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        display: flex;
+        flex-direction: column;
+        gap: 2em;
+        padding: 1em;
+    }
+
+div.modal > div > p:first-of-type {
+    font-weight: bold;
+}
+

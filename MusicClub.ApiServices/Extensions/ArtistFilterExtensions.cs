@@ -7,7 +7,7 @@ namespace MusicClub.ApiServices.Extensions
     public static  class ArtistFilterExtensions
     {
         public static string ToQueryString(this ArtistFilter artistFilter)
-        {
+        {           
             var builder = new StringBuilder();
 
             if (!string.IsNullOrWhiteSpace(artistFilter.Alias))
@@ -36,6 +36,18 @@ namespace MusicClub.ApiServices.Extensions
             }
 
             return builder.ToString();
+        }
+
+        public static ArtistFilter GetCopy(this ArtistFilter artistFilter)
+        {
+            return new ArtistFilter
+            {
+                Alias = artistFilter.Alias,
+                Firstname = artistFilter.Firstname,
+                Lastname = artistFilter.Lastname,
+                SortProperty = artistFilter.SortProperty,
+                SortDirection = artistFilter.SortDirection
+            };
         }
     }
 }

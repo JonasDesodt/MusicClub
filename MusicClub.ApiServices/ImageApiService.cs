@@ -1,6 +1,7 @@
 ﻿using MusicClub.ApiServices.Extensions;
 using MusicClub.Dto.Abstractions;
 using MusicClub.Dto.Enums;
+using MusicClub.Dto.Extensions;
 using MusicClub.Dto.Filters;
 using MusicClub.Dto.Requests;
 using MusicClub.Dto.Results;
@@ -68,9 +69,7 @@ namespace MusicClub.ApiServices
                 return new PagedServiceResult<IList<ImageResult>, ImageFilter>
                 {
                     Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Failed to fetch the Images." }],
-                    Page = paginationRequest.Page,
-                    PageSize = paginationRequest.PageSize,
-                    TotalCount = 0,
+                    Pagination = paginationRequest.ToResult(0),
                     Filter = filter
                 };
             }

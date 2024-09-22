@@ -6,7 +6,7 @@
 
     <EditForm @ref="EditForm"
               EditContext="EditContext"
-              OnValidSubmit="() => { MemoryService.ArtistFilter = (ArtistFilter)EditContext.Model; OnValidSubmit.InvokeAsync(); }">
+              OnValidSubmit="() => { /* MemoryService.ArtistFilter = (ArtistFilter)EditContext.Model; */ OnValidSubmit.InvokeAsync(); }">
 
         <DataAnnotationsValidator></DataAnnotationsValidator>
         <ValidationSummary></ValidationSummary>

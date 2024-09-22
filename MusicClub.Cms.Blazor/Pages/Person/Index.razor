@@ -4,11 +4,11 @@
 
 @inject MemoryService MemoryService
 @inject IPersonService PersonApiService
-@inject DataControllerService DataControllerService
+@inject DataController DataController
 
 <h3>Index</h3>
 
-<PagedList OnPageChanged="@(async (model) => { MemoryService.ArtistPagination = model; await FetchPeople(new PaginationRequest { Page = model.Page, PageSize = model.PageSize}, MemoryService.PersonFilter);})"
+<PagedList OnPageChanged="@(async (request) => { await FetchPeople(request, MemoryService.PersonFilter);})"
            PagedServiceResult="PeoplePagedServiceResult" Context="PersonResult">
     <ItemTemplate>
         <div>
@@ -26,7 +26,7 @@
     {
         // editContext = new(MemoryService.ArtistFilter);
 
-        PeoplePagedServiceResult = (PagedServiceResult<IList<PersonResult>, PersonFilter>?)DataControllerService.Data;
+        PeoplePagedServiceResult = (PagedServiceResult<IList<PersonResult>, PersonFilter>?)DataController.Data;
 
         // if (PeoplePagedServiceResult is null) return;
 
@@ -38,13 +38,13 @@
 
     private async Task FetchPeople(PaginationRequest paginationRequest, PersonFilter personFilter)
     {
-        PeoplePagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<PersonResult>, PersonFilter>>(async () => await PersonApiService.GetAll(paginationRequest, personFilter));
+        PeoplePagedServiceResult = await DataController.Fetch<PagedServiceResult<IList<PersonResult>, PersonFilter>>(async () => await PersonApiService.GetAll(paginationRequest, personFilter));
   
         // editContext = new(PeoplePagedServiceResult.Filter);
     }
 
     public void Dispose()
     {
-        DataControllerService.Data = null;
+        DataController.Data = null;
     }
 }

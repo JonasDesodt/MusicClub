@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using MusicClub.Dto.Filters;
+﻿using MusicClub.Dto.Filters;
 using MusicClub.Dto.Transfer;
 
 namespace MusicClub.Cms.Blazor.Services
@@ -7,7 +6,7 @@ namespace MusicClub.Cms.Blazor.Services
     public class MemoryService
     {
         public const int DefaultPage = 1;
-        public const int DefaultPageSize = 24;
+        public const int DefaultPageSize = 2;
 
         public PaginationResult? ArtistPagination { get; set; }
         public required ArtistFilter ArtistFilter { get; set; } = new ArtistFilter();

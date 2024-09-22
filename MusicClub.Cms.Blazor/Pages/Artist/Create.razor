@@ -5,6 +5,7 @@
 @inject IArtistService ArtistApiService
 @inject NavigationManager NavigationManager
 @inject MemoryService MemoryService
+@inject DataController DataController
 
 <h3>Create</h3>
 
@@ -42,13 +43,12 @@
             return;
         }
 
-
-        if (artistFormModel?.PersonId is null)
+        if (artistFormModel?.ToRequest() is not { } artistRequest)
         {
             return;
         }
 
-        var serviceResult = await ArtistApiService.Create(new ArtistRequest { PersonId = (int)artistFormModel.PersonId, ImageId = artistFormModel.ImageId, Alias = artistFormModel.Alias });
+        var serviceResult = await DataController.Fetch(async () => await ArtistApiService.Create(artistRequest));
         if (serviceResult.Messages is null)
         {
             MemoryService.HasUnsavedData = false;

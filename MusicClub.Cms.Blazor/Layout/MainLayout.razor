@@ -1,8 +1,9 @@
 ﻿@inherits LayoutComponentBase
 
 @inject NavigationManager NavigationManager
-@inject DataControllerService DataControllerService
+@inject DataController DataControllerService
 @inject MemoryService MemoryService
+
 
 @if (isLoading)
 {
@@ -23,22 +24,84 @@
     </div>
 }
 
+@if (hasFetchError)
+{
+    <div class="modal">
+        <div>
+            <p>Unable to load the requested page.</p>
+            <p>Please try again later.</p>
 
-<NavLink href="/"> Home</NavLink>
-<main>
-    <CascadingValue Value="isOpen">
-        @Body
-    </CascadingValue>
-</main>
+            <button @onclick="() => hasFetchError = false">Ok</button>
+        </div>
+    </div>
+}
+
+@if (isInitCompleted is true)
+{
+    <NavLink href="/artist/create">Create</NavLink>
+
+    <NavLink href="/"> Home</NavLink>
+
+    <main>
+        <CascadingValue Value="isOpen">
+            @Body
+        </CascadingValue>
+    </main>
+
+}
+else if (isInitCompleted is false)
+{
+    <div class="modal">
+        <div>
+            <p>Unable to load the requested page.</p>
+            <p>Please refresh the page or close the window and try again later.</p>
+
+            <button @onclick="() => NavigationManager.Refresh()">Refresh</button>
+        </div>
+    </div>
+}
 
 @code {
     private bool isLoading;
 
-    protected override void OnInitialized()
+    private bool hasFetchError;
+
+    private bool? isInitCompleted = null;
+
+    protected override async Task OnInitializedAsync()
     {
+
+        NavigationManager.RegisterLocationChangingHandler(async args =>
+    {
+        await DataControllerService.CancelCurrentFetch();
+
+        if (MemoryService.HasUnsavedData)
+        {
+            MemoryService.NavigationRequest = args.TargetLocation;
+
+            args.PreventNavigation();
+
+            MemoryService.RequestConfirmation();
+
+            return;
+        }
+
+        if (!await DataControllerService.HandleLocationChanged(args.TargetLocation))
+        {
+            await DataControllerService.CancelCurrentFetch();
+
+            args.PreventNavigation();
+
+            hasFetchError = true;
+            StateHasChanged();
+        }
+    });
+
         DataControllerService.OnFetchStateChanged += FetchStateChanged;
 
         MemoryService.OnConfirmationRequested += (sender, args) => { isOpen = true; StateHasChanged(); };
+
+        isInitCompleted = await DataControllerService.HandleLocationChanged(NavigationManager.Uri);
 
         base.OnInitialized();
     }
@@ -53,7 +116,7 @@
 
     private void HandleContinue()
     {
-        if(!string.IsNullOrWhiteSpace(MemoryService.NavigationRequest))
+        if (!string.IsNullOrWhiteSpace(MemoryService.NavigationRequest))
         {
             isOpen = MemoryService.HasUnsavedData = false;
             NavigationManager.NavigateTo(MemoryService.NavigationRequest);

@@ -1,0 +1,22 @@
+﻿@inherits ErrorBoundary
+@inject ILogger<CustomErrorBoundary> Logger
+@inject DataController DataController
+@inject NavigationManager NavigationManager
+
+@if (CurrentException is null)
+{
+    @ChildContent
+}
+else if (ErrorContent is not null)
+{
+    @ErrorContent(CurrentException)
+}
+
+@code {
+    protected override async Task OnErrorAsync(Exception ex)
+    {
+        await DataController.CancelCurrentFetch();
+
+        Logger.LogError(ex, "😈 A rotten gremlin got us. Sorry!");    
+    }
+}

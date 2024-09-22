@@ -4,7 +4,7 @@
 
 @inject IArtistService ArtistApiService
 @inject NavigationManager NavigationManager
-@inject DataControllerService DataControllerService
+@inject DataController DataController
 @inject MemoryService MemoryService
 
 <h3>Edit</h3>
@@ -27,8 +27,6 @@
     [CascadingParameter]
     public bool IsOpen { get; set; }
 
-    private EditContext? artistEditContext;
-
     private ArtistFormModel? artistFormModel { get; set; }
 
     private PagedServiceResult<IList<PersonResult>, PersonFilter>? peoplePagedServiceResult { get; set; }
@@ -36,24 +34,10 @@
 
     protected override void OnInitialized()
     {
-        var artistServiceResult = (ServiceResult<ArtistResult>?)DataControllerService.Data;
+        var artistServiceResult = (ServiceResult<ArtistResult>?)DataController.Data;
         if (artistServiceResult?.Data is { } artistResult)
         {
-            artistFormModel = new()
-                {
-                    ImageId = artistResult.Image?.Id,
-                    ImageResult = artistResult.Image,
-                    PersonId = artistResult.Person?.Id,
-                    PersonResult = artistResult.Person,
-                    Alias = artistResult.Alias
-                };
-
-            artistEditContext = new(artistFormModel);
-        }
-        else
-        {
-            artistFormModel = new();
-            artistEditContext = new EditContext(artistFormModel);
+            artistFormModel = artistResult.ToFormModel();
         }
 
         base.OnInitialized();
@@ -61,22 +45,13 @@
 
     private async Task FetchArtist(int id)
     {
-        var artistServiceResult = await ArtistApiService.Get(id);
+        var artistServiceResult = await DataController.Fetch(async () => await ArtistApiService.Get(id));
 
         if (artistServiceResult?.Data is { } artistResult)
         {
-            artistFormModel = new ArtistFormModel
-                {
-                    ImageId = artistResult.Image?.Id,
-                    ImageResult = artistResult.Image,
-                    PersonId = artistResult.Person?.Id,
-                    PersonResult = artistResult.Person,
-                    Alias = artistResult.Alias
-                };
-
+            artistFormModel = artistResult.ToFormModel();
         }
     }
-
 
     private async Task Post()
     {
@@ -85,23 +60,17 @@
             return;
         }
 
-
-        if (artistFormModel?.PersonId is null)
+        if (artistFormModel?.ToRequest() is not { } artistRequest)
         {
             return;
         }
 
-        var serviceResult = await ArtistApiService.Update(Id, new ArtistRequest { PersonId = (int)artistFormModel.PersonId, ImageId = artistFormModel.ImageId, Alias = artistFormModel.Alias });
+        var serviceResult = await DataController.Fetch(async () => await ArtistApiService.Update(Id, artistRequest));
         if (serviceResult.Messages is null)
         {
             MemoryService.HasUnsavedData = false;
 
             NavigationManager.NavigateTo("/artist");
-
-            // NavigationManager.NavigateTo("artist" + NavigationManager.GetQueryString());
         }
     }
-
-
-
 }

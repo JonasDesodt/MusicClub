@@ -6,19 +6,18 @@
 
 @inject IArtistService ArtistApiService
 @inject NavigationManager NavigationManager
-@inject DataControllerService DataControllerService
+@inject DataController DataControllerService
 @inject MemoryService MemoryService
-
 
 <h3>Index</h3>
 
 <NavLink class="button" href="artist/create">Create</NavLink>
 
-<ArtistFilterForm EditContext="editContext" OnValidSubmit="() => FetchArtists(new PaginationRequest { Page = MemoryService.ArtistPagination?.Page ?? MemoryService.DefaultPage, PageSize = MemoryService.ArtistPagination?.PageSize ?? MemoryService.DefaultPageSize}, (ArtistFilter)editContext?.Model ?? new ArtistFilter())" />
+<ArtistFilterForm EditContext="editContext" OnValidSubmit="() => FetchArtists(new PaginationRequest { Page = MemoryService.DefaultPage, PageSize = MemoryService.DefaultPageSize}, (ArtistFilter?)editContext?.Model ?? new ArtistFilter())" />
 
 @if (ArtistsPagedServiceResult is not null)
 {
-    <PagedList OnPageChanged="@(async (model) => { MemoryService.ArtistPagination = model; await FetchArtists(new PaginationRequest { Page = model.Page, PageSize = model.PageSize}, MemoryService.ArtistFilter);})"
+    <PagedList OnPageChanged="@(async (request) => { await FetchArtists(request, ArtistsPagedServiceResult.Filter);})"
                PagedServiceResult="ArtistsPagedServiceResult" Context="ArtistResult">
         <ItemTemplate>
             <div>
@@ -44,14 +43,14 @@
 }
 else
 {
-    <Spinner />
+    <p>Unable to load data.</p>
 }
 
 
 @code {
     private PagedServiceResult<IList<ArtistResult>, ArtistFilter>? ArtistsPagedServiceResult;
 
-    private int page;
+    // private int page;
 
     private EditContext? editContext { get; set; }
 
@@ -62,13 +61,12 @@ else
 
     protected override void OnInitialized()
     {
-        // editContext = new(MemoryService.ArtistFilter);
-
         ArtistsPagedServiceResult = (PagedServiceResult<IList<ArtistResult>, ArtistFilter>?)DataControllerService.Data;
 
-        if(ArtistsPagedServiceResult is null) return; 
+        if(ArtistsPagedServiceResult is null) return;
 
-        editContext = new(ArtistsPagedServiceResult.Filter);
+        //Create new ArtistFilter instance to prevent binding the ArtistFilter properties in the form to the ArtistFilter properties in the PagedServiceResult
+        editContext = new(ArtistsPagedServiceResult.Filter.GetCopy());
 
         base.OnInitialized();
     }
@@ -76,11 +74,13 @@ else
     private async Task FetchArtists(PaginationRequest paginationRequest, ArtistFilter artistFilter)
     {
         ArtistsPagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<ArtistResult>, ArtistFilter>>(async () => await ArtistApiService.GetAll(paginationRequest, artistFilter));
+  
+        MemoryService.ArtistFilter = ArtistsPagedServiceResult.Filter;
+        MemoryService.ArtistPagination = ArtistsPagedServiceResult.Pagination;
 
-        editContext = new(ArtistsPagedServiceResult.Filter);
+        editContext = new(ArtistsPagedServiceResult.Filter.GetCopy());
     }
-
-
+    
     public void Dispose()
     {
         DataControllerService.Data = null;

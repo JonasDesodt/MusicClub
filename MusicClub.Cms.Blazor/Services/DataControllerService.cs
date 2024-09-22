@@ -7,14 +7,17 @@ using MusicClub.Dto.Results;
 
 namespace MusicClub.Cms.Blazor.Services
 {
-    public partial class DataControllerService(NavigationManager NavigationManager, MemoryService memoryService, IArtistService artistApiService, IPersonService personApiService)
+    public partial class DataController(NavigationManager NavigationManager, MemoryService memoryService, IArtistService artistApiService, IPersonService personApiService)
     {
         public object? Data { get; set; }
 
+        //public bool AppBuildHasFetchError { get; set; }
+
         public event EventHandler<bool>? OnFetchStateChanged;
 
+        private CancellationTokenSource? _cancellationSource;
 
-        public async Task HandleLocationChanged(string targetLocation)
+        public async Task<bool> HandleLocationChanged(string targetLocation)
         {
             Uri uri;
 
@@ -36,20 +39,34 @@ namespace MusicClub.Cms.Blazor.Services
             {
                 var paginationRequest = new PaginationRequest
                 {
-                    Page = memoryService.ArtistPagination?.Page ?? 1,
-                    PageSize = memoryService.ArtistPagination?.PageSize ?? 2
+                    Page = memoryService.ArtistPagination?.Page ?? MemoryService.DefaultPage,
+                    PageSize = memoryService.ArtistPagination?.PageSize ?? MemoryService.DefaultPageSize
                 };
+
 
                 Data = await Fetch<PagedServiceResult<IList<ArtistResult>, ArtistFilter>>(async () => await artistApiService.GetAll(paginationRequest, memoryService.ArtistFilter ?? new ArtistFilter()));
 
-                return;
+                if (Data is PagedServiceResult<IList<ArtistResult>, ArtistFilter> artistsPagedServiceResult)
+                {
+                    memoryService.ArtistFilter = artistsPagedServiceResult.Filter;
+                    memoryService.ArtistPagination = artistsPagedServiceResult.Pagination;
+
+                    return artistsPagedServiceResult.Messages?.HasMessage is not true;
+                }
+
+                return false;
             }
 
             if (ArtistEditRoute().IsMatch(route))
             {
                 Data = await Fetch<ServiceResult<ArtistResult>>(async () => await artistApiService.Get(int.Parse(route.Split('/').Last())));
 
-                return;
+                if (Data is ServiceResult<ArtistResult> artistServiceResult)
+                {
+                    return artistServiceResult.Messages?.HasMessage is not true;
+                }
+
+                return false;
             }
 
             //PERSON
@@ -57,32 +74,44 @@ namespace MusicClub.Cms.Blazor.Services
             {
                 var paginationRequest = new PaginationRequest
                 {
-                    Page = memoryService.ArtistPagination?.Page ?? 1,
-                    PageSize = memoryService.ArtistPagination?.PageSize ?? 2
+                    Page = memoryService.ArtistPagination?.Page ?? MemoryService.DefaultPage,
+                    PageSize = memoryService.ArtistPagination?.PageSize ?? MemoryService.DefaultPageSize
                 };
 
                 Data = await Fetch<PagedServiceResult<IList<PersonResult>, PersonFilter>>(async () => await personApiService.GetAll(paginationRequest, memoryService.PersonFilter ?? new PersonFilter()));
 
-                return;
+                if (Data is PagedServiceResult<IList<PersonResult>, PersonFilter> peoplePagedServiceResult)
+                {
+                    memoryService.PersonFilter = peoplePagedServiceResult.Filter;
+                    memoryService.PersonPagination = peoplePagedServiceResult.Pagination;
+               
+                    return peoplePagedServiceResult.Messages?.HasMessage is not true;
+                }
+
+                return false;
             }
 
+            return true;
         }
 
 
         public async Task<TResult> Fetch<TResult>(Func<Task<TResult>> function)
         {
             Data = null;
+            _cancellationSource = new CancellationTokenSource();
 
             OnFetchStateChanged?.Invoke(this, true);
 
-            var data = await function();
+            var task = function();
+
+            var result = await task.WaitAsync(_cancellationSource.Token);
 
             OnFetchStateChanged?.Invoke(this, false);
 
-            return data;
+            return result;
         }
 
-        
+
         [GeneratedRegex(@"^/artist/edit/\d+$", RegexOptions.IgnoreCase, "nl-AW")]
         private static partial Regex ArtistEditRoute();
 
@@ -92,5 +121,23 @@ namespace MusicClub.Cms.Blazor.Services
 
         [GeneratedRegex(@"^/person$", RegexOptions.IgnoreCase, "nl-AW")]
         private static partial Regex PersonIndexRoute();
+
+        public async Task CancelCurrentFetch()
+        {
+            if (_cancellationSource is not null)
+            {
+                await _cancellationSource.CancelAsync();
+                //_cancellationSource.Dispose();
+
+                OnFetchStateChanged?.Invoke(this, false);
+                Data = null;
+            }
+        }
+
+
+        public void InvokeOnFetchStateChanged()
+        {
+            OnFetchStateChanged?.Invoke(this, true);
+        }
     }
 }
