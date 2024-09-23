@@ -64,6 +64,7 @@ namespace MusicClub.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(IFormFile file, [FromForm] string alt)
         {
+            //todo: test
             if (!ModelState.IsValid)
             {
                 return ValidationProblem(ModelState);
