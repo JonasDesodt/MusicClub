@@ -1,5 +1,99 @@
-﻿<h3>Delete</h3>
+﻿@page "/person/delete/{id:int}"
+
+@layout PersonLayout
+
+@inject IPersonService PersonApiService
+@inject MemoryService MemoryService
+@inject NavigationManager NavigationManager
+
+<h3>Delete</h3>
+
+@if (personResult is not null && personResult.ArtistsCount == 0)
+{
+    <p>Are you want to delete the following person?</p>
+
+    <ul>
+        <li>
+            <p class="label">Id</p>
+            <p class="input">
+                @personResult.Id
+            </p>
+        </li>
+
+        <li>
+            <p class="label">Firstname</p>
+            <p class="input">@personResult.Firstname</p>
+        </li>
+
+        <li>
+            <p class="label">Lastname</p>
+            <p class="input">@personResult.Lastname</p>
+        </li>
+
+        <li>
+            <p class="label">Artists</p>
+            <p class="input">0</p>
+        </li>
+
+        <li>
+            <p class="label">Image</p>
+            <p class="input">
+                @personResult.Image?.Alt
+                <img src="@($"https://localhost:7061/image/download/{personResult.Image?.Id}")" />
+            </p>
+        </li>
+    </ul>
+
+    <div>
+        <NavLink href="@($"person/edit/{Id}")" class="button">No</NavLink>
+
+        <button class="danger" @onclick="() => DeletePerson(Id)">Yes</button>
+    </div>
+}
+else if (personResult is not null)
+{
+    <p>This following person cannot be deleted. The person has one or more artists.</p>
+
+    <ul>
+        <li>Id: @personResult.Id</li>
+        <li>Firstname: @personResult.Firstname</li>
+        <li>Lastname: @personResult.Lastname</li>
+        <li>Artists: @personResult.ArtistsCount</li>
+    </ul>
+
+    <div>
+        <NavLink href="@($"person/edit/{Id}")" class="button">Return</NavLink>
+    </div>
+}
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
 
+    public PersonResult? personResult { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchPerson(Id);
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task FetchPerson(int id)
+    {
+        var personServiceResult = await PersonApiService.Get(id);
+
+        personResult = personServiceResult.Data;
+    }
+
+    private async Task DeletePerson(int id)
+    {
+        var serviceResult = await PersonApiService.Delete(Id);
+        if (serviceResult.Messages is null)
+        {
+            MemoryService.HasUnsavedData = false;
+
+            NavigationManager.NavigateTo("/person");
+        }
+    }
 }

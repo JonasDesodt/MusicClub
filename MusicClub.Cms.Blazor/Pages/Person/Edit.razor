@@ -1,88 +1,74 @@
 ﻿@page "/person/edit/{id:int}"
 
-@using MusicClub.Dto.Requests
+@layout PersonLayout
 
 @inject IPersonService PersonApiService
 @inject NavigationManager NavigationManager
+@inject DataController DataController
+@inject MemoryService MemoryService
 
 <h3>Edit person</h3>
 
-@if (model is not null)
-{
-    <EditForm Model="model" OnValidSubmit="Post">
-        <DataAnnotationsValidator></DataAnnotationsValidator>
-
-        <ValidationSummary></ValidationSummary>
-
-        <div>
-            <div>
-                <label for="firstname">Firstname</label>
-
-                <InputText @bind-Value="model.Firstname" id="firstname" />
-            </div>
-
-            <div>
-                <label for="lastname">Lastname</label>
-
-                <InputText @bind-Value="model.Lastname" id="lastname" />
-            </div>
-
-            <div>
-                <label for="imageId">ImageId</label>
-
-                <InputNumber @bind-Value="model.ImageId" id="imageId" />
-            </div>
-        </div>
-
+<PersonCreateEditForm PersonFormModel="personFormModel" OnValidSubmit="() => Post()">
+    <Buttons>
         <button type="submit">Submit</button>
-    </EditForm>
-}
 
+        <button type="button" @onclick="async () => {MemoryService.HasUnsavedData = false; await FetchPerson(Id);}" class="warning">Undo changes</button>
 
+        <NavLink href="@($"person/delete/{Id}")" class="button danger">Delete</NavLink>
+    </Buttons>
+</PersonCreateEditForm>
 
 @code {
-    private PersonRequest? model { get; set; }
-
     [Parameter]
     public int Id { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    [CascadingParameter]
+    public bool IsOpen { get; set; }
+
+    private PersonFormModel? personFormModel { get; set; }
+
+    private PagedServiceResult<IList<ImageResult>, ImageFilter>? imagesPagedServiceResult { get; set; }
+
+    protected override void OnInitialized()
     {
-        await FetchPerson(3);
+        var personServiceResult = (ServiceResult<PersonResult>?)DataController.Data;
+        if (personServiceResult?.Data is { } personResult)
+        {
+            personFormModel = personResult.ToFormModel();
+        }
 
-        await base.OnInitializedAsync();
+        base.OnInitialized();
     }
-
 
     private async Task FetchPerson(int id)
     {
-        var personServiceResult = await PersonApiService.Get(id);
+        var personServiceResult = await DataController.Fetch(async () => await PersonApiService.Get(id));
 
         if (personServiceResult?.Data is { } personResult)
         {
-            model = new PersonRequest
-                {
-                    Firstname = personResult.Firstname,
-                    Lastname = personResult.Lastname,
-                    ImageId = personResult.Image?.Id
-                };
-
+            personFormModel = personResult.ToFormModel();
         }
     }
 
-
     private async Task Post()
     {
-        if (model is null)
+        if (IsOpen)
         {
             return;
         }
 
-        var serviceResult = await PersonApiService.Update(Id, model);
+        if (personFormModel?.ToRequest() is not { } personRequest)
+        {
+            return;
+        }
+
+        var serviceResult = await DataController.Fetch(async () => await PersonApiService.Update(Id, personRequest));
         if (serviceResult.Messages is null)
         {
-            NavigationManager.NavigateTo("/");
+            MemoryService.HasUnsavedData = false;
+
+            NavigationManager.NavigateTo("/person");
         }
     }
-
 }

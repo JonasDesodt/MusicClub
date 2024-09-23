@@ -1,0 +1,10 @@
+﻿div.filters {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+div.filters > button {
+    align-self: flex-start;
+}
+

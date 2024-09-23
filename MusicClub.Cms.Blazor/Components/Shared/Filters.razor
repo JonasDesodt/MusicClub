@@ -1,0 +1,84 @@
+﻿<div class="filters">
+    @if (showFilters)
+    {
+        <button @onclick="() => showFilters = false">Filters &#11205;</button>
+
+        <EditForm EditContext="EditContext"
+                  OnValidSubmit="() => OnValidSubmit.InvokeAsync()">
+
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <ValidationSummary></ValidationSummary>
+
+            <div>
+                @Inputs
+            </div>
+
+            <div>
+                <button type="button" @onclick="() => OnReset.InvokeAsync()">Clear</button>
+
+                <button type="submit">Filter</button>
+            </div>
+        </EditForm>
+    }
+    else
+    {
+        <button @onclick="() => showFilters = true">Filters &#11206;</button>
+    }
+
+    @if (tags is not null)
+    {
+        <ul class="tags">
+            @foreach (var tag in tags)
+            {
+                <li>
+                    <span>@tag.Key</span>
+
+                    <button @onclick="@(async () => { tag.Value.Invoke(null); await OnValidSubmit.InvokeAsync(); })">x</button>
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public required RenderFragment Inputs { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnValidSubmit { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnReset { get; set; }
+
+    [Parameter, EditorRequired]
+    public required Func<Dictionary<string, Action<string?>>> GetTags { get; set; }
+
+    [Parameter, EditorRequired]
+    public required EditContext EditContext { get; set; }
+
+    private bool showFilters { get; set; } = false;
+
+    private Dictionary<string, Action<string?>>? tags;
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        var shouldGetTags = false;
+
+        if (parameters.TryGetValue(nameof(EditContext), out EditContext? editContext))
+        {
+            if (editContext != EditContext)
+            {
+                shouldGetTags = true;
+            }
+        }
+
+        parameters.SetParameterProperties(this);
+
+        if (shouldGetTags)
+        {
+            tags = GetTags();
+        }
+
+        return base.SetParametersAsync(ParameterView.Empty);
+    }
+}

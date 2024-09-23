@@ -1,5 +1,56 @@
-﻿<h3>Create</h3>
+﻿@page "/person/create"
+
+@layout PersonLayout
+
+@inject IPersonService PersonApiService
+@inject NavigationManager NavigationManager
+@inject MemoryService MemoryService
+@inject DataController DataController
+
+<h3>Create</h3>
+
+<PersonCreateEditForm PersonFormModel="personFormModel" OnValidSubmit="() => Post()">
+    <Buttons>
+        <button type="submit">Submit</button>
+
+        <button type="reset">Clear</button>
+    </Buttons>
+</PersonCreateEditForm>
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
 
+    [CascadingParameter]
+    public bool IsOpen { get; set; }
+
+    private PersonFormModel? personFormModel { get; set; }
+
+    protected override void OnInitialized()
+    {
+        personFormModel = new();
+
+        base.OnInitialized();
+    }
+
+    private async Task Post()
+    {
+        if (IsOpen)
+        {
+            return;
+        }
+
+        if (personFormModel?.ToRequest() is not { } personRequest)
+        {
+            return;
+        }
+
+        var serviceResult = await DataController.Fetch(async () => await PersonApiService.Create(personRequest));
+        if (serviceResult.Messages is null)
+        {
+            MemoryService.HasUnsavedData = false;
+
+            NavigationManager.NavigateTo("/person");
+        }
+    }
 }

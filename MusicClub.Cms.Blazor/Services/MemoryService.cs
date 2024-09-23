@@ -8,6 +8,15 @@ namespace MusicClub.Cms.Blazor.Services
         public const int DefaultPage = 1;
         public const int DefaultPageSize = 2;
 
+        public static PaginationRequest GetDefaultPaginationRequest()
+        {
+            return new PaginationRequest
+            {
+                Page = DefaultPage,
+                PageSize = DefaultPageSize
+            };
+        }
+
         public PaginationResult? ArtistPagination { get; set; }
         public required ArtistFilter ArtistFilter { get; set; } = new ArtistFilter();
         public void DisposeArtistData() 
@@ -37,6 +46,6 @@ namespace MusicClub.Cms.Blazor.Services
             OnConfirmationRequested?.Invoke(this, EventArgs.Empty);
         }
 
-        public string? NavigationRequest { get; set; }
+        public string? NavigationRequest { get; set; }       
     }
 }

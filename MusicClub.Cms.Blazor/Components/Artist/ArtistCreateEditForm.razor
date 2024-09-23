@@ -32,7 +32,7 @@
 
             <SelectImage Model="ArtistFormModel.ImageResult"
                          OnClicked="async () => await FetchImages(new PaginationRequest { Page = 1, PageSize = 2}, new ImageFilter ())"
-                         OnRemoveRequest="() => { ArtistFormModel.ImageId = null; ArtistFormModel.ImageResult = null; }" />
+                         OnRemoveRequest="() => { ArtistFormModel.ImageId = null; ArtistFormModel.ImageResult = null; MemoryService.HasUnsavedData = true; }" />
         </div>
 
         <div>
@@ -43,10 +43,15 @@
     @if (peoplePagedServiceResult is not null)
     {
         <section>
+            <button @onclick="() => peoplePagedServiceResult = null" class="warning">&#128939;</button>
+
             <h3>Select person</h3>
 
             <div>
-                <button @onclick="() => peoplePagedServiceResult = null" class="warning">Close</button>
+                <PersonFilterForm EditContext="personFilterContext"
+                                  OnReset="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), new PersonFilter())"
+                                  OnValidSubmit="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), (PersonFilter?)personFilterContext?.Model ?? new PersonFilter())" />
+
 
                 <PagedList OnPageChanged="(model) => FetchPeople(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, new PersonFilter {})"
                            PagedServiceResult="peoplePagedServiceResult" Context="PersonResult">
@@ -94,9 +99,9 @@
     private EditContext? artistEditContext { get; set; }
 
     private PagedServiceResult<IList<PersonResult>, PersonFilter>? peoplePagedServiceResult { get; set; }
+    private EditContext? personFilterContext { get; set; }
 
     private PagedServiceResult<IList<ImageResult>, ImageFilter>? imagesPagedServiceResult { get; set; }
-
 
     protected override void OnInitialized()
     {
@@ -106,6 +111,8 @@
         artistEditContext.ShouldUseFieldIdentifiers = true;
 
         artistEditContext.OnFieldChanged += HandleFieldChanged;
+
+        personFilterContext = new(new PersonFilter());
 
         base.OnInitialized();
     }
@@ -120,6 +127,9 @@
         imagesPagedServiceResult = null;
 
         peoplePagedServiceResult = await PersonApiService.GetAll(paginationRequest, personFilter);
+
+        personFilterContext = new(personFilter);
+
     }
 
     private async Task FetchImages(PaginationRequest paginationRequest, ImageFilter imageFilter)

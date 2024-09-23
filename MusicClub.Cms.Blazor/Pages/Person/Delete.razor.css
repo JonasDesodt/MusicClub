@@ -1,0 +1,28 @@
+﻿img {
+    max-width: 100%;
+}
+
+ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    list-style-type: none;
+}
+
+    ul > li {
+        display: flex;
+        flex-direction: column;
+    }
+
+        ul > li > p {
+            display: flex;
+            flex-direction: column;
+            gap: .5em;
+        }
+
+div {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    justify-content: flex-end;
+}

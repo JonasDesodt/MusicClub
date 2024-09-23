@@ -12,14 +12,38 @@ namespace MusicClub.ApiServices
 {
     public class PersonApiService(IHttpClientFactory httpClientFactory) : IPersonService
     {
-        public Task<ServiceResult<PersonResult>> Create(PersonRequest request)
+        public async Task<ServiceResult<PersonResult>> Create(PersonRequest request)
         {
-            throw new NotImplementedException();
+            var httpClient = httpClientFactory.CreateClient("MusicClubApi");
+
+            var httpResponseMessage = await httpClient.PostAsJsonAsync("Person/", request);
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<PersonResult>>() is not { } result)
+            {
+                return new ServiceResult<PersonResult>
+                {
+                    Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Fetch error." }],
+                };
+            }
+
+            return result;
         }
 
-        public Task<ServiceResult<PersonResult>> Delete(int id)
+        public async Task<ServiceResult<PersonResult>> Delete(int id)
         {
-            throw new NotImplementedException();
+            var httpClient = httpClientFactory.CreateClient("MusicClubApi");
+
+            var httpResponseMessage = await httpClient.DeleteAsync("Person/" + id);
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<PersonResult>>() is not { } result)
+            {
+                return new ServiceResult<PersonResult>
+                {
+                    Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Failed to fetch the Person." }],
+                };
+            }
+
+            return result;
         }
 
         public Task<ServiceResult<bool>> Exists(int id)
@@ -68,9 +92,21 @@ namespace MusicClub.ApiServices
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResult<PersonResult>> Update(int id, PersonRequest request)
+        public async Task<ServiceResult<PersonResult>> Update(int id, PersonRequest request)
         {
-            throw new NotImplementedException();
+            var httpClient = httpClientFactory.CreateClient("MusicClubApi");
+
+            var httpResponseMessage = await httpClient.PutAsJsonAsync("Person/" + id, request);
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<PersonResult>>() is not { } result)
+            {
+                return new ServiceResult<PersonResult>
+                {
+                    Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Failed to update the person." }],
+                };
+            }
+
+            return result;
         }
     }
 }

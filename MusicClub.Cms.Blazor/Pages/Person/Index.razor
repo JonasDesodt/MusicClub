@@ -1,50 +1,81 @@
 ﻿@page "/person"
 
+@layout PersonLayout
+
 @implements IDisposable
 
-@inject MemoryService MemoryService
 @inject IPersonService PersonApiService
-@inject DataController DataController
+@inject NavigationManager NavigationManager
+@inject DataController DataControllerService
+@inject MemoryService MemoryService
 
-<h3>Index</h3>
+<section class="index-page">
+    <h3>Index</h3>
 
-<PagedList OnPageChanged="@(async (request) => { await FetchPeople(request, MemoryService.PersonFilter);})"
-           PagedServiceResult="PeoplePagedServiceResult" Context="PersonResult">
-    <ItemTemplate>
-        <div>
-            <h4>@PersonResult.Firstname @PersonResult.Lastname</h4>
+    <NavLink class="button" href="person/create">Create</NavLink>
 
-            <NavLink href="@($"person/edit/{PersonResult.Id}")" class="button">Edit</NavLink>
-        </div>
-    </ItemTemplate>
-</PagedList>
+    <PersonFilterForm EditContext="filterContext"
+                      OnReset="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), new PersonFilter())"
+                      OnValidSubmit="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), (PersonFilter?)filterContext?.Model ?? new PersonFilter())" />
+
+    @if (PeoplePagedServiceResult is not null)
+    {
+
+        <PagedList OnPageChanged="@(async (request) => { await FetchPeople(request, PeoplePagedServiceResult.Filter);  })"
+                   PagedServiceResult="PeoplePagedServiceResult" Context="PersonResult">
+            <ItemTemplate>
+                <div>
+                    @if (PersonResult.Image is not null)
+                    {
+                        <img src="@($"https://localhost:7061/image/download/{PersonResult.Image?.Id}")" />
+
+                    }
+                    else
+                    {
+                        <p>no image</p>
+                    }
+
+                    <div>
+                        <h4>@PersonResult.Firstname @PersonResult.Lastname</h4>
+
+                        <NavLink href="@($"person/edit/{PersonResult.Id}")" class="button">Edit</NavLink>
+                    </div>
+                </div>
+            </ItemTemplate>
+        </PagedList>
+    }
+</section>
+
 
 @code {
     private PagedServiceResult<IList<PersonResult>, PersonFilter>? PeoplePagedServiceResult;
 
+    private EditContext? filterContext { get; set; }
+
     protected override void OnInitialized()
     {
-        // editContext = new(MemoryService.ArtistFilter);
+        PeoplePagedServiceResult = (PagedServiceResult<IList<PersonResult>, PersonFilter>?)DataControllerService.Data;
 
-        PeoplePagedServiceResult = (PagedServiceResult<IList<PersonResult>, PersonFilter>?)DataController.Data;
+        if (PeoplePagedServiceResult is null) return;
 
-        // if (PeoplePagedServiceResult is null) return;
-
-        // editContext = new(PeoplePagedServiceResult.Filter);
+        //Create a new PersonFilter instance to prevent binding the PersonFilter properties in the form to the PersonFilter properties in the PagedServiceResult
+        filterContext = new(PeoplePagedServiceResult.Filter.GetCopy());
 
         base.OnInitialized();
     }
 
-
     private async Task FetchPeople(PaginationRequest paginationRequest, PersonFilter personFilter)
     {
-        PeoplePagedServiceResult = await DataController.Fetch<PagedServiceResult<IList<PersonResult>, PersonFilter>>(async () => await PersonApiService.GetAll(paginationRequest, personFilter));
-  
-        // editContext = new(PeoplePagedServiceResult.Filter);
+        PeoplePagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<PersonResult>, PersonFilter>>(async () => await PersonApiService.GetAll(paginationRequest, personFilter));
+
+        MemoryService.PersonFilter = PeoplePagedServiceResult.Filter;
+        MemoryService.PersonPagination = PeoplePagedServiceResult.Pagination;
+
+        filterContext = new(PeoplePagedServiceResult.Filter.GetCopy());
     }
 
     public void Dispose()
     {
-        DataController.Data = null;
+        DataControllerService.Data = null;
     }
 }

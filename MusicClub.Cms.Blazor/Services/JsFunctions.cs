@@ -14,7 +14,7 @@ namespace MusicClub.Cms.Blazor.Services
             await jsRuntime.InvokeVoidAsync("eval", "window.scrollTo(0, 0);");
         }
 
-        public async Task HandleOnScroll()
+        public async Task AddHandleOnScroll()
         {
             await jsRuntime.InvokeVoidAsync("eval",
             "window.onscroll = function() { if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) { document.body.classList.add(\"scroll\"); } else { document.body.classList.remove(\"scroll\");} }");

@@ -1,0 +1,49 @@
+﻿@inject MemoryService MemoryService
+
+<Filters EditContext="EditContext"
+         GetTags="GetTags"
+         OnValidSubmit="() => OnValidSubmit.InvokeAsync()"
+         OnReset="() => OnReset.InvokeAsync()">
+    <Inputs>
+        <div>
+            <label for="firstName">Firstname</label>
+
+            <InputText @bind-Value="((PersonFilter)EditContext.Model).Firstname" id="firstName" />
+        </div>
+
+        <div>
+            <label for="lastName">Lastname</label>
+
+            <InputText @bind-Value="((PersonFilter)EditContext.Model).Lastname" id="lastName" />
+        </div>
+    </Inputs>
+</Filters>
+
+@code {
+    [Parameter, EditorRequired]
+    public required EditContext EditContext { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnValidSubmit { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnReset { get; set; }
+
+    private Dictionary<string, Action<string?>>? GetTags()
+    {
+        var tags = new Dictionary<string, Action<string?>>();
+
+        if (((PersonFilter)EditContext.Model).Firstname is { } firstname && firstname.Count() > 0)
+        {
+            tags.Add(firstname, (value) => ((PersonFilter)EditContext.Model).Firstname = value);
+
+        }
+
+        if (((PersonFilter)EditContext.Model).Lastname is { } lastname && lastname.Count() > 0)
+        {
+            tags.Add(lastname, (value) => ((PersonFilter)EditContext.Model).Lastname = value);
+        }
+
+        return tags;
+    }
+}

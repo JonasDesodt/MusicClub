@@ -91,6 +91,18 @@ namespace MusicClub.Cms.Blazor.Services
                 return false;
             }
 
+            if (PersonEditRoute().IsMatch(route))
+            {
+                Data = await Fetch<ServiceResult<PersonResult>>(async () => await personApiService.Get(int.Parse(route.Split('/').Last())));
+
+                if (Data is ServiceResult<PersonResult> personServiceResult)
+                {
+                    return personServiceResult.Messages?.HasMessage is not true;
+                }
+
+                return false;
+            }
+
             return true;
         }
 
@@ -111,7 +123,7 @@ namespace MusicClub.Cms.Blazor.Services
             return result;
         }
 
-
+        //ARTIST
         [GeneratedRegex(@"^/artist/edit/\d+$", RegexOptions.IgnoreCase, "nl-AW")]
         private static partial Regex ArtistEditRoute();
 
@@ -119,8 +131,13 @@ namespace MusicClub.Cms.Blazor.Services
         private static partial Regex ArtistIndexRoute();
 
 
+        //PERSON
         [GeneratedRegex(@"^/person$", RegexOptions.IgnoreCase, "nl-AW")]
         private static partial Regex PersonIndexRoute();
+
+        [GeneratedRegex(@"^/person/edit/\d+$", RegexOptions.IgnoreCase, "nl-AW")]
+        private static partial Regex PersonEditRoute();
+
 
         public async Task CancelCurrentFetch()
         {

@@ -105,17 +105,17 @@ p.input, input {
     padding: .5em;
 }
 
-form > div, form > div > div, form > div > div > div {
+form, form > div, form > div > div, form > div > div > div {
     display: flex;
 }
 
-form, form {
-    gap: 2em;
+form {
+    gap: 1em;
     flex-direction: column;
 }
     form > div:first-of-type, form > div > div {
-   
         flex-direction: column;
+        gap: 1em;
     }
     form > div:first-of-type {
         border-top: 1px solid #1b6ec2;
@@ -236,8 +236,8 @@ button#scroll-to-top {
     background-color: rgba(75,250,75, .9);
     display: none;
     position: fixed;
-    right: 1em;
-    bottom: 1em;
+    right: .5em;
+    bottom: .5em;
     font-size: 2em;
     align-items: center;
     justify-content: center;
@@ -248,3 +248,23 @@ button#scroll-to-top {
 body.scroll button#scroll-to-top {
     display: flex;
 }
+
+section.index-page {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+section.index-page > a {
+    align-self: flex-start;
+}
+
+section.layout {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+    section.layout > a {
+        align-self: flex-start;
+    }

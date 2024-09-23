@@ -3,7 +3,6 @@
 @inject NavigationManager NavigationManager
 @inject DataController DataControllerService
 @inject MemoryService MemoryService
-
 @inject JsFunctions JsFunctions
 
 @if (isLoading)
@@ -73,7 +72,7 @@ else if (isInitCompleted is false)
 
     protected override async Task OnInitializedAsync()
     {
-        await JsFunctions.HandleOnScroll();
+        await JsFunctions.AddHandleOnScroll();
 
         NavigationManager.RegisterLocationChangingHandler(async args =>
     {

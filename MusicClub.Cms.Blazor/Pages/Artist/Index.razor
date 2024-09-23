@@ -9,15 +9,16 @@
 @inject DataController DataControllerService
 @inject MemoryService MemoryService
 
-<h3 >Index</h3>
+<section class="index-page">
+    <h3>Index</h3>
 
-<NavLink class="button" href="artist/create">Create</NavLink>
+    <NavLink class="button" href="artist/create">Create</NavLink>
 
-<ArtistFilterForm EditContext="editContext" OnValidSubmit="() => FetchArtists(new PaginationRequest { Page = MemoryService.DefaultPage, PageSize = MemoryService.DefaultPageSize}, (ArtistFilter?)editContext?.Model ?? new ArtistFilter())" />
-
-    <div @ref="wrapper" id="paged-list">
-@if (ArtistsPagedServiceResult is not null)
-{
+    <ArtistFilterForm EditContext="filterContext"
+                      OnReset="() => FetchArtists(MemoryService.GetDefaultPaginationRequest(), new ArtistFilter())"
+                      OnValidSubmit="() => FetchArtists(MemoryService.GetDefaultPaginationRequest(), (ArtistFilter?)filterContext?.Model ?? new ArtistFilter())" />
+    @if (ArtistsPagedServiceResult is not null)
+    {
 
         <PagedList OnPageChanged="@(async (request) => { await FetchArtists(request, ArtistsPagedServiceResult.Filter);  })"
                    PagedServiceResult="ArtistsPagedServiceResult" Context="ArtistResult">
@@ -28,41 +29,38 @@
                         <img src="@($"https://localhost:7061/image/download/{ArtistResult.Image?.Id}")" />
 
                     }
-
-                    @if (!string.IsNullOrWhiteSpace(ArtistResult.Alias))
+                    else
                     {
-                        <h4>@ArtistResult.Alias</h4>
-                    }
-                    else if (ArtistResult.Person is not null)
-                    {
-                        <h4>@ArtistResult.Person.Firstname @ArtistResult.Person.Lastname</h4>
+                        <p>no image</p>
                     }
 
-                    <NavLink href="@($"artist/edit/{ArtistResult.Id}")" class="button">Edit</NavLink>
+                    <div>
+                        @if (!string.IsNullOrWhiteSpace(ArtistResult.Alias))
+                        {
+                            <h4>@ArtistResult.Alias</h4>
+
+                            @if (ArtistResult.Person is not null)
+                            {
+                                <p>(@ArtistResult.Person.Firstname @ArtistResult.Person?.Lastname)</p>
+                            }
+                        }
+                        else if (ArtistResult.Person is not null)
+                        {
+                            <h4>@ArtistResult.Person.Firstname @ArtistResult.Person.Lastname</h4>
+                        }
+
+                        <NavLink href="@($"artist/edit/{ArtistResult.Id}")" class="button">Edit</NavLink>
+                    </div>
                 </div>
             </ItemTemplate>
         </PagedList>
-
-}
-else
-{
-    <p>Unable to load data.</p>
-}
-    </div>
+    }
+</section>
 
 @code {
     private PagedServiceResult<IList<ArtistResult>, ArtistFilter>? ArtistsPagedServiceResult;
 
-    // private int page;
-
-    private EditContext? editContext { get; set; }
-
-    private ElementReference wrapper = default!;
-
-    public override Task SetParametersAsync(ParameterView parameters)
-    {
-        return base.SetParametersAsync(parameters);
-    }
+    private EditContext? filterContext { get; set; }
 
     protected override void OnInitialized()
     {
@@ -70,8 +68,8 @@ else
 
         if (ArtistsPagedServiceResult is null) return;
 
-        //Create new ArtistFilter instance to prevent binding the ArtistFilter properties in the form to the ArtistFilter properties in the PagedServiceResult
-        editContext = new(ArtistsPagedServiceResult.Filter.GetCopy());
+        //Create a new ArtistFilter instance to prevent binding the ArtistFilter properties in the form to the ArtistFilter properties in the PagedServiceResult
+        filterContext = new(ArtistsPagedServiceResult.Filter.GetCopy());
 
         base.OnInitialized();
     }
@@ -83,7 +81,7 @@ else
         MemoryService.ArtistFilter = ArtistsPagedServiceResult.Filter;
         MemoryService.ArtistPagination = ArtistsPagedServiceResult.Pagination;
 
-        editContext = new(ArtistsPagedServiceResult.Filter.GetCopy());    
+        filterContext = new(ArtistsPagedServiceResult.Filter.GetCopy());
     }
 
     public void Dispose()

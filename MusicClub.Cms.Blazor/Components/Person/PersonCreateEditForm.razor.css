@@ -13,26 +13,27 @@ div > section {
     gap: 2em;
 }
 
-div > section > div {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-}
+    div > section > div {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+    }
+
     div > section > button {
         align-self: flex-end;
     }
 
-    div.select-closed > ::deep form {
-        display: flex;
-    }
+div.select-closed > ::deep form {
+    display: flex;
+}
 
-    div.select-open > ::deep form {
-        display: none;
-    }
+div.select-open > ::deep form {
+    display: none;
+}
 
-    div.select-open > ::deep form, div.select-closed > ::deep form {
-        flex-grow: 1;
-    }
+div.select-open > ::deep form, div.select-closed > ::deep form {
+    flex-grow: 1;
+}
 
 @media (min-width: 768px) {
     div.select-open > ::deep form {
