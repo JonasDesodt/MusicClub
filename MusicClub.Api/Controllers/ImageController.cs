@@ -12,7 +12,7 @@ namespace MusicClub.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ImageController(IImageService imageDbService, MusicClubDbContext dbContext) : Controller
+    public class ImageController(IImageDbService imageDbService, MusicClubDbContext dbContext) : Controller
     {
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get([Min(1), FromRoute] int id)
@@ -61,9 +61,38 @@ namespace MusicClub.Api.Controllers
             return File(memoryStream, image.ContentType);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Create(IFormFile file, [FromForm] string alt)
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await file.CopyToAsync(memoryStream);
+
+                // Upload the file if less than 2 MB
+                if (memoryStream.Length < 2097152)
+                {
+                    return Ok(await imageDbService.Create(new ImageDbRequest
+                    {
+                        Alt = alt,
+                        Content = memoryStream.ToArray(),
+                        ContentType = file.ContentType
+                    }));
+                }
+            }
+
+            //todo: add message file to big
+            return ValidationProblem(ModelState);
+        }
+
+
 
         [HttpPost("Upload")]
-        public async Task<IActionResult> Upload(IFormFile file, [FromForm] ImageRequest properties)
+        public async Task<IActionResult> Upload(IFormFile file, [FromForm] ImageApiRequest properties)
         {
             if (file == null || file.Length == 0)
             {

@@ -63,12 +63,12 @@ namespace MusicClub.DbServices.Extensions
         {
             if (!string.IsNullOrWhiteSpace(filter.Firstname))
             {
-                people = people.Where(p => p.Firstname == filter.Firstname);
+                people = people.Where(a => a.Firstname != null && a.Firstname.ToLower().Contains(filter.Firstname.ToLower()));
             }
 
             if (!string.IsNullOrWhiteSpace(filter.Lastname))
             {
-                people = people.Where(p => p.Lastname == filter.Lastname);
+                people = people.Where(a => a.Lastname != null && a.Lastname.ToLower().Contains(filter.Lastname.ToLower()));
             }
 
             if (!string.IsNullOrWhiteSpace(filter.SortProperty))

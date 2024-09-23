@@ -55,9 +55,8 @@ namespace MusicClub.DbServices.Extensions
         {
             if (!string.IsNullOrWhiteSpace(filter.Alt))
             {
-                images = images.Where(p => p.Alt == filter.Alt);
+                images = images.Where(a => a.Alt != null && a.Alt.ToLower().Contains(filter.Alt.ToLower()));
             }
-
 
             if (!string.IsNullOrWhiteSpace(filter.SortProperty))
             {

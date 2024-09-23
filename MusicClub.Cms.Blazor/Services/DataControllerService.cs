@@ -7,7 +7,7 @@ using MusicClub.Dto.Results;
 
 namespace MusicClub.Cms.Blazor.Services
 {
-    public partial class DataController(NavigationManager NavigationManager, MemoryService memoryService, IArtistService artistApiService, IPersonService personApiService)
+    public partial class DataController(NavigationManager NavigationManager, MemoryService memoryService, IArtistService artistApiService, IPersonService personApiService, IImageApiService imageApiService)
     {
         public object? Data { get; set; }
 
@@ -103,6 +103,41 @@ namespace MusicClub.Cms.Blazor.Services
                 return false;
             }
 
+
+            //IMAGE
+            if (ImageIndexRoute().IsMatch(route))
+            {
+                var paginationRequest = new PaginationRequest
+                {
+                    Page = memoryService.ImagePagination?.Page ?? MemoryService.DefaultPage,
+                    PageSize = memoryService.ImagePagination?.PageSize ?? MemoryService.DefaultPageSize
+                };
+
+                Data = await Fetch<PagedServiceResult<IList<ImageResult>, ImageFilter>>(async () => await imageApiService.GetAll(paginationRequest, memoryService.ImageFilter ?? new ImageFilter()));
+
+                if (Data is PagedServiceResult<IList<ImageResult>, ImageFilter> imagesPagedServiceResult)
+                {
+                    memoryService.ImageFilter = imagesPagedServiceResult.Filter;
+                    memoryService.ImagePagination = imagesPagedServiceResult.Pagination;
+
+                    return imagesPagedServiceResult.Messages?.HasMessage is not true;
+                }
+
+                return false;
+            }
+
+            if (ImageEditRoute().IsMatch(route))
+            {
+                Data = await Fetch<ServiceResult<ImageResult>>(async () => await imageApiService.Get(int.Parse(route.Split('/').Last())));
+
+                if (Data is ServiceResult<ImageResult> imageServiceResult)
+                {
+                    return imageServiceResult.Messages?.HasMessage is not true;
+                }
+
+                return false;
+            }
+
             return true;
         }
 
@@ -137,6 +172,14 @@ namespace MusicClub.Cms.Blazor.Services
 
         [GeneratedRegex(@"^/person/edit/\d+$", RegexOptions.IgnoreCase, "nl-AW")]
         private static partial Regex PersonEditRoute();
+
+
+        //IMAGE
+        [GeneratedRegex(@"^/image$", RegexOptions.IgnoreCase, "nl-AW")]
+        private static partial Regex ImageIndexRoute();
+
+        [GeneratedRegex(@"^/image/edit/\d+$", RegexOptions.IgnoreCase, "nl-AW")]
+        private static partial Regex ImageEditRoute();
 
 
         public async Task CancelCurrentFetch()

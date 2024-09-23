@@ -1,0 +1,38 @@
+﻿@inject MemoryService MemoryService
+
+<Filters EditContext="EditContext"
+         GetTags="GetTags"
+         OnValidSubmit="() => OnValidSubmit.InvokeAsync()"
+         OnReset="() => OnReset.InvokeAsync()">
+    <Inputs>
+        <div>
+            <label for="alt">Alt</label>
+
+            <InputText @bind-Value="((ImageFilter)EditContext.Model).Alt" id="alt" />
+        </div>
+    </Inputs>
+</Filters>
+
+@code {
+    [Parameter, EditorRequired]
+    public required EditContext EditContext { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnValidSubmit { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnReset { get; set; }
+
+    private Dictionary<string, Action<string?>>? GetTags()
+    {
+        var tags = new Dictionary<string, Action<string?>>();
+
+        if (((ImageFilter)EditContext.Model).Alt is { } alt && alt.Count() > 0)
+        {
+
+            tags.Add(alt, (value) => ((ImageFilter)EditContext.Model).Alt = value);
+        }
+
+        return tags;
+    }
+}

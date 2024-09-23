@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MusicClub.ApiServices.Extensions
 {
-    internal static class ImageFilterExtensions
+    public static class ImageFilterExtensions
     {
         public static string ToQueryString(this ImageFilter imageFilter)
         {
@@ -12,7 +12,7 @@ namespace MusicClub.ApiServices.Extensions
 
             if (!string.IsNullOrWhiteSpace(imageFilter.Alt))
             {
-                builder.Append($"&alias={imageFilter.Alt}");
+                builder.Append($"&alt={imageFilter.Alt}");
             }
 
             if (!string.IsNullOrWhiteSpace(imageFilter.SortProperty))
@@ -26,6 +26,16 @@ namespace MusicClub.ApiServices.Extensions
             }
 
             return builder.ToString();
+        }
+
+        public static ImageFilter GetCopy(this ImageFilter imageFilter)
+        {
+            return new ImageFilter
+            {
+                Alt = imageFilter.Alt,                
+                SortProperty = imageFilter.SortProperty,
+                SortDirection = imageFilter.SortDirection
+            };
         }
     }
 }

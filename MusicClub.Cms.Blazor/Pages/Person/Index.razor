@@ -18,11 +18,11 @@
                       OnReset="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), new PersonFilter())"
                       OnValidSubmit="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), (PersonFilter?)filterContext?.Model ?? new PersonFilter())" />
 
-    @if (PeoplePagedServiceResult is not null)
+    @if (ImagesPagedServiceResult is not null)
     {
 
-        <PagedList OnPageChanged="@(async (request) => { await FetchPeople(request, PeoplePagedServiceResult.Filter);  })"
-                   PagedServiceResult="PeoplePagedServiceResult" Context="PersonResult">
+        <PagedList OnPageChanged="@(async (request) => { await FetchPeople(request, ImagesPagedServiceResult.Filter);  })"
+                   PagedServiceResult="ImagesPagedServiceResult" Context="PersonResult">
             <ItemTemplate>
                 <div>
                     @if (PersonResult.Image is not null)
@@ -48,30 +48,30 @@
 
 
 @code {
-    private PagedServiceResult<IList<PersonResult>, PersonFilter>? PeoplePagedServiceResult;
+    private PagedServiceResult<IList<PersonResult>, PersonFilter>? ImagesPagedServiceResult;
 
     private EditContext? filterContext { get; set; }
 
     protected override void OnInitialized()
     {
-        PeoplePagedServiceResult = (PagedServiceResult<IList<PersonResult>, PersonFilter>?)DataControllerService.Data;
+        ImagesPagedServiceResult = (PagedServiceResult<IList<PersonResult>, PersonFilter>?)DataControllerService.Data;
 
-        if (PeoplePagedServiceResult is null) return;
+        if (ImagesPagedServiceResult is null) return;
 
         //Create a new PersonFilter instance to prevent binding the PersonFilter properties in the form to the PersonFilter properties in the PagedServiceResult
-        filterContext = new(PeoplePagedServiceResult.Filter.GetCopy());
+        filterContext = new(ImagesPagedServiceResult.Filter.GetCopy());
 
         base.OnInitialized();
     }
 
     private async Task FetchPeople(PaginationRequest paginationRequest, PersonFilter personFilter)
     {
-        PeoplePagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<PersonResult>, PersonFilter>>(async () => await PersonApiService.GetAll(paginationRequest, personFilter));
+        ImagesPagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<PersonResult>, PersonFilter>>(async () => await PersonApiService.GetAll(paginationRequest, personFilter));
 
-        MemoryService.PersonFilter = PeoplePagedServiceResult.Filter;
-        MemoryService.PersonPagination = PeoplePagedServiceResult.Pagination;
+        MemoryService.PersonFilter = ImagesPagedServiceResult.Filter;
+        MemoryService.PersonPagination = ImagesPagedServiceResult.Pagination;
 
-        filterContext = new(PeoplePagedServiceResult.Filter.GetCopy());
+        filterContext = new(ImagesPagedServiceResult.Filter.GetCopy());
     }
 
     public void Dispose()

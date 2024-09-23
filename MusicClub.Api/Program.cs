@@ -28,7 +28,7 @@ builder.Services.AddDbContext<MusicClubDbContext>(options =>
 );
 
 builder.Services.AddScoped<IArtistService, ArtistDbService>();
-builder.Services.AddScoped<IImageService, ImageDbService>();
+builder.Services.AddScoped<IImageDbService, ImageDbService>();
 builder.Services.AddScoped<IPersonService, PersonDbService>();
 
 var app = builder.Build();

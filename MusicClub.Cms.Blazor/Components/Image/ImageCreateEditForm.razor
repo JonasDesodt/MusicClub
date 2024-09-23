@@ -1,0 +1,110 @@
+﻿@implements IDisposable
+
+@inject MemoryService MemoryService
+
+<div>
+    <EditForm EditContext="imageEditContext" OnValidSubmit="() => OnValidSubmit.InvokeAsync(ImageFormModel)">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+
+        <ValidationSummary></ValidationSummary>
+
+        <div>
+            <div>
+                <label for="alt">Alt</label>
+
+                <InputText @bind-Value="ImageFormModel.Alt" id="alt" />
+            </div>
+        </div>
+
+        <div>
+            <label for="file">File</label>
+
+            <div>
+                <InputFile OnChange="HandleFileSelection" id="file" />
+
+                @if (!string.IsNullOrWhiteSpace(imagePreview))
+                {
+                    <img src="@imagePreview" alt="Image Preview" style="max-width: 100%; height: auto;" />
+                }
+   @*              else if (Model is EditImageFormModel editImageFormModel && editImageFormModel.Id > 0)
+                {
+                    <img src="@($"https://localhost:7188/image/download/{editImageFormModel.Id}")" alt="Image Preview" style="max-width: 100%; height: auto;" />
+                } *@
+            </div>
+        </div>
+
+        <div>
+            @Buttons
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public required EventCallback<ImageFormModel> OnValidSubmit { get; set; }
+
+    [Parameter, EditorRequired]
+    public required ImageFormModel ImageFormModel { get; set; }
+
+    [Parameter, EditorRequired]
+    public required RenderFragment Buttons { get; set; }
+
+    private EditContext? imageEditContext { get; set; }
+
+    private PagedServiceResult<IList<ImageResult>, ImageFilter>? imagesPagedServiceResult { get; set; }
+
+    protected override void OnInitialized()
+    {
+        imageEditContext = new(ImageFormModel);
+
+        //what is this for?
+        imageEditContext.ShouldUseFieldIdentifiers = true;
+
+        imageEditContext.OnFieldChanged += HandleFieldChanged;
+
+        base.OnInitialized();
+    }
+
+    private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        MemoryService.HasUnsavedData = true;
+    }
+
+    public void Dispose()
+    {
+        if (imageEditContext is not null)
+        {
+            imageEditContext.OnFieldChanged -= HandleFieldChanged;
+        }
+    }
+
+    private string? imagePreview;
+    private async Task HandleFileSelection(InputFileChangeEventArgs e)
+    {
+        //todo: is this necessary?
+        MemoryService.HasUnsavedData = true;
+
+        var file = e.File;
+        if (file != null)
+        {
+            //in attribute?
+            if (!file.ContentType.StartsWith("image/"))
+            {
+                return;
+            }
+
+            ImageFormModel.BrowserFile = file;
+
+            // Read the file data into a byte array
+            var buffer = new byte[file.Size];
+            await file.OpenReadStream().ReadAsync(buffer);
+
+            // Convert the byte array to a base64 string
+            var base64String = Convert.ToBase64String(buffer);
+
+
+            imagePreview = $"data:image/png;base64,{Convert.ToBase64String(buffer)}";
+        }
+
+    }
+}

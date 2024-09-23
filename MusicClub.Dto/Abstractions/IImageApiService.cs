@@ -4,5 +4,5 @@ using MusicClub.Dto.Results;
 
 namespace MusicClub.Dto.Abstractions
 {
-    public interface IImageService : IService<ImageRequest, ImageResult, ImageFilter> { }
+    public interface IImageApiService : IService<ImageApiRequest, ImageResult, ImageFilter> { }
 }

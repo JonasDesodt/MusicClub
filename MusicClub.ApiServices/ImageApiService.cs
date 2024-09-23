@@ -10,11 +10,23 @@ using System.Net.Http.Json;
 
 namespace MusicClub.ApiServices
 {
-    public class ImageApiService(IHttpClientFactory httpClientFactory) : IImageService
+    public class ImageApiService(IHttpClientFactory httpClientFactory) : IImageApiService
     {
-        public Task<ServiceResult<ImageResult>> Create(ImageRequest request)
+        public async Task<ServiceResult<ImageResult>> Create(ImageApiRequest request)
         {
-            throw new NotImplementedException();
+            var httpClient = httpClientFactory.CreateClient("MusicClubApi");
+
+            var httpResponseMessage = await httpClient.PostAsync("Image/", request.ToMultipartFormDataContent());
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<ImageResult>>() is not { } result)
+            {
+                return new ServiceResult<ImageResult>
+                {
+                    Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Fetch error." }],
+                };
+            }
+
+            return result;
         }
 
         public Task<ServiceResult<ImageResult>> Delete(int id)
@@ -82,7 +94,7 @@ namespace MusicClub.ApiServices
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResult<ImageResult>> Update(int id, ImageRequest request)
+        public Task<ServiceResult<ImageResult>> Update(int id, ImageApiRequest request)
         {
             throw new NotImplementedException();
         }

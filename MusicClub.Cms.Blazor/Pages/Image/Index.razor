@@ -1,0 +1,73 @@
+﻿@page "/image"
+
+@layout ImageLayout
+
+@implements IDisposable
+
+@inject IImageApiService ImageApiService
+@inject NavigationManager NavigationManager
+@inject DataController DataControllerService
+@inject MemoryService MemoryService
+
+<section class="index-page">
+    <h3>Index</h3>
+
+    <NavLink class="button" href="image/create">Create</NavLink>
+
+    <ImageFilterForm EditContext="filterContext"
+                      OnReset="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), new ImageFilter())"
+                      OnValidSubmit="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), (ImageFilter?)filterContext?.Model ?? new ImageFilter())" />
+
+    @if (PeoplePagedServiceResult is not null)
+    {
+
+        <PagedList OnPageChanged="@(async (request) => { await FetchPeople(request, PeoplePagedServiceResult.Filter);  })"
+                   PagedServiceResult="PeoplePagedServiceResult" Context="ImageResult">
+            <ItemTemplate>
+                <div>
+                    <img src="@($"https://localhost:7061/image/download/{ImageResult.Id}")" />
+
+                    <div>
+                        <h4>@ImageResult.Alt</h4>
+
+                        <NavLink href="@($"image/edit/{ImageResult.Id}")" class="button">Edit</NavLink>
+                    </div>
+                </div>
+            </ItemTemplate>
+        </PagedList>
+    }
+</section>
+
+
+@code {
+    private PagedServiceResult<IList<ImageResult>, ImageFilter>? PeoplePagedServiceResult;
+
+    private EditContext? filterContext { get; set; }
+
+    protected override void OnInitialized()
+    {
+        PeoplePagedServiceResult = (PagedServiceResult<IList<ImageResult>, ImageFilter>?)DataControllerService.Data;
+
+        if (PeoplePagedServiceResult is null) return;
+
+        //Create a new ImageFilter instance to prevent binding the ImageFilter properties in the form to the ImageFilter properties in the PagedServiceResult
+        filterContext = new(PeoplePagedServiceResult.Filter.GetCopy());
+
+        base.OnInitialized();
+    }
+
+    private async Task FetchPeople(PaginationRequest paginationRequest, ImageFilter imageFilter)
+    {
+        PeoplePagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<ImageResult>, ImageFilter>>(async () => await ImageApiService.GetAll(paginationRequest, imageFilter));
+
+        MemoryService.ImageFilter = PeoplePagedServiceResult.Filter;
+        MemoryService.ImagePagination = PeoplePagedServiceResult.Pagination;
+
+        filterContext = new(PeoplePagedServiceResult.Filter.GetCopy());
+    }
+
+    public void Dispose()
+    {
+        DataControllerService.Data = null;
+    }
+}

@@ -1,0 +1,27 @@
+﻿@layout MainLayout
+
+@inherits LayoutComponentBase
+
+@implements IDisposable
+
+@inject MemoryService MemoryService
+@inject NavigationManager NavigationManager
+
+<section class="layout">
+    @if (NavigationManager.ToBaseRelativePath(NavigationManager.Uri) == "image")
+    {
+        <NavLink href="/" class="button">Home</NavLink>
+    }
+    else
+    {
+        <NavLink href="/artist" class="button">Index</NavLink>
+    }
+
+    <h2>Image</h2>
+
+    @Body
+</section>
+
+@code {
+    public void Dispose() => MemoryService.DisposeImageData();
+}

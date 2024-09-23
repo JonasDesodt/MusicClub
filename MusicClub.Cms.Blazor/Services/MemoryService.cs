@@ -37,6 +37,16 @@ namespace MusicClub.Cms.Blazor.Services
             HasUnsavedData = false;
         }
 
+        public PaginationResult? ImagePagination { get; set; }
+        public required ImageFilter ImageFilter { get; set; } = new ImageFilter();
+        public void DisposeImageData()
+        {
+            ImagePagination = null;
+            ImageFilter = new ImageFilter();
+
+            HasUnsavedData = false;
+        }
+
 
         public bool HasUnsavedData { get; set; } = false;
         public event EventHandler? OnConfirmationRequested;
