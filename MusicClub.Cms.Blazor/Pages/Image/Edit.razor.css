@@ -1,0 +1,6 @@
+﻿img {
+    aspect-ratio: 3/2;
+    min-width: 25em;
+    max-width: 25em;
+    object-fit: cover;
+}

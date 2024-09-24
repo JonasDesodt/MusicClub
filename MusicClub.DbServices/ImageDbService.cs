@@ -17,48 +17,17 @@ namespace MusicClub.DbServices
         {
             var image = request.ToModel();
 
+            if(image is null)
+            {
+                ((ImageResult?)null).Wrap(new ServiceMessages().AddNotCreated(nameof(Image)));
+            }
+
             await dbContext.Images.AddAsync(image);
 
             await dbContext.SaveChangesAsync();
 
             return await Get(image.Id);
         }
-
-
-
-
-        //if (request.BrowserFile is not { } file || file.Length == 0)
-        //{
-        //    return ((ImageResult?)null).Wrap(new ServiceMessages().AddNotCreated(nameof(Image)).AddNotCreated(nameof(Image)));
-        //}
-
-        //var now = DateTime.UtcNow;
-
-        //using (var memoryStream = new MemoryStream())
-        //{
-        //    await file.CopyToAsync(memoryStream);
-
-        //    // Upload the file if less than 2 MB
-        //    if (memoryStream.Length < 2097152)
-        //    {
-        //        var image = new Image
-        //        {
-        //            Alt = request.Alt,
-        //            Created = now,
-        //            Updated = now,
-        //            Content = memoryStream.ToArray(),
-        //            ContentType = file.ContentType
-        //        };
-
-        //        dbContext.Images.Add(image);
-
-        //        await dbContext.SaveChangesAsync();
-
-        //        return await Get(image.Id);
-        //    }
-        //}
-    
-
 
         public Task<ServiceResult<ImageResult>> Delete(int id)
         {
@@ -100,9 +69,18 @@ namespace MusicClub.DbServices
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResult<ImageResult>> Update(int id, ImageDbRequest request)
+        public async Task<ServiceResult<ImageResult>> Update(int id, ImageDbRequest request)
         {
-            throw new NotImplementedException();
+            if (await dbContext.Images.FirstOrDefaultAsync(p => p.Id == id) is not { } image)
+            {
+                return ((ImageResult?)null).Wrap(new ServiceMessages().AddNotFound(nameof(Image), id).AddNotUpdated(nameof(Image), id));
+            }
+
+            image.Update(request);
+
+            await dbContext.SaveChangesAsync();
+
+            return image.ToResult().Wrap();
         }
     }
 }

@@ -11,6 +11,6 @@ namespace MusicClub.Dto.Requests
 
         [Required] // todo: test
         [MaxFileSize] // todo: test
-        public required IBrowserFile File { get; set; }
+        public required IBrowserFile? File { get; set; }
     }
 }

@@ -7,6 +7,11 @@ namespace MusicClub.Dto.Attributes
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
+            if(value is null)
+            {
+                return ValidationResult.Success;
+            }
+
             if (value is IBrowserFile { Size: < 512000 })
             {
                 return ValidationResult.Success;

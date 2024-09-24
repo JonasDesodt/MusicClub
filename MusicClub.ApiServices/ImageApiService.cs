@@ -94,9 +94,21 @@ namespace MusicClub.ApiServices
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResult<ImageResult>> Update(int id, ImageApiRequest request)
+        public async Task<ServiceResult<ImageResult>> Update(int id, ImageApiRequest request)
         {
-            throw new NotImplementedException();
+            var httpClient = httpClientFactory.CreateClient("MusicClubApi");
+
+            var httpResponseMessage = await httpClient.PutAsync("Image/" + id, request.ToMultipartFormDataContent());
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<ImageResult>>() is not { } result)
+            {
+                return new ServiceResult<ImageResult>
+                {
+                    Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Failed to update the image." }],
+                };
+            }
+
+            return result;
         }
     }
 }

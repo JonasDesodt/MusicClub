@@ -2,6 +2,7 @@
 using MusicClub.DbCore.Models;
 using MusicClub.Dto.Enums;
 using MusicClub.Dto.Filters;
+using MusicClub.Dto.Requests;
 using MusicClub.Dto.Results;
 
 namespace MusicClub.DbServices.Extensions
@@ -80,5 +81,18 @@ namespace MusicClub.DbServices.Extensions
 
             return images;
         }
+
+        public static Image Update(this Image image, ImageDbRequest request)
+        {
+            image.Alt = request.Alt;
+
+            if (request.Content is not null && request.ContentType is not null)
+            {
+                image.Content = request.Content;
+                image.ContentType = request.ContentType;
+            }
+
+            return image;
+        } 
     }
 }

@@ -5,7 +5,7 @@ namespace MusicClub.Cms.Blazor.Extensions
 {
     internal static class ImageFormModelExtensions
     {
-        public static MultipartFormDataContent? ToMultipartFormDataContent(this ImageFormModel model)
+        public static MultipartFormDataContent? ToMultipartFormDataContent(this ImageCreateFormModel model)
         {
             if (model.BrowserFile is not { Size: > 0 } file)
             {
@@ -23,7 +23,26 @@ namespace MusicClub.Cms.Blazor.Extensions
             return content;
         }
 
-        public static ImageApiRequest? ToRequest(this ImageFormModel model)
+        public static ImageApiRequest? ToRequest(this ImageCreateFormModel model)
+        {
+            if (string.IsNullOrWhiteSpace(model.Alt))
+            {
+                return null;
+            }
+
+            if(model.BrowserFile is null)
+            {
+                return null;
+            }
+
+            return new ImageApiRequest
+            {
+                Alt = model.Alt,
+                File = model.BrowserFile,
+            };
+        }
+
+        public static ImageApiRequest? ToRequest(this ImageEditFormModel model)
         {
             if (string.IsNullOrWhiteSpace(model.Alt))
             {
@@ -36,5 +55,7 @@ namespace MusicClub.Cms.Blazor.Extensions
                 File = model.BrowserFile,
             };
         }
+
+
     }
 }

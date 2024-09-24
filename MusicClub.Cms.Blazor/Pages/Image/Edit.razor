@@ -1,5 +1,94 @@
-﻿<h3>Edit</h3>
+﻿@page "/image/edit/{id:int}"
+
+@layout ImageLayout
+
+@inject IImageApiService ImageApiService
+@inject NavigationManager NavigationManager
+@inject DataController DataController
+@inject MemoryService MemoryService
+
+<h3>Edit</h3>
+
+<ImageCreateEditForm ImageFormModel="imageEditFormModel"
+                     OnValidSubmit="() => Post()"
+                     InputFileId="inputFileId">
+    <Info>
+        <div>
+            @if (properties is not null)
+            {
+                <p class="label">Current image</p>
+
+                <img src="@($"https://localhost:7061/image/download/{properties.Id}")" />
+            }
+        </div>
+    </Info>
+
+    <Buttons>
+        <button type="submit">Submit</button>
+
+        <button type="button" @onclick="async () => {MemoryService.HasUnsavedData = false; await FetchImage(Id); inputFileId = Guid.NewGuid();}" class="warning">Undo changes</button>
+
+        <NavLink href="@($"image/delete/{Id}")" class="button danger">Delete</NavLink>
+    </Buttons>
+</ImageCreateEditForm>
+
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
 
+    [CascadingParameter]
+    public bool IsOpen { get; set; }
+
+    private ImageEditFormModel? imageEditFormModel;
+
+    private ImageResult? properties;
+
+    private Guid inputFileId = Guid.NewGuid();
+
+    protected override void OnInitialized()
+    {
+        var imageServiceResult = (ServiceResult<ImageResult>?)DataController.Data;
+        if (imageServiceResult?.Data is { } imageResult)
+        {
+            properties = imageResult;
+
+            imageEditFormModel = imageResult.ToEditFormModel();
+        }
+
+        base.OnInitialized();
+    }
+
+    private async Task FetchImage(int id)
+    {
+        var imageServiceResult = await DataController.Fetch(async () => await ImageApiService.Get(id));
+
+        if (imageServiceResult?.Data is { } imageResult)
+        {
+            properties = imageResult;
+
+            imageEditFormModel = imageResult.ToEditFormModel();
+        }
+    }
+
+    private async Task Post()
+    {
+        if (IsOpen)
+        {
+            return;
+        }
+
+        if (imageEditFormModel?.ToRequest() is not { } imageRequest)
+        {
+            return;
+        }
+
+        var serviceResult = await DataController.Fetch(async () => await ImageApiService.Update(Id, imageRequest));
+        if (serviceResult.Messages is null)
+        {
+            MemoryService.HasUnsavedData = false;
+
+            NavigationManager.NavigateTo("/image");
+        }
+    }
 }

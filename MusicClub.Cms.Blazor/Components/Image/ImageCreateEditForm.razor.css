@@ -1,0 +1,13 @@
+﻿img, p.dummy-image {
+    aspect-ratio: 3/2;
+    min-width: 25em;
+    max-width: 25em;
+    object-fit: cover;
+}
+
+p.dummy-image {
+    border: 1px solid rgb(200,200,200);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

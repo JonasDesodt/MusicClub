@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using MusicClub.Dto.Attributes;
 using System.ComponentModel.DataAnnotations;
+using MusicClub.Cms.Blazor.Abstractions;
 
 namespace MusicClub.Cms.Blazor.Models.FormModels
 {
-    public class ImageFormModel
+    public class ImageEditFormModel : IImageFormModel
     {
         [Required]
-        public string? Alt { get; set; }
+        public required string? Alt { get; set; }
 
-        [Required(ErrorMessage = "File is a required property")]
         [MaxFileSize]
         public IBrowserFile? BrowserFile { get; set; }
     }

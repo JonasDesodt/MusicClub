@@ -90,62 +90,45 @@ namespace MusicClub.Api.Controllers
             return ValidationProblem(ModelState);
         }
 
-
-
-        [HttpPost("Upload")]
-        public async Task<IActionResult> Upload(IFormFile file, [FromForm] ImageApiRequest properties)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update([FromRoute] int id, IFormFile? file, [FromForm] string alt)
         {
-            if (file == null || file.Length == 0)
+            //todo: test
+            if (!ModelState.IsValid)
             {
-                return BadRequest("No file uploaded."); //return serviceresult?
+                return ValidationProblem(ModelState);
             }
 
-            var now = DateTime.UtcNow;
-
-            using (var memoryStream = new MemoryStream())
+            if (file is not null)
             {
-                await file.CopyToAsync(memoryStream);
-
-                // Upload the file if less than 2 MB
-                if (memoryStream.Length < 2097152)
+                using (var memoryStream = new MemoryStream())
                 {
-                    var image = new Image
+                    await file.CopyToAsync(memoryStream);
+
+                    // Upload the file if less than 2 MB
+                    if (memoryStream.Length < 2097152)
                     {
-                        Alt = properties.Alt,
-                        Created = now,
-                        Updated = now,
-                        Content = memoryStream.ToArray(),
-                        ContentType = file.ContentType
-                    };
-
-                    dbContext.Images.Add(image);
-
-                    await dbContext.SaveChangesAsync();
-
-                    return Ok(new ServiceResult<ImageResult>
-                    {
-                        Data = new ImageResult
+                        return Ok(await imageDbService.Update(id, new ImageDbRequest
                         {
-                            Alt = image.Alt,
-                            Created = image.Created,
-                            Updated = image.Updated,
-                            Id = image.Id,
-                            ContentType = image.ContentType,
-
-                            //TODO
-                            ActsCount = 0,
-                            ArtistsCount = 0,
-                            LineupsCount = 0,
-                            PeopleCount = 0,
-                            PerformancesCount = 0
-                        }
-                    });
-                }
-                else
-                {
-                    return BadRequest("The file is too large.");  //return serviceresult?
+                            Alt = alt,
+                            Content = memoryStream.ToArray(),
+                            ContentType = file.ContentType
+                        }));
+                    }
                 }
             }
+            else
+            {
+                return Ok(await imageDbService.Update(id, new ImageDbRequest
+                {
+                    Alt = alt,
+                    Content = null,
+                    ContentType = null
+                }));
+            }
+
+            //todo: add message file to big
+            return ValidationProblem(ModelState);
         }
     }
 }
