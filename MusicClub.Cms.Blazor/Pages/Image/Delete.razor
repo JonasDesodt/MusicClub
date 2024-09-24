@@ -1,5 +1,91 @@
-﻿<h3>Delete</h3>
+﻿@page "/image/delete/{id:int}"
+
+@layout ImageLayout
+
+@inject IImageApiService ImageApiService
+@inject MemoryService MemoryService
+@inject NavigationManager NavigationManager
+
+<h3>Delete</h3>
+
+@if (imageResult is not null)
+{
+    <p>Are you want to delete the following image?</p>
+
+    <ul>
+        <li>
+            <p class="label">Id</p>
+            <p class="input">
+                @imageResult.Id
+            </p>
+        </li>
+
+        <li>
+            <p class="label">Alt</p>
+            <p class="input">@imageResult.Alt</p>
+        </li>
+
+        <li>
+            <p class="label">Performances</p>
+            <p class="input">0</p>
+        </li>
+
+        <li>
+            <p class="label">Image</p>
+            <p class="input">
+                <img src="@($"https://localhost:7061/image/download/{imageResult.Id}?updated={imageResult.Updated}")" />
+            </p>
+        </li>
+
+        <li>
+            <p class="label">Dependencies</p>
+
+            <ul>
+                <li>Performances: @imageResult.PerformancesCount</li>
+                <li>Artists: @imageResult.ArtistsCount</li>
+                <li>People: @imageResult.PerformancesCount</li>
+                <li>Acts: @imageResult.ActsCount</li>
+                <lI>Lineups: @imageResult.LineupsCount</lI>
+            </ul>
+        </li>
+    </ul>
+
+    <div>
+        <NavLink href="@($"image/edit/{Id}")" class="button">No</NavLink>
+
+        <button class="danger" @onclick="() => DeleteImage(Id)">Yes</button>
+    </div>
+}
+
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
 
+    public ImageResult? imageResult { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchImage(Id);
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task FetchImage(int id)
+    {
+        var imageServiceResult = await ImageApiService.Get(id);
+
+        imageResult = imageServiceResult.Data;
+    }
+
+    private async Task DeleteImage(int id)
+    {
+        var serviceResult = await ImageApiService.Delete(Id);
+        if (serviceResult.Messages is null)
+        {
+            MemoryService.HasUnsavedData = false;
+
+            NavigationManager.NavigateTo("/image");
+        }
+    }
 }

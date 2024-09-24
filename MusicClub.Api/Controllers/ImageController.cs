@@ -7,6 +7,7 @@ using MusicClub.Dto.Transfer;
 using MusicClub.DbCore.Models;
 using MusicClub.DbCore;
 using MusicClub.Dto.Filters;
+using MusicClub.DbServices;
 
 namespace MusicClub.Api.Controllers
 {
@@ -129,6 +130,17 @@ namespace MusicClub.Api.Controllers
 
             //todo: add message file to big
             return ValidationProblem(ModelState);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete([Min(1), FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            return Ok(await imageDbService.Delete(id));
         }
     }
 }

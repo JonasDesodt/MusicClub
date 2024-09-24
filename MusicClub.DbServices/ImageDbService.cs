@@ -17,9 +17,9 @@ namespace MusicClub.DbServices
         {
             var image = request.ToModel();
 
-            if(image is null)
+            if (image is null)
             {
-                ((ImageResult?)null).Wrap(new ServiceMessages().AddNotCreated(nameof(Image)));
+                return ((ImageResult?)null).Wrap(new ServiceMessages().AddNotCreated(nameof(Image)));
             }
 
             await dbContext.Images.AddAsync(image);
@@ -29,9 +29,58 @@ namespace MusicClub.DbServices
             return await Get(image.Id);
         }
 
-        public Task<ServiceResult<ImageResult>> Delete(int id)
+        public async Task<ServiceResult<ImageResult>> Delete(int id)
         {
-            throw new NotImplementedException();
+            if (await dbContext.Images.FindAsync(id) is not { } image)
+            {
+                return ((ImageResult?)null).Wrap(new ServiceMessages().AddNotFound(nameof(Image), id).AddNotDeleted(nameof(Image), id));
+            }
+
+            if (await dbContext.Artists.FirstOrDefaultAsync(a => a.ImageId == id) is { } artist)
+            {
+                artist.ImageId = null;
+                dbContext.Update(artist);
+
+                await dbContext.SaveChangesAsync();
+            }
+
+            if (await dbContext.Acts.FirstOrDefaultAsync(a => a.ImageId == id) is { } act)
+            {
+                act.ImageId = null;
+                dbContext.Update(act);
+
+                await dbContext.SaveChangesAsync();
+            }
+
+            if (await dbContext.People.FirstOrDefaultAsync(a => a.ImageId == id) is { } person)
+            {
+                person.ImageId = null;
+                dbContext.Update(person);
+
+                await dbContext.SaveChangesAsync();
+            }
+
+            if (await dbContext.Performances.FirstOrDefaultAsync(a => a.ImageId == id) is { } performance)
+            {
+                performance.ImageId = null;
+                dbContext.Update(performance);
+
+                await dbContext.SaveChangesAsync();
+            }
+
+            if (await dbContext.Lineups.FirstOrDefaultAsync(a => a.ImageId == id) is { } lineup)
+            {
+                lineup.ImageId = null;
+                dbContext.Update(lineup);
+
+                await dbContext.SaveChangesAsync();
+            }
+
+            dbContext.Images.Remove(image);
+
+            await dbContext.SaveChangesAsync();
+
+            return ((ImageResult?)null).Wrap();
         }
 
         public async Task<ServiceResult<bool>> Exists(int id)

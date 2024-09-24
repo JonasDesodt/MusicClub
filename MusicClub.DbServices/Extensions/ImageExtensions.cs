@@ -85,6 +85,7 @@ namespace MusicClub.DbServices.Extensions
         public static Image Update(this Image image, ImageDbRequest request)
         {
             image.Alt = request.Alt;
+            image.Updated = DateTime.Now;
 
             if (request.Content is not null && request.ContentType is not null)
             {

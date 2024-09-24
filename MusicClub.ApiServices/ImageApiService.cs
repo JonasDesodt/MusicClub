@@ -29,9 +29,21 @@ namespace MusicClub.ApiServices
             return result;
         }
 
-        public Task<ServiceResult<ImageResult>> Delete(int id)
+        public async Task<ServiceResult<ImageResult>> Delete(int id)
         {
-            throw new NotImplementedException();
+            var httpClient = httpClientFactory.CreateClient("MusicClubApi");
+
+            var httpResponseMessage = await httpClient.DeleteAsync("Image/" + id);
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<ImageResult>>() is not { } result)
+            {
+                return new ServiceResult<ImageResult>
+                {
+                    Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Failed to fetch the Image." }],
+                };
+            }
+
+            return result;
         }
 
         public async Task<ServiceResult<bool>> Exists(int id)
