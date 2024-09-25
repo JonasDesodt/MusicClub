@@ -1,0 +1,46 @@
+﻿div.select-closed, div.select-open {
+    display: flex;
+    flex-direction: row;
+    gap: 2em;
+}
+
+div > section {
+    border: 1px solid rgb(150,150,150);
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 2em;
+}
+
+    div > section > div {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+    }
+
+    div > section > button {
+        align-self: flex-end;
+    }
+
+div.select-closed > ::deep form {
+    display: flex;
+}
+
+div.select-open > ::deep form {
+    display: none;
+}
+
+div.select-open > ::deep form, div.select-closed > ::deep form {
+    flex-grow: 1;
+}
+
+@media (min-width: 768px) {
+    div.select-open > ::deep form {
+        display: flex;
+    }
+
+    div > section {
+        width: 25%;
+    }
+}

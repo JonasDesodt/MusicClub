@@ -9,28 +9,28 @@ namespace MusicClub.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ArtistController(IArtistService artistDbService) : Controller
+    public class LineupController(ILineupService lineupDbService) : Controller
     {
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ArtistRequest artistRequest)
+        public async Task<IActionResult> Create([FromBody] LineupRequest lineupRequest)
         {
             if (!ModelState.IsValid)
             {
                 return ValidationProblem(ModelState);
             }
 
-            return Ok(await artistDbService.Create(artistRequest));
+            return Ok(await lineupDbService.Create(lineupRequest));
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] PaginationRequest paginationRequest, [FromQuery] ArtistFilter filter)
+        public async Task<IActionResult> GetAll([FromQuery] PaginationRequest paginationRequest, [FromQuery] LineupFilter filter)
         {
             if (!ModelState.IsValid)
             {
                 return ValidationProblem(ModelState);
             }
 
-            return Ok(await artistDbService.GetAll(paginationRequest, filter));
+            return Ok(await lineupDbService.GetAll(paginationRequest, filter));
         }
 
         [HttpGet("{id:int}")]
@@ -41,18 +41,18 @@ namespace MusicClub.Api.Controllers
                 return ValidationProblem(ModelState);
             }
 
-            return Ok(await artistDbService.Get(id));
+            return Ok(await lineupDbService.Get(id));
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update([Min(1), FromRoute] int id, [FromBody] ArtistRequest request)
+        public async Task<IActionResult> Update([Min(1), FromRoute] int id, [FromBody] LineupRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return ValidationProblem(ModelState);
             }
 
-            return Ok(await artistDbService.Update(id, request));
+            return Ok(await lineupDbService.Update(id, request));
         }
 
         [HttpDelete("{id:int}")]
@@ -63,7 +63,7 @@ namespace MusicClub.Api.Controllers
                 return ValidationProblem(ModelState);
             }
 
-            return Ok(await artistDbService.Delete(id));
+            return Ok(await lineupDbService.Delete(id));
         }
     }
 }

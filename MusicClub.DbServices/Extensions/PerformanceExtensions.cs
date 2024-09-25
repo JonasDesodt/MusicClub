@@ -14,5 +14,10 @@ namespace MusicClub.DbServices.Extensions
         {
             return await performances.AnyAsync(a => a.ArtistId == id);
         }
+
+        public static async Task<bool> HasReferenceToAct(this DbSet<Performance> performances, int id)
+        {
+            return await performances.AnyAsync(a => a.ActId == id);
+        }
     }
 }

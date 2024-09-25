@@ -16,5 +16,8 @@
 
         public required int ActId { get; set; }
         public Act? Act { get; set; }
+
+        public int? BandnameId { get; set; }
+        public Bandname? Bandname { get; set; }
     }
 }

@@ -7,7 +7,7 @@ using MusicClub.Dto.Results;
 
 namespace MusicClub.Cms.Blazor.Services
 {
-    public partial class DataController(NavigationManager NavigationManager, MemoryService memoryService, IArtistService artistApiService, IPersonService personApiService, IImageApiService imageApiService)
+    public partial class DataController(NavigationManager NavigationManager, MemoryService memoryService, IActService actApiService, IArtistService artistApiService, IPersonService personApiService, IImageApiService imageApiService)
     {
         public object? Data { get; set; }
 
@@ -33,6 +33,41 @@ namespace MusicClub.Cms.Blazor.Services
             }
 
             var route = uri.GetLeftPart(UriPartial.Path).Replace(domain, string.Empty);
+
+            //ACT
+            if (ActIndexRoute().IsMatch(route))
+            {
+                var paginationRequest = new PaginationRequest
+                {
+                    Page = memoryService.ActPagination?.Page ?? MemoryService.DefaultPage,
+                    PageSize = memoryService.ActPagination?.PageSize ?? MemoryService.DefaultPageSize
+                };
+
+                Data = await Fetch<PagedServiceResult<IList<ActResult>, ActFilter>>(async () => await actApiService.GetAll(paginationRequest, memoryService.ActFilter ?? new ActFilter()));
+
+                if (Data is PagedServiceResult<IList<ActResult>, ActFilter> actsPagedServiceResult)
+                {
+                    memoryService.ActFilter = actsPagedServiceResult.Filter;
+                    memoryService.ActPagination = actsPagedServiceResult.Pagination;
+
+                    return actsPagedServiceResult.Messages?.HasMessage is not true;
+                }
+
+                return false;
+            }
+
+            if (ActEditRoute().IsMatch(route))
+            {
+                Data = await Fetch<ServiceResult<ArtistResult>>(async () => await artistApiService.Get(int.Parse(route.Split('/').Last())));
+
+                if (Data is ServiceResult<ArtistResult> artistServiceResult)
+                {
+                    return artistServiceResult.Messages?.HasMessage is not true;
+                }
+
+                return false;
+            }
+
 
             //ARTIST
             if (ArtistIndexRoute().IsMatch(route))
@@ -157,6 +192,14 @@ namespace MusicClub.Cms.Blazor.Services
 
             return result;
         }
+
+        //ACT
+        [GeneratedRegex(@"^/act/edit/\d+$", RegexOptions.IgnoreCase, "nl-AW")]
+        private static partial Regex ActEditRoute();
+
+        [GeneratedRegex(@"^/act$", RegexOptions.IgnoreCase, "nl-AW")]
+        private static partial Regex ActIndexRoute();
+
 
         //ARTIST
         [GeneratedRegex(@"^/artist/edit/\d+$", RegexOptions.IgnoreCase, "nl-AW")]

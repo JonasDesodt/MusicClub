@@ -19,7 +19,7 @@ namespace MusicClub.Cms.Blazor.Services
 
         public PaginationResult? ArtistPagination { get; set; }
         public required ArtistFilter ArtistFilter { get; set; } = new ArtistFilter();
-        public void DisposeArtistData() 
+        public void DisposeArtistData()
         {
             ArtistPagination = null;
             ArtistFilter = new ArtistFilter();
@@ -47,6 +47,27 @@ namespace MusicClub.Cms.Blazor.Services
             HasUnsavedData = false;
         }
 
+        public PaginationResult? LineupPagination { get; set; }
+        public required LineupFilter LineupFilter { get; set; } = new LineupFilter();
+        public void DisposeLineupData()
+        {
+            LineupPagination = null;
+            LineupFilter = new LineupFilter();
+
+            HasUnsavedData = false;
+        }
+
+
+        public PaginationResult? ActPagination { get; set; }
+        public required ActFilter ActFilter { get; set; } = new ActFilter();
+        public void DisposeActData()
+        {
+            ActPagination = null;
+            ActFilter = new ActFilter();
+
+            HasUnsavedData = false;
+        }
+
 
         public bool HasUnsavedData { get; set; } = false;
         public event EventHandler? OnConfirmationRequested;
@@ -56,6 +77,6 @@ namespace MusicClub.Cms.Blazor.Services
             OnConfirmationRequested?.Invoke(this, EventArgs.Empty);
         }
 
-        public string? NavigationRequest { get; set; }       
+        public string? NavigationRequest { get; set; }
     }
 }

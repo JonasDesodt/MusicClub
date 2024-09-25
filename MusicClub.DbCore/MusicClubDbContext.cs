@@ -10,6 +10,10 @@ namespace MusicClub.DbCore
 
         public DbSet<Artist> Artists => Set<Artist>();
 
+        public DbSet<Band> Bands => Set<Band>();
+
+        public DbSet<Bandname> Bandnames => Set<Bandname>();
+
         public DbSet<Function> Functions => Set<Function>();
 
         public DbSet<Image> Images => Set<Image>();
@@ -59,6 +63,12 @@ namespace MusicClub.DbCore
                 .HasForeignKey(a => a.PersonId)
                 .IsRequired(true);
 
+            builder.Entity<Bandname>()
+                 .HasOne(b => b.Band)
+                 .WithMany(b => b.Bandnames)
+                 .HasForeignKey(b => b.BandId)
+                 .IsRequired(true);
+
             builder.Entity<Job>()
                 .HasOne(j => j.Worker)
                 .WithMany(w => w.Jobs)
@@ -88,6 +98,12 @@ namespace MusicClub.DbCore
                 .WithMany(a => a.Performances)
                 .HasForeignKey(p => p.ArtistId)
                 .IsRequired(true);
+
+            builder.Entity<Performance>()
+                .HasOne(p => p.Bandname)
+                .WithMany(b => b.Performances)
+                .HasForeignKey(p => p.BandnameId)
+                .IsRequired(false);
 
             builder.Entity<Performance>()
                 .HasOne(p => p.Image)

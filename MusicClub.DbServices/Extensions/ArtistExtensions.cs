@@ -74,7 +74,7 @@ namespace MusicClub.DbServices.Extensions
                         nameof(Person.Firstname) => artists.OrderBy(a => a.Person != null ? a.Person.Firstname : a.Alias),
                         nameof(Person.Lastname) => artists.OrderBy(a => a.Person != null ? a.Person.Lastname : a.Alias),
 
-                        _ => artists.OrderByDescending(a => a.Id),
+                        _ => artists.OrderBy(a => a.Id),
                     };
                 }
             }

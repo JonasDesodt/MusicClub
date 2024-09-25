@@ -1,0 +1,13 @@
+﻿<div>
+    <h4>@Model.Doors.ToShortDateString() @Model.Title</h4>
+
+    <button @onclick="() => OnSelected.InvokeAsync(Model)">Select</button>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public required LineupResult Model { get; set; }
+
+    [Parameter, EditorRequired]
+    public required EventCallback<LineupResult> OnSelected { get; set; }
+}

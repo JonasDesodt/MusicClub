@@ -1,0 +1,48 @@
+﻿@inject MemoryService MemoryService
+
+<Filters EditContext="EditContext"
+         GetTags="GetTags"
+         OnValidSubmit="() => OnValidSubmit.InvokeAsync()"
+         OnReset="() => OnReset.InvokeAsync()">
+    <Inputs>
+        <div>
+            <label for="title">Title</label>
+
+            <InputText @bind-Value="((LineupFilter)EditContext.Model).Title" id="title" />
+        </div>
+
+        <div>
+            <label for="doors">Doors</label>
+
+            <InputDate @bind-Value="((LineupFilter)EditContext.Model).Doors" id="doors" />
+        </div>
+    </Inputs>
+</Filters>
+
+@code {
+    [Parameter, EditorRequired]
+    public required EditContext EditContext { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnValidSubmit { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnReset { get; set; }
+
+    private Dictionary<string, Action<string?>>? GetTags()
+    {
+        var tags = new Dictionary<string, Action<string?>>();
+
+        if (((LineupFilter)EditContext.Model).Title is { } title && title.Count() > 0)
+        {
+            tags.Add(title, (value) => ((LineupFilter)EditContext.Model).Title = value);
+        }
+
+        if (((LineupFilter)EditContext.Model).Doors is { } doors)
+        {
+            tags.Add(doors.ToShortDateString(), (value) => ((LineupFilter)EditContext.Model).Doors = null); //todo; temp hack? of change all lamba to set the prop to null, not using the value param?
+        }
+
+        return tags;
+    }
+}
