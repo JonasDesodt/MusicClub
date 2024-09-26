@@ -2,6 +2,7 @@
 using MusicClub.DbCore.Models;
 using MusicClub.Dto.Enums;
 using MusicClub.Dto.Filters;
+using MusicClub.Dto.Filters.Requests;
 using MusicClub.Dto.Requests;
 using MusicClub.Dto.Results;
 
@@ -59,7 +60,7 @@ namespace MusicClub.DbServices.Extensions
             return person;
         }
 
-        public static IQueryable<Person> Filter(this IQueryable<Person> people, PersonFilter filter)
+        public static IQueryable<Person> Filter(this IQueryable<Person> people, PersonFilterRequest filter)
         {
             if (!string.IsNullOrWhiteSpace(filter.Firstname))
             {

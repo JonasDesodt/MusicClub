@@ -1,4 +1,5 @@
 ﻿using MusicClub.Dto.Transfer;
+using MusicClub.Dto.Attributes;
 
 namespace MusicClub.Dto.Abstractions
 {
@@ -9,16 +10,16 @@ namespace MusicClub.Dto.Abstractions
         Task<ServiceResult<bool>> Exists(int id);
     }
 
-    public interface IService<TRequest, TResult, TFilter> : IService
+    public interface IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult> : IService
     {
-        Task<ServiceResult<TResult>> Create(TRequest request);
+        Task<ServiceResult<TDataResult>> Create(TDataRequest request);
 
-        Task<ServiceResult<TResult>> Get(int id);
+        Task<ServiceResult<TDataResult>> Get(int id);
 
-        Task<PagedServiceResult<IList<TResult>, TFilter>> GetAll(PaginationRequest paginationRequest, TFilter filter);
+        Task<PagedServiceResult<IList<TDataResult>, TFilterResult>> GetAll(PaginationRequest paginationRequest, TFilterRequest filter);
 
-        Task<ServiceResult<TResult>> Delete(int id);
+        Task<ServiceResult<TDataResult>> Delete(int id);
 
-        Task<ServiceResult<TResult>> Update(int id, TRequest request);
+        Task<ServiceResult<TDataResult>> Update(int id, TDataRequest request);
     }
 }

@@ -8,7 +8,7 @@
         <div>
             <label for="alt">Alt</label>
 
-            <InputText @bind-Value="((ImageFilter)EditContext.Model).Alt" id="alt" />
+            <InputText @bind-Value="((ImageFilterFormModel)EditContext.Model).Alt" id="alt" />
         </div>
     </Inputs>
 </Filters>
@@ -27,10 +27,10 @@
     {
         var tags = new Dictionary<string, Action<string?>>();
 
-        if (((ImageFilter)EditContext.Model).Alt is { } alt && alt.Count() > 0)
+        if (((ImageFilterFormModel)EditContext.Model).Alt is { } alt && alt.Count() > 0)
         {
 
-            tags.Add(alt, (value) => ((ImageFilter)EditContext.Model).Alt = value);
+            tags.Add(alt, (value) => ((ImageFilterFormModel)EditContext.Model).Alt = value);
         }
 
         return tags;

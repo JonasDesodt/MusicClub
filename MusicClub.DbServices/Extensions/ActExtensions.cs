@@ -2,6 +2,7 @@
 using MusicClub.DbCore.Models;
 using MusicClub.Dto.Enums;
 using MusicClub.Dto.Filters;
+using MusicClub.Dto.Filters.Requests;
 using MusicClub.Dto.Requests;
 using MusicClub.Dto.Results;
 
@@ -40,7 +41,7 @@ namespace MusicClub.DbServices.Extensions
             });
         }
 
-        public static IQueryable<Act> Filter(this IQueryable<Act> acts, ActFilter filter)
+        public static IQueryable<Act> Filter(this IQueryable<Act> acts, ActFilterRequest filter)
         {
 
             if (!string.IsNullOrWhiteSpace(filter.Name))

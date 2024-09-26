@@ -15,12 +15,12 @@
     <NavLink class="button" href="artist/create">Create</NavLink>
 
     <ArtistFilterForm EditContext="filterContext"
-                      OnReset="() => FetchArtists(MemoryService.GetDefaultPaginationRequest(), new ArtistFilter())"
-                      OnValidSubmit="() => FetchArtists(MemoryService.GetDefaultPaginationRequest(), (ArtistFilter?)filterContext?.Model ?? new ArtistFilter())" />
+                      OnReset="() => FetchArtists(MemoryService.GetDefaultPaginationRequest(), new ArtistFilterRequest())"
+                      OnValidSubmit="() => FetchArtists(MemoryService.GetDefaultPaginationRequest(), ((ArtistFilterFormModel?)filterContext?.Model)?.ToRequest() ?? new ArtistFilterRequest())" />
     @if (ArtistsPagedServiceResult is not null)
     {
 
-        <PagedList OnPageChanged="@(async (request) => { await FetchArtists(request, ArtistsPagedServiceResult.Filter);  })"
+        <PagedList OnPageChanged="@(async (request) => { await FetchArtists(request, ArtistsPagedServiceResult.Filter.ToRequest());  })"
                    PagedServiceResult="ArtistsPagedServiceResult" Context="ArtistResult">
             <ItemTemplate>
                 <div>
@@ -58,30 +58,29 @@
 </section>
 
 @code {
-    private PagedServiceResult<IList<ArtistResult>, ArtistFilter>? ArtistsPagedServiceResult;
+    private PagedServiceResult<IList<ArtistResult>, ArtistFilterResult>? ArtistsPagedServiceResult;
 
     private EditContext? filterContext { get; set; }
 
     protected override void OnInitialized()
     {
-        ArtistsPagedServiceResult = (PagedServiceResult<IList<ArtistResult>, ArtistFilter>?)DataControllerService.Data;
+        ArtistsPagedServiceResult = (PagedServiceResult<IList<ArtistResult>, ArtistFilterResult>?)DataControllerService.Data;
 
         if (ArtistsPagedServiceResult is null) return;
 
-        //Create a new ArtistFilter instance to prevent binding the ArtistFilter properties in the form to the ArtistFilter properties in the PagedServiceResult
-        filterContext = new(ArtistsPagedServiceResult.Filter.GetCopy());
+        filterContext = new(ArtistsPagedServiceResult.Filter.ToFormModel());
 
         base.OnInitialized();
     }
 
-    private async Task FetchArtists(PaginationRequest paginationRequest, ArtistFilter artistFilter)
+    private async Task FetchArtists(PaginationRequest paginationRequest, ArtistFilterRequest artistFilterRequest)
     {
-        ArtistsPagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<ArtistResult>, ArtistFilter>>(async () => await ArtistApiService.GetAll(paginationRequest, artistFilter));
+        ArtistsPagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<ArtistResult>, ArtistFilterResult>>(async () => await ArtistApiService.GetAll(paginationRequest, artistFilterRequest));
 
         MemoryService.ArtistFilter = ArtistsPagedServiceResult.Filter;
         MemoryService.ArtistPagination = ArtistsPagedServiceResult.Pagination;
 
-        filterContext = new(ArtistsPagedServiceResult.Filter.GetCopy());
+        filterContext = new(ArtistsPagedServiceResult.Filter.ToFormModel());
     }
 
     public void Dispose()

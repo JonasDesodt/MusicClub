@@ -24,7 +24,7 @@
             </div>
 
             <SelectImage Model="PersonFormModel.ImageResult"
-                         OnClicked="async () => await FetchImages(new PaginationRequest { Page = 1, PageSize = 2}, new ImageFilter ())"
+                         OnClicked="async () => await FetchImages(new PaginationRequest { Page = 1, PageSize = 2}, new ImageFilterRequest ())"
                          OnRemoveRequest="() => { PersonFormModel.ImageId = null; PersonFormModel.ImageResult = null; MemoryService.HasUnsavedData = true;}" />
         </div>
 
@@ -41,7 +41,7 @@
             <div>
                 <button @onclick="() => imagesPagedServiceResult = null" class="warning">Close</button>
 
-                <PagedList OnPageChanged="(model) => FetchImages(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, new ImageFilter {})"
+                <PagedList OnPageChanged="(model) => FetchImages(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, imagesPagedServiceResult.Filter.ToRequest())"
                            PagedServiceResult="imagesPagedServiceResult" Context="ImageResult">
 
                     <ItemTemplate>
@@ -66,7 +66,7 @@
 
     private EditContext? personEditContext { get; set; }
 
-    private PagedServiceResult<IList<ImageResult>, ImageFilter>? imagesPagedServiceResult { get; set; }
+    private PagedServiceResult<IList<ImageResult>, ImageFilterResult>? imagesPagedServiceResult { get; set; }
 
     protected override void OnInitialized()
     {
@@ -85,9 +85,9 @@
         MemoryService.HasUnsavedData = true;
     }
 
-    private async Task FetchImages(PaginationRequest paginationRequest, ImageFilter imageFilter)
+    private async Task FetchImages(PaginationRequest paginationRequest, ImageFilterRequest imageFilterRequest)
     {
-        imagesPagedServiceResult = await ImageApiService.GetAll(paginationRequest, imageFilter);
+        imagesPagedServiceResult = await ImageApiService.GetAll(paginationRequest, imageFilterRequest);
     }
 
     private void SelectImage(ImageResult imageResult)

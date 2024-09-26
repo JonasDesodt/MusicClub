@@ -3,6 +3,8 @@ using MusicClub.Dto.Abstractions;
 using MusicClub.Dto.Enums;
 using MusicClub.Dto.Extensions;
 using MusicClub.Dto.Filters;
+using MusicClub.Dto.Filters.Requests;
+using MusicClub.Dto.Filters.Results;
 using MusicClub.Dto.Requests;
 using MusicClub.Dto.Results;
 using MusicClub.Dto.Transfer;
@@ -68,19 +70,19 @@ namespace MusicClub.ApiServices
             return result;
         }
 
-        public async Task<PagedServiceResult<IList<PersonResult>, PersonFilter>> GetAll(PaginationRequest paginationRequest, PersonFilter filter)
+        public async Task<PagedServiceResult<IList<PersonResult>, PersonFilterResult>> GetAll(PaginationRequest paginationRequest, PersonFilterRequest filterRequest)
         {
             var httpClient = httpClientFactory.CreateClient("MusicClubApi");
 
-            var httpResponseMessage = await httpClient.GetAsync("Person?" + paginationRequest.ToQueryString() + filter.ToQueryString());
+            var httpResponseMessage = await httpClient.GetAsync("Person?" + paginationRequest.ToQueryString() + filterRequest.ToQueryString());
 
-            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<PagedServiceResult<IList<PersonResult>, PersonFilter>>() is not { } result)
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<PagedServiceResult<IList<PersonResult>, PersonFilterResult>>() is not { } result)
             {
-                return new PagedServiceResult<IList<PersonResult>, PersonFilter>
+                return new PagedServiceResult<IList<PersonResult>, PersonFilterResult>
                 {
                     Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Failed to fetch the People." }],
                     Pagination = paginationRequest.ToResult(0),
-                    Filter = filter
+                    Filter = filterRequest.ToResult()
                 };
             }
 

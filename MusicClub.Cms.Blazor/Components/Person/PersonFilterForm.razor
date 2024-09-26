@@ -8,13 +8,13 @@
         <div>
             <label for="firstName">Firstname</label>
 
-            <InputText @bind-Value="((PersonFilter)EditContext.Model).Firstname" id="firstName" />
+            <InputText @bind-Value="((PersonFilterFormModel)EditContext.Model).Firstname" id="firstName" />
         </div>
 
         <div>
             <label for="lastName">Lastname</label>
 
-            <InputText @bind-Value="((PersonFilter)EditContext.Model).Lastname" id="lastName" />
+            <InputText @bind-Value="((PersonFilterFormModel)EditContext.Model).Lastname" id="lastName" />
         </div>
     </Inputs>
 </Filters>
@@ -33,15 +33,15 @@
     {
         var tags = new Dictionary<string, Action<string?>>();
 
-        if (((PersonFilter)EditContext.Model).Firstname is { } firstname && firstname.Count() > 0)
+        if (((PersonFilterFormModel)EditContext.Model).Firstname is { } firstname && firstname.Count() > 0)
         {
-            tags.Add(firstname, (value) => ((PersonFilter)EditContext.Model).Firstname = value);
+            tags.Add(firstname, (value) => ((PersonFilterFormModel)EditContext.Model).Firstname = value);
 
         }
 
-        if (((PersonFilter)EditContext.Model).Lastname is { } lastname && lastname.Count() > 0)
+        if (((PersonFilterFormModel)EditContext.Model).Lastname is { } lastname && lastname.Count() > 0)
         {
-            tags.Add(lastname, (value) => ((PersonFilter)EditContext.Model).Lastname = value);
+            tags.Add(lastname, (value) => ((PersonFilterFormModel)EditContext.Model).Lastname = value);
         }
 
         return tags;

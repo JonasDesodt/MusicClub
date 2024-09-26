@@ -2,7 +2,8 @@
 using MusicClub.Dto.Abstractions;
 using MusicClub.Dto.Enums;
 using MusicClub.Dto.Extensions;
-using MusicClub.Dto.Filters;
+using MusicClub.Dto.Filters.Requests;
+using MusicClub.Dto.Filters.Results;
 using MusicClub.Dto.Requests;
 using MusicClub.Dto.Results;
 using MusicClub.Dto.Transfer;
@@ -82,19 +83,19 @@ namespace MusicClub.ApiServices
             return result;
         }
 
-        public async Task<PagedServiceResult<IList<ImageResult>, ImageFilter>> GetAll(PaginationRequest paginationRequest, ImageFilter filter)
+        public async Task<PagedServiceResult<IList<ImageResult>, ImageFilterResult>> GetAll(PaginationRequest paginationRequest, ImageFilterRequest filterRequest)
         {
             var httpClient = httpClientFactory.CreateClient("MusicClubApi");
 
-            var httpResponseMessage = await httpClient.GetAsync("Image?" + paginationRequest.ToQueryString() + filter.ToQueryString());
+            var httpResponseMessage = await httpClient.GetAsync("Image?" + paginationRequest.ToQueryString() + filterRequest.ToQueryString());
 
-            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<PagedServiceResult<IList<ImageResult>, ImageFilter>>() is not { } result)
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<PagedServiceResult<IList<ImageResult>, ImageFilterResult>>() is not { } result)
             {
-                return new PagedServiceResult<IList<ImageResult>, ImageFilter>
+                return new PagedServiceResult<IList<ImageResult>, ImageFilterResult>
                 {
                     Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Failed to fetch the Images." }],
                     Pagination = paginationRequest.ToResult(0),
-                    Filter = filter
+                    Filter = filterRequest.ToResult()
                 };
             }
 

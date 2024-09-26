@@ -8,13 +8,13 @@
         <div>
             <label for="title">Title</label>
 
-            <InputText @bind-Value="((LineupFilter)EditContext.Model).Title" id="title" />
+            <InputText @bind-Value="((LineupFilterFormModel)EditContext.Model).Title" id="title" />
         </div>
 
         <div>
             <label for="doors">Doors</label>
 
-            <InputDate @bind-Value="((LineupFilter)EditContext.Model).Doors" id="doors" />
+            <InputDate @bind-Value="((LineupFilterFormModel)EditContext.Model).Doors" id="doors" />
         </div>
     </Inputs>
 </Filters>
@@ -33,14 +33,14 @@
     {
         var tags = new Dictionary<string, Action<string?>>();
 
-        if (((LineupFilter)EditContext.Model).Title is { } title && title.Count() > 0)
+        if (((LineupFilterFormModel)EditContext.Model).Title is { } title && title.Count() > 0)
         {
-            tags.Add(title, (value) => ((LineupFilter)EditContext.Model).Title = value);
+            tags.Add(title, (value) => ((LineupFilterFormModel)EditContext.Model).Title = value);
         }
 
-        if (((LineupFilter)EditContext.Model).Doors is { } doors)
+        if (((LineupFilterFormModel)EditContext.Model).Doors is { } doors)
         {
-            tags.Add(doors.ToShortDateString(), (value) => ((LineupFilter)EditContext.Model).Doors = null); //todo; temp hack? of change all lamba to set the prop to null, not using the value param?
+            tags.Add(doors.ToShortDateString(), (value) => ((LineupFilterFormModel)EditContext.Model).Doors = null); //todo; temp hack? of change all lamba to set the prop to null, not using the value param?
         }
 
         return tags;

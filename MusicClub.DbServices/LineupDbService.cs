@@ -2,11 +2,13 @@
 using MusicClub.DbCore.Models;
 using MusicClub.DbServices.Extensions;
 using MusicClub.Dto.Abstractions;
-using MusicClub.Dto.Filters;
+using MusicClub.Dto.Extensions;
 using MusicClub.Dto.Requests;
 using MusicClub.Dto.Results;
 using MusicClub.Dto.Transfer;
 using Microsoft.EntityFrameworkCore;
+using MusicClub.Dto.Filters.Results;
+using MusicClub.Dto.Filters.Requests;
 
 namespace MusicClub.DbServices
 {
@@ -66,20 +68,20 @@ namespace MusicClub.DbServices
                 .Wrap(new ServiceMessages().AddNotFound(nameof(Lineup), id));
         }
 
-        public async Task<PagedServiceResult<IList<LineupResult>, LineupFilter>> GetAll(PaginationRequest paginationRequest, LineupFilter filter)
+        public async Task<PagedServiceResult<IList<LineupResult>, LineupFilterResult>> GetAll(PaginationRequest paginationRequest, LineupFilterRequest filterRequest)
         {
             var totalCount = await dbContext.Lineups
                 .IncludeAll()
-                .Filter(filter)
+                .Filter(filterRequest)
                 .CountAsync();
 
             return (await dbContext.Lineups
                 .IncludeAll()
-                .Filter(filter)
+                .Filter(filterRequest)
                 .GetPage(paginationRequest)
                 .ToResults()
                 .ToListAsync())
-                .Wrap(paginationRequest, totalCount, filter);
+                .Wrap(paginationRequest, totalCount, filterRequest.ToResult());
         }
 
         public Task<ServiceResult<bool>> IsReferenced(int id)

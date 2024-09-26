@@ -45,12 +45,12 @@
 
                     <InputNumber @bind-Value="ActFormModel.LineupId" id="lineupId" hidden />
 
-                    <button type="button" @onclick="() => FetchLineups(new PaginationRequest { Page = 1, PageSize = 2}, new LineupFilter {})">@(ActFormModel.LineupId == null ? "Add" : "Change")</button>
+                    <button type="button" @onclick="() => FetchLineups(new PaginationRequest { Page = 1, PageSize = 2}, new LineupFilterRequest {})">@(ActFormModel.LineupId == null ? "Add" : "Change")</button>
                 </div>
             </div>
 
             <SelectImage Model="ActFormModel.ImageResult"
-                         OnClicked="async () => await FetchImages(new PaginationRequest { Page = 1, PageSize = 2}, new ImageFilter ())"
+                         OnClicked="async () => await FetchImages(new PaginationRequest { Page = 1, PageSize = 2}, new ImageFilterRequest ())"
                          OnRemoveRequest="() => { ActFormModel.ImageId = null; ActFormModel.ImageResult = null; MemoryService.HasUnsavedData = true; }" />
         </div>
 
@@ -68,11 +68,11 @@
 
             <div>
                 <LineupFilterForm EditContext="lineupFilterContext"
-                                  OnReset="() => FetchLineups(MemoryService.GetDefaultPaginationRequest(), new LineupFilter())"
-                                  OnValidSubmit="() => FetchLineups(MemoryService.GetDefaultPaginationRequest(), (LineupFilter?)lineupFilterContext?.Model ?? new LineupFilter())" />
+                                  OnReset="() => FetchLineups(MemoryService.GetDefaultPaginationRequest(), new LineupFilterRequest())"
+                                  OnValidSubmit="() => FetchLineups(MemoryService.GetDefaultPaginationRequest(), ((LineupFilterFormModel?)lineupFilterContext?.Model)?.ToRequest() ?? new LineupFilterRequest())" />
 
 
-                <PagedList OnPageChanged="(model) => FetchLineups(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, (LineupFilter?)lineupFilterContext?.Model ?? new LineupFilter {})"
+                <PagedList OnPageChanged="(model) => FetchLineups(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, ((LineupFilterFormModel?)lineupFilterContext?.Model)?.ToRequest() ?? new LineupFilterRequest {})"
                            PagedServiceResult="lineupsPagedServiceResult" Context="LineupResult">
 
                     <ItemTemplate>
@@ -92,7 +92,7 @@
             <div>
                 <button @onclick="() => imagesPagedServiceResult = null" class="warning">Close</button>
 
-                <PagedList OnPageChanged="(model) => FetchImages(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, new ImageFilter {})"
+                <PagedList OnPageChanged="(model) => FetchImages(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, imagesPagedServiceResult.Filter.ToRequest())"
                            PagedServiceResult="imagesPagedServiceResult" Context="ImageResult">
 
                     <ItemTemplate>
@@ -117,10 +117,12 @@
 
     private EditContext? actEditContext { get; set; }
 
-    private PagedServiceResult<IList<LineupResult>, LineupFilter>? lineupsPagedServiceResult { get; set; }
+    private PagedServiceResult<IList<LineupResult>, LineupFilterResult>? lineupsPagedServiceResult { get; set; }
     private EditContext? lineupFilterContext { get; set; }
 
-    private PagedServiceResult<IList<ImageResult>, ImageFilter>? imagesPagedServiceResult { get; set; }
+    private PagedServiceResult<IList<ImageResult>, ImageFilterResult>? imagesPagedServiceResult { get; set; }
+    private EditContext? imagesFilterContext { get; set; }
+
 
     protected override void OnInitialized()
     {
@@ -131,7 +133,7 @@
 
         actEditContext.OnFieldChanged += HandleFieldChanged;
 
-        lineupFilterContext = new(new PersonFilter());
+        lineupFilterContext = new(new PersonFilterRequest());
 
         base.OnInitialized();
     }
@@ -141,21 +143,21 @@
         MemoryService.HasUnsavedData = true;
     }
 
-    private async Task FetchLineups(PaginationRequest paginationRequest, LineupFilter filter)
+    private async Task FetchLineups(PaginationRequest paginationRequest, LineupFilterRequest lineupFilterRequest)
     {
         imagesPagedServiceResult = null;
 
-        lineupsPagedServiceResult = await DataController.Fetch(async () => await LineupApiService.GetAll(paginationRequest, filter));
+        lineupsPagedServiceResult = await DataController.Fetch(async () => await LineupApiService.GetAll(paginationRequest, lineupFilterRequest));
 
-        lineupFilterContext = new(filter);
+        lineupFilterContext = new(lineupsPagedServiceResult.Filter);
 
     }
 
-    private async Task FetchImages(PaginationRequest paginationRequest, ImageFilter imageFilter)
+    private async Task FetchImages(PaginationRequest paginationRequest, ImageFilterRequest imageFilterRequest)
     {
         lineupsPagedServiceResult = null;
 
-        imagesPagedServiceResult = await DataController.Fetch(async () => await ImageApiService.GetAll(paginationRequest, imageFilter));
+        imagesPagedServiceResult = await DataController.Fetch(async () => await ImageApiService.GetAll(paginationRequest, imageFilterRequest));
     }
 
     private void SelectLineup(LineupResult lineupResult)

@@ -26,12 +26,12 @@
 
                     <InputNumber @bind-Value="ArtistFormModel.PersonId" id="personId" hidden />
 
-                    <button type="button" @onclick="() => FetchPeople(new PaginationRequest { Page = 1, PageSize = 2}, new PersonFilter {})">@(ArtistFormModel.PersonId == null ? "Add" : "Change")</button>
+                    <button type="button" @onclick="() => FetchPeople(new PaginationRequest { Page = 1, PageSize = 2}, new PersonFilterRequest {})">@(ArtistFormModel.PersonId == null ? "Add" : "Change")</button>
                 </div>
             </div>
 
             <SelectImage Model="ArtistFormModel.ImageResult"
-                         OnClicked="async () => await FetchImages(new PaginationRequest { Page = 1, PageSize = 2}, new ImageFilter ())"
+                         OnClicked="async () => await FetchImages(new PaginationRequest { Page = 1, PageSize = 2}, new ImageFilterRequest ())"
                          OnRemoveRequest="() => { ArtistFormModel.ImageId = null; ArtistFormModel.ImageResult = null; MemoryService.HasUnsavedData = true; }" />
         </div>
 
@@ -49,11 +49,11 @@
 
             <div>
                 <PersonFilterForm EditContext="personFilterContext"
-                                  OnReset="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), new PersonFilter())"
-                                  OnValidSubmit="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), (PersonFilter?)personFilterContext?.Model ?? new PersonFilter())" />
+                                  OnReset="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), new PersonFilterRequest())"
+                                  OnValidSubmit="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), ((PersonFilterFormModel?)personFilterContext?.Model)?.ToRequest() ?? new PersonFilterRequest())" />
 
 
-                <PagedList OnPageChanged="(model) => FetchPeople(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, new PersonFilter {})"
+                <PagedList OnPageChanged="(model) => FetchPeople(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, peoplePagedServiceResult.Filter?.ToRequest() ?? new PersonFilterRequest {})"
                            PagedServiceResult="peoplePagedServiceResult" Context="PersonResult">
 
                     <ItemTemplate>
@@ -73,7 +73,7 @@
             <div>
                 <button @onclick="() => imagesPagedServiceResult = null" class="warning">Close</button>
 
-                <PagedList OnPageChanged="(model) => FetchImages(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, new ImageFilter {})"
+                <PagedList OnPageChanged="(model) => FetchImages(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, imagesPagedServiceResult.Filter?.ToRequest() ?? new ImageFilterRequest {})"
                            PagedServiceResult="imagesPagedServiceResult" Context="ImageResult">
 
                     <ItemTemplate>
@@ -98,10 +98,10 @@
 
     private EditContext? artistEditContext { get; set; }
 
-    private PagedServiceResult<IList<PersonResult>, PersonFilter>? peoplePagedServiceResult { get; set; }
+    private PagedServiceResult<IList<PersonResult>, PersonFilterResult>? peoplePagedServiceResult { get; set; }
     private EditContext? personFilterContext { get; set; }
 
-    private PagedServiceResult<IList<ImageResult>, ImageFilter>? imagesPagedServiceResult { get; set; }
+    private PagedServiceResult<IList<ImageResult>, ImageFilterResult>? imagesPagedServiceResult { get; set; }
 
     protected override void OnInitialized()
     {
@@ -112,7 +112,7 @@
 
         artistEditContext.OnFieldChanged += HandleFieldChanged;
 
-        personFilterContext = new(new PersonFilter());
+        personFilterContext = new(new PersonFilterFormModel());
 
         base.OnInitialized();
     }
@@ -122,21 +122,21 @@
         MemoryService.HasUnsavedData = true;
     }
 
-    private async Task FetchPeople(PaginationRequest paginationRequest, PersonFilter personFilter)
+    private async Task FetchPeople(PaginationRequest paginationRequest, PersonFilterRequest personFilterRequest)
     {
         imagesPagedServiceResult = null;
 
-        peoplePagedServiceResult = await PersonApiService.GetAll(paginationRequest, personFilter);
+        peoplePagedServiceResult = await PersonApiService.GetAll(paginationRequest, personFilterRequest);
 
-        personFilterContext = new(personFilter);
+        personFilterContext = new(personFilterRequest);
 
     }
 
-    private async Task FetchImages(PaginationRequest paginationRequest, ImageFilter imageFilter)
+    private async Task FetchImages(PaginationRequest paginationRequest, ImageFilterRequest imageFilterRequest)
     {
         peoplePagedServiceResult = null;
 
-        imagesPagedServiceResult = await ImageApiService.GetAll(paginationRequest, imageFilter);
+        imagesPagedServiceResult = await ImageApiService.GetAll(paginationRequest, imageFilterRequest);
     }
 
     private void SelectPerson(PersonResult personResult)

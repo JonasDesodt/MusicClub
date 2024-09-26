@@ -5,9 +5,9 @@ namespace MusicClub.DbServices.Extensions
 {
     internal static class PagedServiceResultExtensions
     {
-        public static PagedServiceResult<IList<TModel>, TFilter> Wrap<TModel, TFilter>(this IList<TModel>? data, PaginationRequest paginationRequest, int totalCount,TFilter filter, ServiceMessages? messages = null) 
+        public static PagedServiceResult<IList<TDataResult>, TFilterResult> Wrap<TDataResult, TFilterResult>(this IList<TDataResult>? data, PaginationRequest paginationRequest, int totalCount,TFilterResult filter, ServiceMessages? messages = null) 
         {
-            return new PagedServiceResult<IList<TModel>, TFilter>
+            return new PagedServiceResult<IList<TDataResult>, TFilterResult>
             {
                 Data = data,
                 Messages = data == null ? messages : null,

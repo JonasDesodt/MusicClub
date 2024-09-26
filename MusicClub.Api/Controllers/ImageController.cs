@@ -2,12 +2,9 @@
 using MusicClub.Dto.Abstractions;
 using MusicClub.Dto.Attributes;
 using MusicClub.Dto.Requests;
-using MusicClub.Dto.Results;
 using MusicClub.Dto.Transfer;
-using MusicClub.DbCore.Models;
 using MusicClub.DbCore;
-using MusicClub.Dto.Filters;
-using MusicClub.DbServices;
+using MusicClub.Dto.Filters.Requests;
 
 namespace MusicClub.Api.Controllers
 {
@@ -27,7 +24,7 @@ namespace MusicClub.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] PaginationRequest paginationRequest, [FromQuery] ImageFilter filter)
+        public async Task<IActionResult> GetAll([FromQuery] PaginationRequest paginationRequest, [FromQuery] ImageFilterRequest filter)
         {
             if (!ModelState.IsValid)
             {

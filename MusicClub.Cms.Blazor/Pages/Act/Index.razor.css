@@ -1,0 +1,49 @@
+﻿ul > li > div {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+    ul > li > div > p, ul > li > div > img {
+        align-self: flex-start;
+        aspect-ratio: 3/2;
+        width: 100%;
+    }
+
+    ul > li > div > p {
+        border: 1px solid rgb(220,220,220);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    ul > li > div > img {
+        object-fit: cover;
+    }
+
+    ul > li > div > div {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        flex-grow: 1;
+        gap: 1em;
+    }
+
+        ul > li > div > div > ::deep a {
+            align-self: flex-end;
+        }
+
+section.select-open > ::deep div.paged-list {
+    display: none !important;
+}
+
+@media (min-width: 384px) {
+    ul > li > div {
+        flex-direction: row;
+    }
+
+        ul > li > div > p, ul > li > div > img {
+            min-width: 10em;
+            max-width: 10em;
+        }
+}

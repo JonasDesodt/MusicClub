@@ -2,6 +2,7 @@
 using MusicClub.DbCore.Models;
 using MusicClub.Dto.Enums;
 using MusicClub.Dto.Filters;
+using MusicClub.Dto.Filters.Requests;
 using MusicClub.Dto.Requests;
 using MusicClub.Dto.Results;
 
@@ -52,7 +53,7 @@ namespace MusicClub.DbServices.Extensions
                         .Include(q => q.Lineups);
         }
 
-        public static IQueryable<Image> Filter(this IQueryable<Image> images, ImageFilter filter)
+        public static IQueryable<Image> Filter(this IQueryable<Image> images, ImageFilterRequest filter)
         {
             if (!string.IsNullOrWhiteSpace(filter.Alt))
             {
@@ -94,6 +95,6 @@ namespace MusicClub.DbServices.Extensions
             }
 
             return image;
-        } 
+        }
     }
 }

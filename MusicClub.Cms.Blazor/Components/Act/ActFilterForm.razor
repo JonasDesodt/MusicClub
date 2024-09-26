@@ -1,5 +1,126 @@
-﻿<h3>ActFilterForm</h3>
+﻿@inject MemoryService MemoryService
+@inject IImageApiService ImageApiService
+
+
+<div class="@(imagesPagedServiceResult == null ? "select-closed" : "select-open")">
+
+    <Filters EditContext="EditContext"
+             GetTags="GetTags"
+             OnValidSubmit="() => OnValidSubmit.InvokeAsync()"
+             OnReset="() => OnReset.InvokeAsync()">
+        <Inputs>
+            <div>
+                <label for="name">Name</label>
+
+                <InputText @bind-Value="((ActFilterFormModel)EditContext.Model).Name" id="name" />
+            </div>
+
+            <div>
+                <label for="duration">Duration</label>
+
+                <InputNumber @bind-Value="((ActFilterFormModel)EditContext.Model).Duration" id="duration" />
+            </div>
+
+            <div>
+                <label for="start">Start</label>
+
+                <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="((ActFilterFormModel)EditContext.Model).Start" id="start" />
+            </div>
+
+            <SelectImage Model="((ActFilterFormModel)EditContext.Model).Image"
+                         OnClicked="async () => await FetchImages(new PaginationRequest { Page = 1, PageSize = 2}, new ImageFilterRequest())"
+                         OnRemoveRequest="() => { ((ActFilterFormModel)EditContext.Model).ImageId = null; ((ActFilterFormModel)EditContext.Model).Image = null; }" />
+
+        </Inputs>
+    </Filters>
+
+    @if (imagesPagedServiceResult is not null)
+    {
+        <section id="select-image">
+            <button @onclick="async () => {imagesPagedServiceResult = null; await OnSelectDisplayStateChanged.InvokeAsync(false);}" class="warning">&#128939;</button>
+
+            <h3>Select image</h3>
+
+            <div>
+                <ImageFilterForm EditContext="imageFilterContext"
+                                  OnReset="() => FetchImages(MemoryService.GetDefaultPaginationRequest(), new ImageFilterRequest())"
+                                  OnValidSubmit="() => FetchImages(MemoryService.GetDefaultPaginationRequest(), ((ImageFilterFormModel?)imageFilterContext?.Model)?.ToRequest() ?? new ImageFilterRequest())" />
+
+
+                <PagedList OnPageChanged="(model) => FetchImages(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, imagesPagedServiceResult.Filter.ToRequest())"
+                           PagedServiceResult="imagesPagedServiceResult" Context="ImageResult">
+
+                    <ItemTemplate>
+                        <SelectImageItem Model="ImageResult"
+                                         OnSelected="(selectedImage) => SelectImage(selectedImage)" />
+                    </ItemTemplate>
+                </PagedList>
+            </div>
+        </section>
+    }
+</div>
 
 @code {
+    [Parameter, EditorRequired]
+    public required EditContext EditContext { get; set; }
 
+    [Parameter, EditorRequired]
+    public EventCallback OnValidSubmit { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnReset { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnSelectDisplayStateChanged { get; set; }
+
+    private PagedServiceResult<IList<ImageResult>, ImageFilterResult>? imagesPagedServiceResult { get; set; }
+    private EditContext? imageFilterContext;
+
+
+    private Dictionary<string, Action<string?>>? GetTags()
+    {
+        var tags = new Dictionary<string, Action<string?>>();
+
+        if (((ActFilterFormModel)EditContext.Model).Name is { } alias && alias.Count() > 0)
+        {
+
+            tags.Add("name: " + alias, (value) => ((ActFilterFormModel)EditContext.Model).Name = value);
+        }
+
+        if (((ActFilterFormModel)EditContext.Model).ImageId is { } id && id > 0)
+        {
+            tags.Add("image:" + ((ActFilterFormModel)EditContext.Model).Image?.Alt ?? id.ToString(), (value) => ((ActFilterFormModel)EditContext.Model).ImageId = null); //todo, convert value to null int?
+        }
+
+
+        return tags;
+    }
+
+    private async Task FetchImages(PaginationRequest paginationRequest, ImageFilterRequest imageFilterRequest)
+    {
+        // peoplePagedServiceResult = null;
+
+        imagesPagedServiceResult = await ImageApiService.GetAll(paginationRequest, imageFilterRequest);
+
+        if(imagesPagedServiceResult.Messages?.HasMessage is not true)
+        {
+            await OnSelectDisplayStateChanged.InvokeAsync(true);
+        }
+
+        imageFilterContext = new EditContext(imagesPagedServiceResult.Filter.ToFormModel());
+    }
+
+    private async Task SelectImage(ImageResult imageResult)
+    {
+        if (EditContext is null || EditContext.Model is not ActFilterFormModel filterFormModel) return;
+
+        filterFormModel.ImageId = imageResult.Id;
+        filterFormModel.Image = imageResult;
+
+        //not necessary if the filters are re-rendered when selecting a image
+        EditContext.NotifyFieldChanged(FieldIdentifier.Create(() => filterFormModel.ImageId));
+
+        imagesPagedServiceResult = null;
+        await OnSelectDisplayStateChanged.InvokeAsync(false);
+    }
 }

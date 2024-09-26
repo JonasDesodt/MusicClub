@@ -8,19 +8,19 @@
         <div>
             <label for="alias">Alias</label>
 
-            <InputText @bind-Value="((ArtistFilter)EditContext.Model).Alias" id="alias" />
+            <InputText @bind-Value="((ArtistFilterFormModel)EditContext.Model).Alias" id="alias" />
         </div>
 
         <div>
             <label for="firstName">Firstname</label>
 
-            <InputText @bind-Value="((ArtistFilter)EditContext.Model).Firstname" id="firstName" />
+            <InputText @bind-Value="((ArtistFilterFormModel)EditContext.Model).Firstname" id="firstName" />
         </div>
 
         <div>
             <label for="lastName">Lastname</label>
 
-            <InputText @bind-Value="((ArtistFilter)EditContext.Model).Lastname" id="lastName" />
+            <InputText @bind-Value="((ArtistFilterFormModel)EditContext.Model).Lastname" id="lastName" />
         </div>
     </Inputs>
 </Filters>
@@ -39,21 +39,21 @@
     {
         var tags = new Dictionary<string, Action<string?>>();
 
-        if (((ArtistFilter)EditContext.Model).Alias is { } alias && alias.Count() > 0)
+        if (((ArtistFilterFormModel)EditContext.Model).Alias is { } alias && alias.Count() > 0)
         {
 
-            tags.Add(alias, (value) => ((ArtistFilter)EditContext.Model).Alias = value);
+            tags.Add(alias, (value) => ((ArtistFilterFormModel)EditContext.Model).Alias = value);
         }
 
-        if (((ArtistFilter)EditContext.Model).Firstname is { } firstname && firstname.Count() > 0)
+        if (((ArtistFilterFormModel)EditContext.Model).Firstname is { } firstname && firstname.Count() > 0)
         {
-            tags.Add(firstname, (value) => ((ArtistFilter)EditContext.Model).Firstname = value);
+            tags.Add(firstname, (value) => ((ArtistFilterFormModel)EditContext.Model).Firstname = value);
 
         }
 
-        if (((ArtistFilter)EditContext.Model).Lastname is { } lastname && lastname.Count() > 0)
+        if (((ArtistFilterFormModel)EditContext.Model).Lastname is { } lastname && lastname.Count() > 0)
         {
-            tags.Add(lastname, (value) => ((ArtistFilter)EditContext.Model).Lastname = value);
+            tags.Add(lastname, (value) => ((ArtistFilterFormModel)EditContext.Model).Lastname = value);
         }
 
         return tags;

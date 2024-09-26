@@ -3,7 +3,7 @@ using MusicClub.Dto.Requests;
 
 namespace MusicClub.DbServices.Extensions
 {
-    internal static class LineupRequestExtensions
+    public static class LineupRequestExtensions
     {
         public static Lineup ToModel(this LineupRequest request)
         {

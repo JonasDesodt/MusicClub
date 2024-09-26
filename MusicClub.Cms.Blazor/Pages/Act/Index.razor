@@ -1,5 +1,93 @@
-﻿<h3>Index</h3>
+﻿@page "/act"
+
+@layout ActLayout
+
+@implements IDisposable
+
+@inject IActService ActApiService
+@inject NavigationManager NavigationManager
+@inject DataController DataControllerService
+@inject MemoryService MemoryService
+
+<section class="index-page @(isSelectOpen ? "select-open" : "select-closed")" >
+    <h3>Index</h3>
+
+    <NavLink class="button" href="act/create">Create</NavLink>
+
+    <ActFilterForm EditContext="filterContext"
+                    OnSelectDisplayStateChanged="(state) => isSelectOpen = state"
+                   OnReset="() => FetchActs(MemoryService.GetDefaultPaginationRequest(), new ActFilterRequest())"
+                   OnValidSubmit="() => FetchActs(MemoryService.GetDefaultPaginationRequest(), ((ActFilterFormModel?)filterContext?.Model)?.ToRequest() ?? new ActFilterRequest())" />
+
+    @if (ActsPagedServiceResult is not null)
+    {
+
+        <PagedList OnPageChanged="@(async (request) => { await FetchActs(request, ActsPagedServiceResult.Filter.ToRequest());  })"
+                   PagedServiceResult="ActsPagedServiceResult" Context="ActResult">
+            <ItemTemplate>
+                <div>
+                    @if (ActResult.Image is not null)
+                    {
+                        <img src="@($"https://localhost:7061/image/download/{ActResult.Image?.Id}")" />
+
+                    }
+                    else
+                    {
+                        <p>no image</p>
+                    }
+
+                    <div>
+                        @if (!string.IsNullOrWhiteSpace(ActResult.Name))
+                        {
+                            <h4>@ActResult.Name</h4>
+                        }
+                        else if (ActResult.Start is not null)
+                        {
+                            <h4>@ActResult.Start</h4>
+                        }
+                        else
+                        {
+                            <h4>@ActResult.Id</h4>
+                        }
+
+                        <NavLink href="@($"act/edit/{ActResult.Id}")" class="button">Edit</NavLink>
+                    </div>
+                </div>
+            </ItemTemplate>
+        </PagedList>
+    }
+</section>
 
 @code {
+    private PagedServiceResult<IList<ActResult>, ActFilterResult>? ActsPagedServiceResult;
 
+    private EditContext? filterContext { get; set; }
+
+    private bool isSelectOpen = false;
+
+    protected override void OnInitialized()
+    {
+        ActsPagedServiceResult = (PagedServiceResult<IList<ActResult>, ActFilterResult>?)DataControllerService.Data;
+
+        if (ActsPagedServiceResult is null) return;
+
+        filterContext = new(ActsPagedServiceResult.Filter.ToFormModel());
+
+        base.OnInitialized();
+    }
+
+    private async Task FetchActs(PaginationRequest paginationRequest, ActFilterRequest actFilterRequest)
+    {
+        ActsPagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<ActResult>, ActFilterResult>>(async () => await ActApiService.GetAll(paginationRequest, actFilterRequest));
+
+        MemoryService.ActFilter = ActsPagedServiceResult.Filter;
+        MemoryService.ActPagination = ActsPagedServiceResult.Pagination;
+
+        filterContext = new(ActsPagedServiceResult.Filter.ToFormModel());
+    }
+
+    public void Dispose()
+    {
+        DataControllerService.Data = null;
+    }
 }

@@ -1,4 +1,4 @@
-﻿using MusicClub.Dto.Filters;
+﻿using MusicClub.Dto.Filters.Results;
 using MusicClub.Dto.Transfer;
 
 namespace MusicClub.Cms.Blazor.Services
@@ -18,52 +18,52 @@ namespace MusicClub.Cms.Blazor.Services
         }
 
         public PaginationResult? ArtistPagination { get; set; }
-        public required ArtistFilter ArtistFilter { get; set; } = new ArtistFilter();
+        public required ArtistFilterResult ArtistFilter { get; set; } = new ArtistFilterResult();
         public void DisposeArtistData()
         {
             ArtistPagination = null;
-            ArtistFilter = new ArtistFilter();
+            ArtistFilter = new ArtistFilterResult();
 
             HasUnsavedData = false;
         }
 
         public PaginationResult? PersonPagination { get; set; }
-        public required PersonFilter PersonFilter { get; set; } = new PersonFilter();
+        public required PersonFilterResult PersonFilter { get; set; } = new PersonFilterResult();
         public void DisposePersonData()
         {
             PersonPagination = null;
-            PersonFilter = new PersonFilter();
+            PersonFilter = new PersonFilterResult();
 
             HasUnsavedData = false;
         }
 
         public PaginationResult? ImagePagination { get; set; }
-        public required ImageFilter ImageFilter { get; set; } = new ImageFilter();
+        public required ImageFilterResult ImageFilter { get; set; } = new ImageFilterResult();
         public void DisposeImageData()
         {
             ImagePagination = null;
-            ImageFilter = new ImageFilter();
+            ImageFilter = new ImageFilterResult();
 
             HasUnsavedData = false;
         }
 
         public PaginationResult? LineupPagination { get; set; }
-        public required LineupFilter LineupFilter { get; set; } = new LineupFilter();
+        public required LineupFilterResult LineupFilter { get; set; } = new LineupFilterResult();
         public void DisposeLineupData()
         {
             LineupPagination = null;
-            LineupFilter = new LineupFilter();
+            LineupFilter = new LineupFilterResult();
 
             HasUnsavedData = false;
         }
 
 
         public PaginationResult? ActPagination { get; set; }
-        public required ActFilter ActFilter { get; set; } = new ActFilter();
+        public required ActFilterResult ActFilter { get; set; } = new ActFilterResult();
         public void DisposeActData()
         {
             ActPagination = null;
-            ActFilter = new ActFilter();
+            ActFilter = new ActFilterResult();
 
             HasUnsavedData = false;
         }

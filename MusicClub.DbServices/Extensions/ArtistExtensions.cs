@@ -2,6 +2,7 @@
 using MusicClub.DbCore.Models;
 using MusicClub.Dto.Enums;
 using MusicClub.Dto.Filters;
+using MusicClub.Dto.Filters.Requests;
 using MusicClub.Dto.Requests;
 using MusicClub.Dto.Results;
 
@@ -35,7 +36,7 @@ namespace MusicClub.DbServices.Extensions
             });
         }
 
-        public static IQueryable<Artist> Filter(this IQueryable<Artist> artists, ArtistFilter filter)
+        public static IQueryable<Artist> Filter(this IQueryable<Artist> artists, ArtistFilterRequest filter)
         {
 
             if (!string.IsNullOrWhiteSpace(filter.Alias))

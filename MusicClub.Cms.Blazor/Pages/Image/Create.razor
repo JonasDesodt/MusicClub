@@ -30,8 +30,8 @@
 
     private ImageCreateFormModel? imageFormModel { get; set; }
 
-    private PagedServiceResult<IList<PersonResult>, PersonFilter>? peoplePagedServiceResult { get; set; }
-    private PagedServiceResult<IList<ImageResult>, ImageFilter>? imagesPagedServiceResult { get; set; }
+    private PagedServiceResult<IList<PersonResult>, PersonFilterResult>? peoplePagedServiceResult { get; set; }
+    private PagedServiceResult<IList<ImageResult>, ImageFilterResult>? imagesPagedServiceResult { get; set; }
 
     protected override void OnInitialized()
     {

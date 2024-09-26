@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MusicClub.Dto.Abstractions;
 using MusicClub.Dto.Attributes;
-using MusicClub.Dto.Filters;
+using MusicClub.Dto.Filters.Requests;
 using MusicClub.Dto.Requests;
 using MusicClub.Dto.Transfer;
 
@@ -23,7 +23,7 @@ namespace MusicClub.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] PaginationRequest paginationRequest, [FromQuery] LineupFilter filter)
+        public async Task<IActionResult> GetAll([FromQuery] PaginationRequest paginationRequest, [FromQuery] LineupFilterRequest filter)
         {
             if (!ModelState.IsValid)
             {

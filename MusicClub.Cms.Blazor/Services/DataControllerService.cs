@@ -4,6 +4,9 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
 using MusicClub.Dto.Filters;
 using MusicClub.Dto.Results;
+using MusicClub.Dto.Filters.Requests;
+using MusicClub.Dto.Filters.Results;
+using MusicClub.Dto.Extensions;
 
 namespace MusicClub.Cms.Blazor.Services
 {
@@ -43,9 +46,9 @@ namespace MusicClub.Cms.Blazor.Services
                     PageSize = memoryService.ActPagination?.PageSize ?? MemoryService.DefaultPageSize
                 };
 
-                Data = await Fetch<PagedServiceResult<IList<ActResult>, ActFilter>>(async () => await actApiService.GetAll(paginationRequest, memoryService.ActFilter ?? new ActFilter()));
+                Data = await Fetch<PagedServiceResult<IList<ActResult>, ActFilterResult>>(async () => await actApiService.GetAll(paginationRequest, memoryService.ActFilter?.ToRequest() ?? new ActFilterRequest()));
 
-                if (Data is PagedServiceResult<IList<ActResult>, ActFilter> actsPagedServiceResult)
+                if (Data is PagedServiceResult<IList<ActResult>, ActFilterResult> actsPagedServiceResult)
                 {
                     memoryService.ActFilter = actsPagedServiceResult.Filter;
                     memoryService.ActPagination = actsPagedServiceResult.Pagination;
@@ -79,9 +82,9 @@ namespace MusicClub.Cms.Blazor.Services
                 };
 
 
-                Data = await Fetch<PagedServiceResult<IList<ArtistResult>, ArtistFilter>>(async () => await artistApiService.GetAll(paginationRequest, memoryService.ArtistFilter ?? new ArtistFilter()));
+                Data = await Fetch<PagedServiceResult<IList<ArtistResult>, ArtistFilterResult>>(async () => await artistApiService.GetAll(paginationRequest, memoryService.ArtistFilter?.ToRequest() ?? new ArtistFilterRequest()));
 
-                if (Data is PagedServiceResult<IList<ArtistResult>, ArtistFilter> artistsPagedServiceResult)
+                if (Data is PagedServiceResult<IList<ArtistResult>, ArtistFilterResult> artistsPagedServiceResult)
                 {
                     memoryService.ArtistFilter = artistsPagedServiceResult.Filter;
                     memoryService.ArtistPagination = artistsPagedServiceResult.Pagination;
@@ -113,9 +116,9 @@ namespace MusicClub.Cms.Blazor.Services
                     PageSize = memoryService.ArtistPagination?.PageSize ?? MemoryService.DefaultPageSize
                 };
 
-                Data = await Fetch<PagedServiceResult<IList<PersonResult>, PersonFilter>>(async () => await personApiService.GetAll(paginationRequest, memoryService.PersonFilter ?? new PersonFilter()));
+                Data = await Fetch<PagedServiceResult<IList<PersonResult>, PersonFilterResult>>(async () => await personApiService.GetAll(paginationRequest, memoryService.PersonFilter?.ToRequest() ?? new PersonFilterRequest()));
 
-                if (Data is PagedServiceResult<IList<PersonResult>, PersonFilter> peoplePagedServiceResult)
+                if (Data is PagedServiceResult<IList<PersonResult>, PersonFilterResult> peoplePagedServiceResult)
                 {
                     memoryService.PersonFilter = peoplePagedServiceResult.Filter;
                     memoryService.PersonPagination = peoplePagedServiceResult.Pagination;
@@ -148,9 +151,9 @@ namespace MusicClub.Cms.Blazor.Services
                     PageSize = memoryService.ImagePagination?.PageSize ?? MemoryService.DefaultPageSize
                 };
 
-                Data = await Fetch<PagedServiceResult<IList<ImageResult>, ImageFilter>>(async () => await imageApiService.GetAll(paginationRequest, memoryService.ImageFilter ?? new ImageFilter()));
+                Data = await Fetch<PagedServiceResult<IList<ImageResult>, ImageFilterResult>>(async () => await imageApiService.GetAll(paginationRequest, memoryService.ImageFilter?.ToRequest() ?? new ImageFilterRequest()));
 
-                if (Data is PagedServiceResult<IList<ImageResult>, ImageFilter> imagesPagedServiceResult)
+                if (Data is PagedServiceResult<IList<ImageResult>, ImageFilterResult> imagesPagedServiceResult)
                 {
                     memoryService.ImageFilter = imagesPagedServiceResult.Filter;
                     memoryService.ImagePagination = imagesPagedServiceResult.Pagination;

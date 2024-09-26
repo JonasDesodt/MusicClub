@@ -1,0 +1,34 @@
+﻿div.select-closed > ::deep div.filters {
+    display: flex;
+}
+
+div.select-closed > section#select-image {
+    display: none;
+}
+
+div.select-open > ::deep div.filters {
+    display: none;
+}
+
+div.select-closed > section#select-image {
+    display: flex;
+}
+
+section#select-image {
+    border: 1px solid rgb(200,200,200);
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+    section#select-image > button {
+        align-self: flex-end;
+        transform: translate(1em, -1em);
+    }
+
+    section#select-image > div {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+    }

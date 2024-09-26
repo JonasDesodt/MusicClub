@@ -16,4 +16,8 @@
     <ProjectReference Include="..\MusicClub.ApiServices\MusicClub.ApiServices.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\Lineup\Data\" />
+  </ItemGroup>
+
 </Project>

@@ -4,7 +4,7 @@ using MusicClub.Dto.Requests;
 
 namespace MusicClub.DbServices.Extensions
 {
-    internal static class ImageDbRequestExtensions
+    public static class ImageDbRequestExtensions
     {
         public static Image? ToModel(this ImageDbRequest request)
         {

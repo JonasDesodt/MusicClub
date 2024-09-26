@@ -2,6 +2,7 @@
 using MusicClub.DbCore.Models;
 using MusicClub.Dto.Enums;
 using MusicClub.Dto.Filters;
+using MusicClub.Dto.Filters.Requests;
 using MusicClub.Dto.Requests;
 using MusicClub.Dto.Results;
 
@@ -46,7 +47,7 @@ namespace MusicClub.DbServices.Extensions
             });
         }
 
-        public static IQueryable<Lineup> Filter(this IQueryable<Lineup> lineups, LineupFilter filter)
+        public static IQueryable<Lineup> Filter(this IQueryable<Lineup> lineups, LineupFilterRequest filter)
         {
 
 

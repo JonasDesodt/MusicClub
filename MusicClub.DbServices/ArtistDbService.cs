@@ -3,7 +3,9 @@ using MusicClub.DbCore;
 using MusicClub.DbCore.Models;
 using MusicClub.DbServices.Extensions;
 using MusicClub.Dto.Abstractions;
-using MusicClub.Dto.Filters;
+using MusicClub.Dto.Extensions;
+using MusicClub.Dto.Filters.Requests;
+using MusicClub.Dto.Filters.Results;
 using MusicClub.Dto.Requests;
 using MusicClub.Dto.Results;
 using MusicClub.Dto.Transfer;
@@ -66,20 +68,20 @@ namespace MusicClub.DbServices
                     .Wrap(new ServiceMessages().AddNotFound(nameof(Artist), id));
         }
 
-        public async Task<PagedServiceResult<IList<ArtistResult>, ArtistFilter>> GetAll(PaginationRequest paginationRequest, ArtistFilter filter)
+        public async Task<PagedServiceResult<IList<ArtistResult>, ArtistFilterResult>> GetAll(PaginationRequest paginationRequest, ArtistFilterRequest filterRequest)
         {
             var totalCount = await dbContext.Artists
                 .IncludeAll()
-                .Filter(filter)
+                .Filter(filterRequest)
                 .CountAsync();
 
             return (await dbContext.Artists
                 .IncludeAll()
-                .Filter(filter)
+                .Filter(filterRequest)
                 .GetPage(paginationRequest)
                 .ToResults()
                 .ToListAsync())
-                .Wrap(paginationRequest, totalCount, filter);
+                .Wrap(paginationRequest, totalCount, filterRequest.ToResult());
         }
 
         public Task<ServiceResult<bool>> IsReferenced(int id)

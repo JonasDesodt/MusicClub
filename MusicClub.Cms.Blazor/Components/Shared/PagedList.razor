@@ -5,7 +5,7 @@
 
 @if (PagedServiceResult?.Data is { } results)
 {
-    <div>
+    <div class="paged-list">
         @if (PagedServiceResult.Pagination.TotalCount == 1)
         {
             <h4>@PagedServiceResult.Pagination.TotalCount result</h4>
