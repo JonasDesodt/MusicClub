@@ -9,6 +9,10 @@ using MusicClub.Dto.Transfer;
 using Microsoft.EntityFrameworkCore;
 using MusicClub.Dto.Filters.Results;
 using MusicClub.Dto.Filters.Requests;
+using MusicClub.DbServices.Extensions.Act;
+using MusicClub.DbServices.Extensions.Lineup;
+using MusicClub.DbServices.Extensions.Service;
+using MusicClub.Dto.Extensions.Lineup;
 
 namespace MusicClub.DbServices
 {

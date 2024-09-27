@@ -6,7 +6,10 @@ using MusicClub.Dto.Filters;
 using MusicClub.Dto.Results;
 using MusicClub.Dto.Filters.Requests;
 using MusicClub.Dto.Filters.Results;
-using MusicClub.Dto.Extensions;
+using MusicClub.Dto.Extensions.Act;
+using MusicClub.Dto.Extensions.Artist;
+using MusicClub.Dto.Extensions.Image;
+using MusicClub.Dto.Extensions.Person;
 
 namespace MusicClub.Cms.Blazor.Services
 {

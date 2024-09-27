@@ -16,7 +16,7 @@ namespace MusicClub.Dto.Abstractions
 
         Task<ServiceResult<TDataResult>> Get(int id);
 
-        Task<PagedServiceResult<IList<TDataResult>, TFilterResult>> GetAll(PaginationRequest paginationRequest, TFilterRequest filter);
+        Task<PagedServiceResult<IList<TDataResult>, TFilterResult>> GetAll(PaginationRequest paginationRequest, TFilterRequest filterRequest);
 
         Task<ServiceResult<TDataResult>> Delete(int id);
 

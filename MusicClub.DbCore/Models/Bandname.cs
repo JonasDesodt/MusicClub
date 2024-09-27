@@ -13,7 +13,7 @@
         public int? ImageId { get; set; }
         public Image? Image { get; set; }
 
-        public int BandId { get; set; }
+        public required int BandId { get; set; }
         public Band? Band { get; set; }
 
         public IList<Performance> Performances { get; set; } = [];

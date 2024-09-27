@@ -9,6 +9,8 @@ using MusicClub.Dto.Requests;
 using MusicClub.Dto.Results;
 using MusicClub.Dto.Transfer;
 using MusicClub.Dto.Extensions;
+using MusicClub.DbServices.Extensions.Image;
+using MusicClub.Dto.Extensions.Image;
 
 namespace MusicClub.DbServices
 {
