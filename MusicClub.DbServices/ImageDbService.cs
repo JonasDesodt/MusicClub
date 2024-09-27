@@ -37,46 +37,6 @@ namespace MusicClub.DbServices
                 return ((ImageResult?)null).Wrap(new ServiceMessages().AddNotFound(nameof(Image), id).AddNotDeleted(nameof(Image), id));
             }
 
-            if (await dbContext.Artists.FirstOrDefaultAsync(a => a.ImageId == id) is { } artist)
-            {
-                artist.ImageId = null;
-                dbContext.Update(artist);
-
-                await dbContext.SaveChangesAsync();
-            }
-
-            if (await dbContext.Acts.FirstOrDefaultAsync(a => a.ImageId == id) is { } act)
-            {
-                act.ImageId = null;
-                dbContext.Update(act);
-
-                await dbContext.SaveChangesAsync();
-            }
-
-            if (await dbContext.People.FirstOrDefaultAsync(a => a.ImageId == id) is { } person)
-            {
-                person.ImageId = null;
-                dbContext.Update(person);
-
-                await dbContext.SaveChangesAsync();
-            }
-
-            if (await dbContext.Performances.FirstOrDefaultAsync(a => a.ImageId == id) is { } performance)
-            {
-                performance.ImageId = null;
-                dbContext.Update(performance);
-
-                await dbContext.SaveChangesAsync();
-            }
-
-            if (await dbContext.Lineups.FirstOrDefaultAsync(a => a.ImageId == id) is { } lineup)
-            {
-                lineup.ImageId = null;
-                dbContext.Update(lineup);
-
-                await dbContext.SaveChangesAsync();
-            }
-
             dbContext.Images.Remove(image);
 
             await dbContext.SaveChangesAsync();

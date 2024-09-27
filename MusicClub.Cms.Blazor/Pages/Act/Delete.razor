@@ -1,5 +1,134 @@
-﻿<h3>Delete</h3>
+﻿@page "/act/delete/{id:int}"
+
+@layout ActLayout
+
+@inject IActService ActApiService
+@inject MemoryService MemoryService
+@inject NavigationManager NavigationManager
+
+<h3>Delete</h3>
+
+@if (actResult is not null)
+{
+    <p>Are you want to delete the following act?</p>
+
+    <ul>
+        <li>
+            <p class="label">Id</p>
+            <p class="input">
+                @actResult.Id
+            </p>
+        </li>
+
+        <li>
+            <p class="label">Name</p>
+            <p class="input">@actResult.Name</p>
+        </li>
+
+        <li>
+            <p class="label">Title</p>
+            <p class="input">@(actResult.Title ?? "/")</p>
+        </li>
+
+        <li>
+            <p class="label">Doors</p>
+            <p class="input">@(actResult.Start?.ToShortDateString() ?? "/")</p>
+        </li>
+
+        <li>
+            <p class="label">Duration</p>
+            <p class="input">@(actResult.Duration.ToString() ?? "/") minutes</p>
+        </li>
+
+        <li class="@(showLineupImg ? "show-img" : "hide-img")">
+            <p class="label">Lineup</p>
+            <p class="input">@actResult.Lineup.Doors.ToShortDateString() @actResult.Lineup.Title</p>
+
+            @if(actResult.Lineup?.Image is not null)
+            {
+
+                if (showLineupImg)
+                {
+                    <button @onclick="() => showLineupImg = false">Hide image</button>
+                }
+                else
+                {
+                    <button @onclick="() => showLineupImg = true">Show image</button>
+                }
+
+                <img src="@($"https://localhost:7061/image/download/{actResult.Lineup.Image.Id}?updated={actResult.Lineup.Image.Updated}")" />
+            }
+
+        </li>
+
+        <li class="@(showImageImg ? "show-img" : "hide-img")">
+            <p class="label">Image</p>
+            <p class="input">@(actResult.Image?.Alt ?? "/")</p>
+
+            @if(actResult.Image is not null)
+            {
+                @if (showImageImg)
+                {
+                    <button @onclick="() => showImageImg = false">Hide image</button>
+                }
+                else
+                {
+                    <button @onclick="() => showImageImg = true">Show image</button>
+                }
+
+                <img src="@($"https://localhost:7061/image/download/{actResult.Image.Id}?updated={actResult.Image.Updated}")" />
+            }
+        </li>
+
+        <li>
+            <p class="label">Dependencies</p>
+
+            <ul>
+                <li>Performances: @actResult.PerformancesCount</li>
+                <li>Jobs: @actResult.JobsCount</li>
+            </ul>
+        </li>
+    </ul>
+
+    <div>
+        <NavLink href="@($"act/edit/{Id}")" class="button">No</NavLink>
+
+        <button class="danger" @onclick="() => DeleteAct(Id)">Yes</button>
+    </div>
+}
+
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
 
+    public ActResult? actResult { get; set; }
+
+    private bool showLineupImg;
+    private bool showImageImg;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchAct(Id);
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task FetchAct(int id)
+    {
+        var actServiceResult = await ActApiService.Get(id);
+
+        actResult = actServiceResult.Data;
+    }
+
+    private async Task DeleteAct(int id)
+    {
+        var serviceResult = await ActApiService.Delete(Id);
+        if (serviceResult.Messages is null)
+        {
+            MemoryService.HasUnsavedData = false;
+
+            NavigationManager.NavigateTo("/act");
+        }
+    }
 }

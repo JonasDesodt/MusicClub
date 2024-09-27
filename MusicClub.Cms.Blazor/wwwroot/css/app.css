@@ -268,3 +268,11 @@ section.layout {
     section.layout > a {
         align-self: flex-start;
     }
+
+ul > li.hide-img > img {
+    display: none;
+}
+
+ul > li.show-img > img {
+    display: flex;
+}

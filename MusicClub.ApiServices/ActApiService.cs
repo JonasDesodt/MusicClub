@@ -94,9 +94,21 @@ namespace MusicClub.ApiServices
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResult<ActResult>> Update(int id, ActRequest request)
+        public async Task<ServiceResult<ActResult>> Update(int id, ActRequest request)
         {
-            throw new NotImplementedException();
+            var httpClient = httpClientFactory.CreateClient("MusicClubApi");
+
+            var httpResponseMessage = await httpClient.PutAsJsonAsync("Act/" + id, request);
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<ActResult>>() is not { } result)
+            {
+                return new ServiceResult<ActResult>
+                {
+                    Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Failed to update the act." }],
+                };
+            }
+
+            return result;
         }
     }
 }

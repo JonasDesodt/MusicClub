@@ -1,5 +1,76 @@
-﻿<h3>Edit</h3>
+﻿@page "/act/edit/{id:int}"
+
+@layout ActLayout
+
+@inject IActService ActApiService
+@inject NavigationManager NavigationManager
+@inject DataController DataController
+@inject MemoryService MemoryService
+
+<h3>Edit</h3>
+
+<ActCreateEditForm ActFormModel="actFormModel" OnValidSubmit="() => Post()">
+    <Buttons>
+        <button type="submit">Submit</button>
+
+        <button type="button" @onclick="async () => {MemoryService.HasUnsavedData = false; await FetchAct(Id);}" class="warning">Undo changes</button>
+
+        <NavLink href="@($"act/delete/{Id}")" class="button danger">Delete</NavLink>
+    </Buttons>
+</ActCreateEditForm>
+
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
 
+    [CascadingParameter]
+    public bool IsOpen { get; set; }
+
+    private ActFormModel? actFormModel { get; set; }
+
+    private PagedServiceResult<IList<PersonResult>, PersonFilterResult>? peoplePagedServiceResult { get; set; }
+    private PagedServiceResult<IList<ImageResult>, ImageFilterResult>? imagesPagedServiceResult { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var actServiceResult = (ServiceResult<ActResult>?)DataController.Data;
+        if (actServiceResult?.Data is { } actResult)
+        {
+            actFormModel = actResult.ToFormModel();
+        }
+
+        base.OnInitialized();
+    }
+
+    private async Task FetchAct(int id)
+    {
+        var actServiceResult = await DataController.Fetch(async () => await ActApiService.Get(id));
+
+        if (actServiceResult?.Data is { } actResult)
+        {
+            actFormModel = actResult.ToFormModel();
+        }
+    }
+
+    private async Task Post()
+    {
+        if (IsOpen)
+        {
+            return;
+        }
+
+        if (actFormModel?.ToRequest() is not { } actRequest)
+        {
+            return;
+        }
+
+        var serviceResult = await DataController.Fetch(async () => await ActApiService.Update(Id, actRequest));
+        if (serviceResult.Messages is null)
+        {
+            MemoryService.HasUnsavedData = false;
+
+            NavigationManager.NavigateTo("/act");
+        }
+    }
 }

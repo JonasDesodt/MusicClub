@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MusicClub.DbCore.Models;
+using System.Reflection.Emit;
 
 namespace MusicClub.DbCore
 {
@@ -37,6 +38,7 @@ namespace MusicClub.DbCore
                 .HasOne(a => a.Image)
                 .WithMany(i => i.Acts)
                 .HasForeignKey(a => a.ImageId)
+                .OnDelete(DeleteBehavior.SetNull)
                 .IsRequired(false);
 
             builder.Entity<Act>()
@@ -55,7 +57,8 @@ namespace MusicClub.DbCore
                 .HasOne(a => a.Image)
                 .WithMany(i => i.Artists)
                 .HasForeignKey(a => a.ImageId)
-                .IsRequired(false);
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<Artist>()
                 .HasOne(a => a.Person)
@@ -91,6 +94,7 @@ namespace MusicClub.DbCore
                 .HasOne(l => l.Image)
                 .WithMany(i => i.Lineups)
                 .HasForeignKey(l => l.ImageId)
+                .OnDelete(DeleteBehavior.SetNull)
                 .IsRequired(false);
 
             builder.Entity<Performance>()
@@ -109,12 +113,13 @@ namespace MusicClub.DbCore
                 .HasOne(p => p.Image)
                 .WithMany(i => i.Performances)
                 .HasForeignKey(p => p.ImageId)
+                .OnDelete(DeleteBehavior.SetNull)
                 .IsRequired(false);
 
             builder.Entity<Performance>()
                 .HasOne(p => p.Act)
                 .WithMany(a => a.Performances)
-                .HasForeignKey(p => p.ActId)
+                .HasForeignKey(p => p.ActId)       
                 .IsRequired(true);
 
             builder.Entity<Service>()
@@ -139,6 +144,7 @@ namespace MusicClub.DbCore
                 .HasOne(p => p.Image)
                 .WithMany(i => i.People)
                 .HasForeignKey(p => p.ImageId)
+                .OnDelete(DeleteBehavior.SetNull)
                 .IsRequired(false);
 
             builder.Entity<Worker>()

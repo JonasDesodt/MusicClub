@@ -61,11 +61,11 @@ namespace MusicClub.Cms.Blazor.Services
 
             if (ActEditRoute().IsMatch(route))
             {
-                Data = await Fetch<ServiceResult<ArtistResult>>(async () => await artistApiService.Get(int.Parse(route.Split('/').Last())));
+                Data = await Fetch<ServiceResult<ActResult>>(async () => await actApiService.Get(int.Parse(route.Split('/').Last())));
 
-                if (Data is ServiceResult<ArtistResult> artistServiceResult)
+                if (Data is ServiceResult<ActResult> actServiceResult)
                 {
-                    return artistServiceResult.Messages?.HasMessage is not true;
+                    return actServiceResult.Messages?.HasMessage is not true;
                 }
 
                 return false;
