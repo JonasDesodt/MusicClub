@@ -1,10 +1,11 @@
 ﻿using MusicClub.Dto.Attributes;
 using MusicClub.Dto.Results;
 using MusicClub.Dto.Filters;
+using MusicClub.Cms.Blazor.Interfaces;
 
 namespace MusicClub.Cms.Blazor.Models.FormModels.Filters
 {
-    public class ActFilterFormModel : Sort
+    internal class ActFilterFormModel : Sort, IImageSelect
     {
         public string? Name { get; set; }
 
@@ -21,6 +22,6 @@ namespace MusicClub.Cms.Blazor.Models.FormModels.Filters
 
         [Min(1)]
         public int? ImageId { get; set; }
-        public ImageResult? Image { get; set; }
+        public ImageResult? ImageResult { get; set; }
     }
 }

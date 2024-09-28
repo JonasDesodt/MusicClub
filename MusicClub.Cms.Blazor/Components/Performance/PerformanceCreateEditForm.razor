@@ -1,0 +1,241 @@
+﻿@implements IDisposable
+
+@inject IActService ActApiService
+@inject IArtistService ArtistApiService
+@inject IImageApiService ImageApiService
+@inject MemoryService MemoryService
+@inject DataController DataController
+
+@* <div class="@(artistsPagedServiceResult == null && imagesPagedServiceResult == null ? "select-closed" : "select-open")"> *@
+<div class="@(artistsPagedServiceResult == null && !showImageSelect ? "select-closed" : "select-open")">
+    <EditForm EditContext="performanceEditContext" OnValidSubmit="() => OnValidSubmit.InvokeAsync(PerformanceFormModel)">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+
+        <ValidationSummary></ValidationSummary>
+
+        <div>
+            <div>
+                <label for="instrument">Instrument</label>
+
+                <InputText @bind-Value="PerformanceFormModel.Instrument" id="instrument" />
+            </div>
+
+            <div>
+                <label for="artistId">Artist</label>
+
+                <div>
+
+                    @if (PerformanceFormModel.ArtistResult is { Person: not null } artistResult)
+                    {
+                        if (artistResult.Alias is { Length: > 0 } alias)
+                        {
+                            <h4>@alias (@artistResult.Person.Firstname @artistResult.Person.Lastname)</h4>
+                        }
+                        else
+                        {
+                            <h4>@artistResult.Person.Firstname @artistResult.Person.Lastname</h4>
+                        }
+                    }
+                    else
+                    {
+                        <p>no artist</p>
+                    }
+
+                    <InputNumber @bind-Value="PerformanceFormModel.ArtistId" id="artistId" hidden />
+
+                    <button type="button" @onclick="() => FetchArtists(new PaginationRequest { Page = 1, PageSize = 2}, new ArtistFilterRequest {})">@(PerformanceFormModel.ArtistId == null ? "Add" : "Change")</button>
+                </div>
+            </div>
+
+            <div>
+                <label for="actId">Act</label>
+
+                <div>
+
+                    @if (PerformanceFormModel.ActResult is { } actResult)
+                    {
+                        <h4>@actResult.Start?.ToLongDateString() @actResult.Name</h4>
+
+                        @if (actResult.Title is { Length: > 0 } title)
+                        {
+                            <p>@title</p>
+                        }
+                    }
+                    else
+                    {
+                        <p>no act</p>
+                    }
+
+                    <InputNumber @bind-Value="PerformanceFormModel.ActId" id="actId" hidden />
+
+                    <button type="button" @onclick="() => FetchActs(new PaginationRequest { Page = 1, PageSize = 2}, new ActFilterRequest {})">@(PerformanceFormModel.ActId == null ? "Add" : "Change")</button>
+                </div>
+            </div>
+
+            <SelectImage Model="PerformanceFormModel.ImageResult"
+
+                         OnClicked="() => showImageSelect = true"
+                         OnRemoveRequest="() => { PerformanceFormModel.ImageId = null; PerformanceFormModel.ImageResult = null; MemoryService.HasUnsavedData = true; }" />
+        </div>
+
+        <div>
+            @Buttons
+        </div>
+    </EditForm>
+
+    @if (actsPagedServiceResult is not null)
+    {
+        <section>
+            <button @onclick="() => actsPagedServiceResult = null" class="warning">&#128939;</button>
+
+            <h3>Select act</h3>
+
+            <div>
+                <ActFilterForm EditContext="actFilterContext"
+                               OnReset="() => FetchActs(MemoryService.GetDefaultPaginationRequest(), new ActFilterRequest())"
+                               OnValidSubmit="() => FetchActs(MemoryService.GetDefaultPaginationRequest(), ((ActFilterFormModel?)actFilterContext?.Model)?.ToRequest() ?? new ActFilterRequest())" />
+
+
+                <PagedList OnPageChanged="(model) => FetchActs(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, ((ActFilterFormModel?)actFilterContext?.Model)?.ToRequest() ?? new ActFilterRequest {})"
+                           PagedServiceResult="actsPagedServiceResult" Context="ActResult">
+
+                    <ItemTemplate>
+                        <SelectActItem Model="ActResult"
+                                       OnSelected="(selectedAct) => SelectAct(selectedAct)" />
+                    </ItemTemplate>
+                </PagedList>
+            </div>
+        </section>
+    }
+
+    @if (artistsPagedServiceResult is not null)
+    {
+        <section>
+            <button @onclick="() => artistsPagedServiceResult = null" class="warning">&#128939;</button>
+
+            <h3>Select artist</h3>
+
+            <div>
+                <ArtistFilterForm EditContext="artistFilterContext"
+                                  OnReset="() => FetchArtists(MemoryService.GetDefaultPaginationRequest(), new ArtistFilterRequest())"
+                                  OnValidSubmit="() => FetchArtists(MemoryService.GetDefaultPaginationRequest(), ((ArtistFilterFormModel?)artistFilterContext?.Model)?.ToRequest() ?? new ArtistFilterRequest())" />
+
+
+                <PagedList OnPageChanged="(model) => FetchArtists(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, ((ArtistFilterFormModel?)artistFilterContext?.Model)?.ToRequest() ?? new ArtistFilterRequest {})"
+                           PagedServiceResult="artistsPagedServiceResult" Context="ArtistResult">
+
+                    <ItemTemplate>
+                        <SelectArtistItem Model="ArtistResult"
+                                          OnSelected="(selectedArtist) => SelectArtist(selectedArtist)" />
+                    </ItemTemplate>
+                </PagedList>
+            </div>
+        </section>
+    }
+
+
+    @if (showImageSelect)
+    {
+        <ImageSelect EditContext="performanceEditContext"
+                    OnSelectDisplayStateChanged="(state) => showImageSelect = state" />
+    }
+</div>
+
+
+@code {
+    [Parameter, EditorRequired]
+    public required EventCallback<PerformanceFormModel> OnValidSubmit { get; set; }
+
+    [Parameter, EditorRequired]
+    public required PerformanceFormModel PerformanceFormModel { get; set; }
+
+    [Parameter, EditorRequired]
+    public required RenderFragment Buttons { get; set; }
+
+    private EditContext? performanceEditContext { get; set; }
+
+    private PagedServiceResult<IList<ActResult>, ActFilterResult>? actsPagedServiceResult { get; set; }
+    private EditContext? actFilterContext { get; set; }
+
+    private PagedServiceResult<IList<ArtistResult>, ArtistFilterResult>? artistsPagedServiceResult { get; set; }
+    private EditContext? artistFilterContext { get; set; }
+
+    private bool showImageSelect = false;
+
+
+
+
+    protected override void OnInitialized()
+    {
+        performanceEditContext = new(PerformanceFormModel);
+
+        //what is this for?
+        performanceEditContext.ShouldUseFieldIdentifiers = true;
+
+        performanceEditContext.OnFieldChanged += HandleFieldChanged;
+
+        artistFilterContext = new(new PersonFilterRequest());
+
+        base.OnInitialized();
+    }
+
+    private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        MemoryService.HasUnsavedData = true;
+    }
+
+    private async Task FetchActs(PaginationRequest paginationRequest, ActFilterRequest actFilterRequest)
+    {
+        // imagesPagedServiceResult = null;
+        artistsPagedServiceResult = null;
+
+        actsPagedServiceResult = await DataController.Fetch(async () => await ActApiService.GetAll(paginationRequest, actFilterRequest));
+
+        actFilterContext = new(actsPagedServiceResult.Filter.ToFormModel());
+
+    }
+
+    private async Task FetchArtists(PaginationRequest paginationRequest, ArtistFilterRequest artistFilterRequest)
+    {
+        // imagesPagedServiceResult = null;
+        actsPagedServiceResult = null;
+
+        artistsPagedServiceResult = await DataController.Fetch(async () => await ArtistApiService.GetAll(paginationRequest, artistFilterRequest));
+
+        artistFilterContext = new(artistsPagedServiceResult.Filter.ToFormModel());
+
+    }
+
+    private void SelectAct(ActResult actResult)
+    {
+        if (performanceEditContext is null || performanceEditContext.Model is not PerformanceFormModel formModel) return;
+
+        formModel.ActId = actResult.Id;
+        formModel.ActResult = actResult;
+
+        performanceEditContext.NotifyFieldChanged(FieldIdentifier.Create(() => formModel.ActId));
+
+        actsPagedServiceResult = null;
+    }
+
+
+    private void SelectArtist(ArtistResult artistResult)
+    {
+        if (performanceEditContext is null || performanceEditContext.Model is not PerformanceFormModel formModel) return;
+
+        formModel.ArtistId = artistResult.Id;
+        formModel.ArtistResult = artistResult;
+
+        performanceEditContext.NotifyFieldChanged(FieldIdentifier.Create(() => formModel.ArtistId));
+
+        artistsPagedServiceResult = null;
+    }
+
+    public void Dispose()
+    {
+        if (performanceEditContext is not null)
+        {
+            performanceEditContext.OnFieldChanged -= HandleFieldChanged;
+        }
+    }
+}

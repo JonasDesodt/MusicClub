@@ -17,6 +17,17 @@ namespace MusicClub.Cms.Blazor.Services
             };
         }
 
+        public PaginationResult? ActPagination { get; set; }
+        public required ActFilterResult ActFilter { get; set; } = new ActFilterResult();
+        public void DisposeActData()
+        {
+            ActPagination = null;
+            ActFilter = new ActFilterResult();
+
+            HasUnsavedData = false;
+        }
+
+
         public PaginationResult? ArtistPagination { get; set; }
         public required ArtistFilterResult ArtistFilter { get; set; } = new ArtistFilterResult();
         public void DisposeArtistData()
@@ -27,15 +38,6 @@ namespace MusicClub.Cms.Blazor.Services
             HasUnsavedData = false;
         }
 
-        public PaginationResult? PersonPagination { get; set; }
-        public required PersonFilterResult PersonFilter { get; set; } = new PersonFilterResult();
-        public void DisposePersonData()
-        {
-            PersonPagination = null;
-            PersonFilter = new PersonFilterResult();
-
-            HasUnsavedData = false;
-        }
 
         public PaginationResult? ImagePagination { get; set; }
         public required ImageFilterResult ImageFilter { get; set; } = new ImageFilterResult();
@@ -58,12 +60,23 @@ namespace MusicClub.Cms.Blazor.Services
         }
 
 
-        public PaginationResult? ActPagination { get; set; }
-        public required ActFilterResult ActFilter { get; set; } = new ActFilterResult();
-        public void DisposeActData()
+        public PaginationResult? PerformancePagination { get; set; }
+        public required PerformanceFilterResult PerformanceFilter { get; set; } = new PerformanceFilterResult();
+        public void DisposePerformanceData()
         {
-            ActPagination = null;
-            ActFilter = new ActFilterResult();
+            PerformancePagination = null;
+            PerformanceFilter = new PerformanceFilterResult();
+
+            HasUnsavedData = false;
+        }
+
+
+        public PaginationResult? PersonPagination { get; set; }
+        public required PersonFilterResult PersonFilter { get; set; } = new PersonFilterResult();
+        public void DisposePersonData()
+        {
+            PersonPagination = null;
+            PersonFilter = new PersonFilterResult();
 
             HasUnsavedData = false;
         }

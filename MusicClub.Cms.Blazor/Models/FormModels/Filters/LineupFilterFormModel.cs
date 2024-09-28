@@ -1,10 +1,11 @@
 ﻿using MusicClub.Dto.Attributes;
 using MusicClub.Dto.Results;
 using MusicClub.Dto.Filters;
+using MusicClub.Cms.Blazor.Interfaces;
 
 namespace MusicClub.Cms.Blazor.Models.FormModels.Filters
 {
-    public class LineupFilterFormModel : Sort
+    internal class LineupFilterFormModel : Sort, IImageSelect
     {
         public string? Title { get; set; }
 

@@ -1,4 +1,6 @@
-﻿namespace MusicClub.Dto.Filters.Requests
+﻿using MusicClub.Dto.Attributes;
+
+namespace MusicClub.Dto.Filters.Requests
 {
     public class PerformanceFilterRequest : Sort
     {
@@ -7,12 +9,16 @@
         public DateTime? Created { get; set; }
         public DateTime? Updated { get; set; }
 
+        [Min(1)]
         public int? ImageId { get; set; }
 
+        [Min(1)]
         public int? ArtistId { get; set; }
 
+        [Min(1)]
         public int? ActId { get; set; }
 
+        [Min(1)]
         public int? BandnameId { get; set; }
     }
 }

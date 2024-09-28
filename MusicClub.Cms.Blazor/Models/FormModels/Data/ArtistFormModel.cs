@@ -1,10 +1,11 @@
 ﻿using MusicClub.Dto.Results;
 using MusicClub.Dto.Attributes;
 using System.ComponentModel.DataAnnotations;
+using MusicClub.Cms.Blazor.Interfaces;
 
 namespace MusicClub.Cms.Blazor.Models.FormModels.Data
 {
-    public class ArtistFormModel
+    public class ArtistFormModel : IImageSelect
     {
         public string? Alias { get; set; }
 

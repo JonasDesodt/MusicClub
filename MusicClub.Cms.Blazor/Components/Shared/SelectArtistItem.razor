@@ -1,0 +1,20 @@
+﻿<div>
+    @if(Model.Alias is { Length: > 0 } alias)
+    {
+        <h4>@alias (@Model.Person?.Firstname @Model.Person?.Lastname)</h4>
+    }
+    else
+    {
+        <h4>@Model.Person?.Firstname @Model.Person?.Lastname</h4>
+    }
+
+    <button @onclick="() => OnSelected.InvokeAsync(Model)">Select</button>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public required ArtistResult Model { get; set; }
+
+    [Parameter, EditorRequired]
+    public required EventCallback<ArtistResult> OnSelected { get; set; }
+}

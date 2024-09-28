@@ -1,5 +1,56 @@
-﻿<h3>Create</h3>
+﻿@page "/performance/create"
+
+@layout PerformanceLayout
+
+@inject IPerformanceService PerformanceApiService
+@inject NavigationManager NavigationManager
+@inject MemoryService MemoryService
+@inject DataController DataController
+
+<h3>Create</h3>
+
+<PerformanceCreateEditForm PerformanceFormModel="performanceFormModel" OnValidSubmit="() => Post()">
+    <Buttons>
+        <button type="submit">Submit</button>
+
+        <button type="reset">Clear</button>
+    </Buttons>
+</PerformanceCreateEditForm>
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
 
+    [CascadingParameter]
+    public bool IsOpen { get; set; }
+
+    private PerformanceFormModel? performanceFormModel { get; set; }
+
+    protected override void OnInitialized()
+    {
+        performanceFormModel = new();
+
+        base.OnInitialized();
+    }
+
+    private async Task Post()
+    {
+        if (IsOpen)
+        {
+            return;
+        }
+
+        if (performanceFormModel?.ToRequest() is not { } performanceRequest)
+        {
+            return;
+        }
+
+        var serviceResult = await DataController.Fetch(async () => await PerformanceApiService.Create(performanceRequest));
+        if (serviceResult.Messages is null)
+        {
+            MemoryService.HasUnsavedData = false;
+
+            NavigationManager.NavigateTo("/performance");
+        }
+    }
 }

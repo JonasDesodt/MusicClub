@@ -2,7 +2,6 @@
 using MusicClub.Dto.Transfer;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
-using MusicClub.Dto.Filters;
 using MusicClub.Dto.Results;
 using MusicClub.Dto.Filters.Requests;
 using MusicClub.Dto.Filters.Results;
@@ -10,10 +9,12 @@ using MusicClub.Dto.Extensions.Act;
 using MusicClub.Dto.Extensions.Artist;
 using MusicClub.Dto.Extensions.Image;
 using MusicClub.Dto.Extensions.Person;
+using MusicClub.Dto.Extensions.Performance;
 
 namespace MusicClub.Cms.Blazor.Services
 {
-    public partial class DataController(NavigationManager NavigationManager, MemoryService memoryService, IActService actApiService, IArtistService artistApiService, IPersonService personApiService, IImageApiService imageApiService)
+    //why is this a partial class?
+    public partial class DataController(NavigationManager NavigationManager, MemoryService memoryService, IActService actApiService, IArtistService artistApiService, IPersonService personApiService, IPerformanceService performanceApiService, IImageApiService imageApiService)
     {
         public object? Data { get; set; }
 
@@ -145,6 +146,42 @@ namespace MusicClub.Cms.Blazor.Services
             }
 
 
+            //PERFORMANCE
+            if (PerformanceIndexRoute().IsMatch(route))
+            {
+                var paginationRequest = new PaginationRequest
+                {
+                    Page = memoryService.ArtistPagination?.Page ?? MemoryService.DefaultPage,
+                    PageSize = memoryService.ArtistPagination?.PageSize ?? MemoryService.DefaultPageSize
+                };
+
+                Data = await Fetch<PagedServiceResult<IList<PerformanceResult>, PerformanceFilterResult>>(async () => await performanceApiService.GetAll(paginationRequest, memoryService.PerformanceFilter?.ToRequest() ?? new PerformanceFilterRequest()));
+
+                if (Data is PagedServiceResult<IList<PerformanceResult>, PerformanceFilterResult> performancesPagedServiceResult)
+                {
+                    memoryService.PerformanceFilter = performancesPagedServiceResult.Filter;
+                    memoryService.PerformancePagination = performancesPagedServiceResult.Pagination;
+
+                    return performancesPagedServiceResult.Messages?.HasMessage is not true;
+                }
+
+                return false;
+            }
+
+            if (PersonEditRoute().IsMatch(route))
+            {
+                Data = await Fetch<ServiceResult<PerformanceResult>>(async () => await performanceApiService.Get(int.Parse(route.Split('/').Last())));
+
+                if (Data is ServiceResult<PerformanceResult> performanceServiceResult)
+                {
+                    return performanceServiceResult.Messages?.HasMessage is not true;
+                }
+
+                return false;
+            }
+
+
+
             //IMAGE
             if (ImageIndexRoute().IsMatch(route))
             {
@@ -222,6 +259,12 @@ namespace MusicClub.Cms.Blazor.Services
         [GeneratedRegex(@"^/person/edit/\d+$", RegexOptions.IgnoreCase, "nl-AW")]
         private static partial Regex PersonEditRoute();
 
+        //PERSON
+        [GeneratedRegex(@"^/performance$", RegexOptions.IgnoreCase, "nl-AW")]
+        private static partial Regex PerformanceIndexRoute();
+
+        [GeneratedRegex(@"^/performance/edit/\d+$", RegexOptions.IgnoreCase, "nl-AW")]
+        private static partial Regex PerformanceEditRoute();
 
         //IMAGE
         [GeneratedRegex(@"^/image$", RegexOptions.IgnoreCase, "nl-AW")]

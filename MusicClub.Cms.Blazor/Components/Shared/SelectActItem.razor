@@ -1,0 +1,18 @@
+﻿<div>
+     <h4>@Model.Start?.ToLongDateString() @Model.Name</h4>
+
+    @if(Model.Title is { Length: > 0} title)
+    {
+        <p>@title</p>
+    }
+
+    <button @onclick="() => OnSelected.InvokeAsync(Model)">Select</button>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public required ActResult Model { get; set; }
+
+    [Parameter, EditorRequired]
+    public required EventCallback<ActResult> OnSelected { get; set; }
+}

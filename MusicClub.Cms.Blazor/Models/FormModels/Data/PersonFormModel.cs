@@ -1,10 +1,11 @@
-﻿using MusicClub.Dto.Attributes;
+﻿using MusicClub.Cms.Blazor.Interfaces;
+using MusicClub.Dto.Attributes;
 using MusicClub.Dto.Results;
 using System.ComponentModel.DataAnnotations;
 
 namespace MusicClub.Cms.Blazor.Models.FormModels.Data
 {
-    public class PersonFormModel
+    public class PersonFormModel : IImageSelect
     {
         [Required]
         public string? Firstname { get; set; }

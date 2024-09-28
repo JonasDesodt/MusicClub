@@ -1,5 +1,95 @@
-﻿<h3>Index</h3>
+﻿@page "/performance"
+
+@layout PerformanceLayout
+
+@implements IDisposable
+
+@inject IPerformanceService PerformanceApiService
+@inject NavigationManager NavigationManager
+@inject DataController DataControllerService
+@inject MemoryService MemoryService
+
+<section class="index-page @(isSelectOpen ? "select-open" : "select-closed")">
+    <h3>Index</h3>
+
+    <NavLink class="button" href="performance/create">Create</NavLink>
+
+    <PerformanceFilterForm EditContext="filterContext"
+                   OnSelectDisplayStateChanged="(state) => isSelectOpen = state"
+                   OnReset="() => FetchPerformances(MemoryService.GetDefaultPaginationRequest(), new PerformanceFilterRequest())"
+                   OnValidSubmit="() => FetchPerformances(MemoryService.GetDefaultPaginationRequest(), ((PerformanceFilterFormModel?)filterContext?.Model)?.ToRequest() ?? new PerformanceFilterRequest())" />
+
+    @if (PerformancesPagedServiceResult is not null)
+    {
+
+        <PagedList OnPageChanged="@(async (request) => { await FetchPerformances(request, PerformancesPagedServiceResult.Filter.ToRequest());  })"
+                   PagedServiceResult="PerformancesPagedServiceResult" Context="PerformanceResult">
+            <ItemTemplate>
+                <div>
+                    @if (PerformanceResult.Image is not null)
+                    {
+                        <img src="@($"https://localhost:7061/image/download/{PerformanceResult.Image?.Id}")" />
+
+                    }
+                    else
+                    {
+                        <p>no image</p>
+                    }
+
+                    <div>
+                        @if (!string.IsNullOrWhiteSpace(PerformanceResult.Artist.Alias))
+                        {
+                            <h4>@PerformanceResult.Artist.Alias (@PerformanceResult.Artist.Person?.Firstname @PerformanceResult.Artist.Person?.Lastname)</h4>
+                            
+                        }
+                        else
+                        {
+                            <h4>@PerformanceResult.Artist.Person?.Firstname @PerformanceResult.Artist.Person?.Lastname</h4>
+                        }
+
+                        <ul>
+                            <li>Lineup: @PerformanceResult.Act.Lineup.Doors.ToLongDateString() @PerformanceResult.Act.Lineup.Title</li>
+                            <li>Act: @PerformanceResult.Act.Start?.ToLongDateString() @PerformanceResult.Act.Name</li>
+                        </ul>
+
+                        <NavLink href="@($"performance/edit/{PerformanceResult.Id}")" class="button">Edit</NavLink>
+                    </div>
+                </div>
+            </ItemTemplate>
+        </PagedList>
+    }
+</section>
 
 @code {
+    private PagedServiceResult<IList<PerformanceResult>, PerformanceFilterResult>? PerformancesPagedServiceResult;
 
+    private EditContext? filterContext { get; set; }
+
+    private bool isSelectOpen = false;
+
+    protected override void OnInitialized()
+    {
+        PerformancesPagedServiceResult = (PagedServiceResult<IList<PerformanceResult>, PerformanceFilterResult>?)DataControllerService.Data;
+
+        if (PerformancesPagedServiceResult is null) return;
+
+        filterContext = new(PerformancesPagedServiceResult.Filter.ToFormModel());
+
+        base.OnInitialized();
+    }
+
+    private async Task FetchPerformances(PaginationRequest paginationRequest, PerformanceFilterRequest performanceFilterRequest)
+    {
+        PerformancesPagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<PerformanceResult>, PerformanceFilterResult>>(async () => await PerformanceApiService.GetAll(paginationRequest, performanceFilterRequest));
+
+        MemoryService.PerformanceFilter = PerformancesPagedServiceResult.Filter;
+        MemoryService.PerformancePagination = PerformancesPagedServiceResult.Pagination;
+
+        filterContext = new(PerformancesPagedServiceResult.Filter.ToFormModel());
+    }
+
+    public void Dispose()
+    {
+        DataControllerService.Data = null;
+    }
 }

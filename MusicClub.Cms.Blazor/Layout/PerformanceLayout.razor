@@ -8,19 +8,20 @@
 @inject NavigationManager NavigationManager
 
 <section class="layout">
-    @if(NavigationManager.ToBaseRelativePath(NavigationManager.Uri) == "artist")
+    @if (NavigationManager.ToBaseRelativePath(NavigationManager.Uri) == "performance")
     {
         <NavLink href="/" class="button">Home</NavLink>
-    } else
+    }
+    else
     {
-        <NavLink href="/artist" class="button">Index</NavLink>
+        <NavLink href="/performance" class="button">Index</NavLink>
     }
 
-    <h2>Artist</h2>
+    <h2>Performance</h2>
 
     @Body
 </section>
 
 @code {
-    public void Dispose() => MemoryService.DisposeArtistData();
+    public void Dispose() => MemoryService.DisposePerformanceData();
 }

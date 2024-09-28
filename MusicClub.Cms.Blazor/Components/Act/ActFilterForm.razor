@@ -27,9 +27,9 @@
                 <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="((ActFilterFormModel)EditContext.Model).Start" id="start" />
             </div>
 
-            <SelectImage Model="((ActFilterFormModel)EditContext.Model).Image"
+            <SelectImage Model="((ActFilterFormModel)EditContext.Model).ImageResult"
                          OnClicked="async () => await FetchImages(new PaginationRequest { Page = 1, PageSize = 2}, new ImageFilterRequest())"
-                         OnRemoveRequest="() => { ((ActFilterFormModel)EditContext.Model).ImageId = null; ((ActFilterFormModel)EditContext.Model).Image = null; }" />
+                         OnRemoveRequest="() => { ((ActFilterFormModel)EditContext.Model).ImageId = null; ((ActFilterFormModel)EditContext.Model).ImageResult = null; }" />
 
         </Inputs>
     </Filters>
@@ -89,7 +89,7 @@
 
         if (((ActFilterFormModel)EditContext.Model).ImageId is { } id && id > 0)
         {
-            tags.Add("image:" + ((ActFilterFormModel)EditContext.Model).Image?.Alt ?? id.ToString(), (value) => ((ActFilterFormModel)EditContext.Model).ImageId = null); //todo, convert value to null int?
+            tags.Add("image:" + ((ActFilterFormModel)EditContext.Model).ImageResult?.Alt ?? id.ToString(), (value) => ((ActFilterFormModel)EditContext.Model).ImageId = null); //todo, convert value to null int?
         }
 
 
@@ -115,7 +115,7 @@
         if (EditContext is null || EditContext.Model is not ActFilterFormModel filterFormModel) return;
 
         filterFormModel.ImageId = imageResult.Id;
-        filterFormModel.Image = imageResult;
+        filterFormModel.ImageResult = imageResult;
 
         //not necessary if the filters are re-rendered when selecting a image
         EditContext.NotifyFieldChanged(FieldIdentifier.Create(() => filterFormModel.ImageId));

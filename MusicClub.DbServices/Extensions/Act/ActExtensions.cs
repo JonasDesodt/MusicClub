@@ -18,10 +18,10 @@ namespace MusicClub.DbServices.Extensions.Act
 
         public static IQueryable<DbCore.Models.Act> IncludeAll(this IQueryable<DbCore.Models.Act> query)
         {
-            return query.Include(a => a.Image)
-                        .Include(a => a.Jobs)
-                        .Include(a => a.Lineup)
-                        .Include(a => a.Performances);
+            return query.Include(x => x.Image)
+                        .Include(x => x.Jobs)
+                        .Include(x => x.Lineup)
+                        .Include(x => x.Performances);
         }
 
         public static IQueryable<ActResult> ToResults(this IQueryable<DbCore.Models.Act> query)

@@ -18,7 +18,6 @@ namespace MusicClub.Dto.Requests
         [Min(1)]
         public required int ActId { get; set; }
 
-        [Required]
         [Min(1)]
         public int? BandnameId { get; set; }
     }

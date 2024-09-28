@@ -25,9 +25,9 @@ namespace MusicClub.DbServices.Extensions.Performance
         public static IQueryable<DbCore.Models.Performance> IncludeAll(this IQueryable<DbCore.Models.Performance> query)
         {
             return query.Include(p => p.Image)
-                        .Include(p => p.Artist)
+                        .Include(p => p.Artist).ThenInclude(a => a != null ? a.Person: null)
                         .Include(p => p.Bandname)
-                        .Include(p => p.Act);
+                        .Include(p => p.Act).ThenInclude(a => a != null ? a.Lineup : null);
         }
 
         public static IQueryable<PerformanceResult> ToResults(this IQueryable<DbCore.Models.Performance> query)
