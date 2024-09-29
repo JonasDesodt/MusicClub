@@ -259,7 +259,7 @@ namespace MusicClub.Cms.Blazor.Services
         [GeneratedRegex(@"^/person/edit/\d+$", RegexOptions.IgnoreCase, "nl-AW")]
         private static partial Regex PersonEditRoute();
 
-        //PERSON
+        //PERFORMANCE
         [GeneratedRegex(@"^/performance$", RegexOptions.IgnoreCase, "nl-AW")]
         private static partial Regex PerformanceIndexRoute();
 
@@ -291,5 +291,27 @@ namespace MusicClub.Cms.Blazor.Services
         {
             OnFetchStateChanged?.Invoke(this, true);
         }
+
+
+        //private async Task<bool> HandleIndexRouteMatch<TDataRequest, TDataResult, TFilterRequest, TFilterResult>(IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult> apiService) where TFilterRequest: new()
+        //{
+        //    var paginationRequest = new PaginationRequest
+        //    {
+        //        Page = memoryService.ActPagination?.Page ?? MemoryService.DefaultPage,
+        //        PageSize = memoryService.ActPagination?.PageSize ?? MemoryService.DefaultPageSize
+        //    };
+
+        //    Data = await Fetch<PagedServiceResult<IList<TDataResult>, TFilterResult>>(async () => await apiService.GetAll(paginationRequest, memoryService.ActFilter?.ToRequest() ?? new TFilterRequest()));
+
+        //    if (Data is PagedServiceResult<IList<TDataResult>, TFilterResult> actsPagedServiceResult)
+        //    {
+        //        memoryService.ActFilter = actsPagedServiceResult.Filter;
+        //        memoryService.ActPagination = actsPagedServiceResult.Pagination;
+
+        //        return actsPagedServiceResult.Messages?.HasMessage is not true;
+        //    }
+
+        //    return false;
+        //}
     }
 }

@@ -72,8 +72,7 @@
                 </div>
             </div>
 
-            <SelectImage Model="PerformanceFormModel.ImageResult"
-
+            <ImageInput Model="PerformanceFormModel.ImageResult"
                          OnClicked="() => showImageSelect = true"
                          OnRemoveRequest="() => { PerformanceFormModel.ImageId = null; PerformanceFormModel.ImageResult = null; MemoryService.HasUnsavedData = true; }" />
         </div>

@@ -12,7 +12,7 @@
             <InputText @bind-Value="((PerformanceFilterFormModel)EditContext.Model).Instrument" id="instrument" />
         </div>
 
-        <SelectImage Model="((PerformanceFilterFormModel)EditContext.Model).ImageResult"
+        <ImageInput Model="((PerformanceFilterFormModel)EditContext.Model).ImageResult"
                      OnClicked="async () => await FetchImages(new PaginationRequest { Page = 1, PageSize = 2}, new ImageFilterRequest())"
                      OnRemoveRequest="() => { ((PerformanceFilterFormModel)EditContext.Model).ImageId = null; ((PerformanceFilterFormModel)EditContext.Model).ImageResult = null; }" />
     </Inputs>

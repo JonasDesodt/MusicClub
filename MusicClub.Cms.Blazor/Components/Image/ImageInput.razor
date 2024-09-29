@@ -1,5 +1,47 @@
-﻿<h3>ImageInput</h3>
+﻿<div class="select-image">
+    @if (Model is not null)
+    {
+        <label for="imageId">Image</label>
+    }
+    else
+    {
+        <p class="label">Image</p>
+    }
+
+    <div>
+        <div>
+            <p>@(Model?.Alt ?? "no image")</p>
+
+            @if (Model is not null)
+            {
+                <InputNumber @bind-Value="Model.Id" id="imageId" hidden />
+
+                <img src="@($"https://localhost:7061/image/download/{Model.Id}")" />
+            }
+        </div>
+
+        <div>
+            @if (Model is not null)
+            {
+                <button type="button" @onclick="OnClicked">Change</button>
+
+                <button type="button" @onclick="OnRemoveRequest" class="warning">Remove</button>
+            }
+            else
+            {
+                <button type="button" @onclick="OnClicked">Add</button>
+            }
+        </div>
+    </div>
+</div>
 
 @code {
+    [Parameter, EditorRequired]
+    public ImageResult? Model { get; set; }
 
+    [Parameter, EditorRequired]
+    public EventCallback OnClicked { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnRemoveRequest { get; set; }
 }

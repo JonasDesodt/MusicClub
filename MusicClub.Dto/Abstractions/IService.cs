@@ -1,5 +1,4 @@
 ﻿using MusicClub.Dto.Transfer;
-using MusicClub.Dto.Attributes;
 
 namespace MusicClub.Dto.Abstractions
 {
