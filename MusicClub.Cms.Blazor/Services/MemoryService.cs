@@ -8,6 +8,7 @@ namespace MusicClub.Cms.Blazor.Services
         public const int DefaultPage = 1;
         public const int DefaultPageSize = 2;
 
+
         public static PaginationRequest GetDefaultPaginationRequest()
         {
             return new PaginationRequest
@@ -91,5 +92,26 @@ namespace MusicClub.Cms.Blazor.Services
         }
 
         public string? NavigationRequest { get; set; }
+
+        private readonly Dictionary<Type, object> _memory = [];
+
+        public void Set(object value)
+        {
+            var type = value.GetType();
+
+            _memory[type] = value;
+        }
+
+        public TType? Get<TType>() where TType : class
+        {
+            if (_memory.TryGetValue(typeof(TType), out object? value))
+            {
+                return value as TType;
+            }
+
+            return null;
+        }
+
+        public void Clear()  => _memory.Clear();
     }
 }

@@ -1,8 +1,11 @@
-﻿using MusicClub.Dto.Results;
+﻿using MusicClub.Dto.Abstractions;
+using MusicClub.Dto.Extensions.Performance;
+using MusicClub.Dto.Filters.Requests;
+using MusicClub.Dto.Results;
 
 namespace MusicClub.Dto.Filters.Results
 {
-    public class PerformanceFilterResult : Sort
+    public class PerformanceFilterResult : Sort, IConvertToRequest<PerformanceFilterRequest>
     {
         public string? Instrument { get; set; }
 
@@ -20,5 +23,10 @@ namespace MusicClub.Dto.Filters.Results
 
         public int? BandnameId { get; set; }
         public BandnameResult? Bandname { get; set; }
+
+        public PerformanceFilterRequest ToRequest()
+        {
+            return PerformanceFilterResultExtensions.ToRequest(this);
+        }
     }
 }

@@ -1,8 +1,11 @@
-﻿using MusicClub.Dto.Results;
+﻿using MusicClub.Dto.Abstractions;
+using MusicClub.Dto.Extensions.Act;
+using MusicClub.Dto.Filters.Requests;
+using MusicClub.Dto.Results;
 
 namespace MusicClub.Dto.Filters.Results
 {
-    public class ActFilterResult : Sort
+    public partial class ActFilterResult : Sort, IConvertToRequest<ActFilterRequest>
     {
         public string? Name { get; set; }
 
@@ -17,5 +20,10 @@ namespace MusicClub.Dto.Filters.Results
 
         public int? ImageId { get; set; }
         public ImageResult? Image { get; set; }
+
+        public ActFilterRequest ToRequest()
+        {
+            return ActFilterResultExtensions.ToRequest(this);
+        }
     }
 }
