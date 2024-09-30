@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using MusicClub.Cms.Blazor.Attributes;
 using MusicClub.Cms.Blazor.Services;
 using MusicClub.Dto.Abstractions;
 using MusicClub.Dto.Transfer;

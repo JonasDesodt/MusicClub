@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MusicClub.Cms.Blazor.Attributes;
 using MusicClub.Cms.Blazor.Helpers;
+using MusicClub.Cms.Blazor.Services;
 using MusicClub.Dto.Abstractions;
 
-namespace MusicClub.Cms.Blazor.Services
+namespace MusicClub.Cms.Blazor.Controllers
 {
+    [GeneratedDataController]
     public partial class DataController(NavigationManager navigationManager, MemoryService memoryService, IActService actApiService, IArtistService artistApiService, IPersonService personApiService, IPerformanceService performanceApiService, IImageApiService imageApiService, ILineupService lineupApiService) : DataControllerBase(navigationManager, memoryService)
     {
         [PreFetch("Act")]

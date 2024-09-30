@@ -4,6 +4,7 @@ using MusicClub.ApiServices;
 using MusicClub.Cms.Blazor;
 using MusicClub.Dto.Abstractions;
 using MusicClub.Cms.Blazor.Services;
+using MusicClub.Cms.Blazor.Controllers;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -24,6 +25,7 @@ builder.Services.AddScoped<IPerformanceService, PerformanceApiService>();
 builder.Services.AddScoped<IPersonService, PersonApiService>();
 
 builder.Services.AddScoped<DataController>();
+
 builder.Services.AddScoped<MemoryService>();
 
 builder.Services.AddTransient<JsFunctions>();
