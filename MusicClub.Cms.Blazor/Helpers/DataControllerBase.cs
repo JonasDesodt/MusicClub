@@ -112,5 +112,10 @@ namespace MusicClub.Cms.Blazor.Helpers
         }
 
         protected abstract Task<bool> HandleRoute(string route);
-    }
+
+        protected virtual Task<bool> HandleCustomRoute(string route) 
+        {
+            return Task.FromResult(true);
+        }
+    } 
 }

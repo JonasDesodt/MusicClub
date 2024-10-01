@@ -1,6 +1,6 @@
 ﻿@page "/"
 
-@inject IPersonService PersonApiService
+@inject DataController DataControllerService
 
 <PageTitle>Home</PageTitle>
 
@@ -14,6 +14,57 @@ Welcome to your new app.
 <NavLink href="act">Acts</NavLink>
 <NavLink href="performance">Performance</NavLink>
 
-@code {
 
+@if (PerformancesPagedServiceResult?.Data is { } data)
+{
+    <ul>
+        @foreach (var performanceResult in data)
+        {
+            <li>
+                <div>
+                    @if (performanceResult.Image is not null)
+                    {
+                        <img src="@($"https://localhost:7061/image/download/{performanceResult.Image?.Id}")" />
+
+                    }
+                    else
+                    {
+                        <p>no image</p>
+                    }
+
+                    <div>
+                        @if (!string.IsNullOrWhiteSpace(performanceResult.Artist.Alias))
+                        {
+                            <h4>@performanceResult.Artist.Alias (@performanceResult.Artist.Person?.Firstname @performanceResult.Artist.Person?.Lastname)</h4>
+
+                        }
+                        else
+                        {
+                            <h4>@performanceResult.Artist.Person?.Firstname @performanceResult.Artist.Person?.Lastname</h4>
+                        }
+
+                        <ul>
+                            <li>Lineup: @performanceResult.Act.Lineup.Doors.ToLongDateString() @performanceResult.Act.Lineup.Title</li>
+                            <li>Act: @performanceResult.Act.Start?.ToLongDateString() @performanceResult.Act.Name</li>
+                        </ul>
+
+                        <NavLink href="@($"performance/edit/{performanceResult.Id}")" class="button">Edit</NavLink>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private PagedServiceResult<IList<PerformanceResult>, PerformanceFilterResult>? PerformancesPagedServiceResult;
+
+    protected override void OnInitialized()
+    {
+        PerformancesPagedServiceResult = (PagedServiceResult<IList<PerformanceResult>, PerformanceFilterResult>?)DataControllerService.Data;
+
+        if (PerformancesPagedServiceResult is null) return;
+
+        base.OnInitialized();
+    }
 }
