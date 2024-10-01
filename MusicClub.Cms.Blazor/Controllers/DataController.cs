@@ -8,7 +8,6 @@ using MusicClub.Dto.Filters.Results;
 using MusicClub.Dto.Results;
 using MusicClub.Dto.Transfer;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.RegularExpressions;
 
 namespace MusicClub.Cms.Blazor.Controllers
 {
@@ -32,7 +31,6 @@ namespace MusicClub.Cms.Blazor.Controllers
         private readonly ILineupService _lineupApiService = lineupApiService;
 
         [PreFetch("Performance")]
-        [SuppressMessage("Style", "IDE0052:Remove unread private member", Justification = "Used by generated code")]
         private readonly IPerformanceService _performanceApiService = performanceApiService;
 
         [PreFetch("Person")]
@@ -45,7 +43,7 @@ namespace MusicClub.Cms.Blazor.Controllers
         {
             if (route == "/")
             {
-                Data = await Fetch(async () => await _performanceApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 5, }, new PerformanceFilterRequest { }));
+                Data = await Fetch(async () => await _performanceApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 5, }, new PerformanceFilterRequest { SortDirection = Dto.Enums.SortDirection.Ascending, SortProperty = "Start" }));
 
                 if (Data is PagedServiceResult<IList<PerformanceResult>, PerformanceFilterResult> pagedServiceResult)
                 {

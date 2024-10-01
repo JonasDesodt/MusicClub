@@ -9,13 +9,13 @@
 @inject DataController DataControllerService
 @inject MemoryService MemoryService
 
-<section class="index-page @(isSelectOpen ? "select-open" : "select-closed")" >
+<section class="index-page @(isSelectOpen ? "select-open" : "select-closed")">
     <h3>Index</h3>
 
     <NavLink class="button" href="act/create">Create</NavLink>
 
     <ActFilterForm EditContext="filterContext"
-                    OnSelectDisplayStateChanged="(state) => isSelectOpen = state"
+                   OnSelectDisplayStateChanged="(state) => isSelectOpen = state"
                    OnReset="() => FetchActs(MemoryService.GetDefaultPaginationRequest(), new ActFilterRequest())"
                    OnValidSubmit="() => FetchActs(MemoryService.GetDefaultPaginationRequest(), ((ActFilterFormModel?)filterContext?.Model)?.ToRequest() ?? new ActFilterRequest())" />
 
@@ -80,8 +80,8 @@
     {
         ActsPagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<ActResult>, ActFilterResult>>(async () => await ActApiService.GetAll(paginationRequest, actFilterRequest));
 
-        MemoryService.ActFilter = ActsPagedServiceResult.Filter;
-        MemoryService.ActPagination = ActsPagedServiceResult.Pagination;
+        MemoryService.Set(ActsPagedServiceResult.Filter);
+        MemoryService.Set(ActsPagedServiceResult.Pagination);
 
         filterContext = new(ActsPagedServiceResult.Filter.ToFormModel());
     }

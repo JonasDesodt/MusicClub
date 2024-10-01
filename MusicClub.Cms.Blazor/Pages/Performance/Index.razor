@@ -82,8 +82,8 @@
     {
         PerformancesPagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<PerformanceResult>, PerformanceFilterResult>>(async () => await PerformanceApiService.GetAll(paginationRequest, performanceFilterRequest));
 
-        MemoryService.PerformanceFilter = PerformancesPagedServiceResult.Filter;
-        MemoryService.PerformancePagination = PerformancesPagedServiceResult.Pagination;
+        MemoryService.Set(PerformancesPagedServiceResult.Filter);
+        MemoryService.Set(PerformancesPagedServiceResult.Pagination);
 
         filterContext = new(PerformancesPagedServiceResult.Filter.ToFormModel());
     }

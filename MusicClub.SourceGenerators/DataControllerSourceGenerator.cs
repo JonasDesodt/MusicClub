@@ -71,7 +71,6 @@ namespace MusicClub.SourceGenerators
                 builder.Append(GenerateRouteHandlers(type.Key, type.Value));
             }
             builder.AppendLine($"\t\t\treturn await HandleCustomRoute(route);");
-            //builder.AppendLine($"\t\t\treturn true;");
             builder.AppendLine($"\t\t}}");
             builder.AppendLine($"\t}}");
             builder.AppendLine($"}}");

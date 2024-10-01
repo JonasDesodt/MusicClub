@@ -77,8 +77,8 @@
     {
         ArtistsPagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<ArtistResult>, ArtistFilterResult>>(async () => await ArtistApiService.GetAll(paginationRequest, artistFilterRequest));
 
-        MemoryService.ArtistFilter = ArtistsPagedServiceResult.Filter;
-        MemoryService.ArtistPagination = ArtistsPagedServiceResult.Pagination;
+        MemoryService.Set(ArtistsPagedServiceResult.Filter);
+        MemoryService.Set(ArtistsPagedServiceResult.Pagination);
 
         filterContext = new(ArtistsPagedServiceResult.Filter.ToFormModel());
     }

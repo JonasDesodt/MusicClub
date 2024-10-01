@@ -68,8 +68,8 @@
     {
         ImagesPagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<PersonResult>, PersonFilterResult>>(async () => await PersonApiService.GetAll(paginationRequest, personFilterRequest));
 
-        MemoryService.PersonFilter = ImagesPagedServiceResult.Filter;
-        MemoryService.PersonPagination = ImagesPagedServiceResult.Pagination;
+        MemoryService.Set(ImagesPagedServiceResult.Filter);
+        MemoryService.Set(ImagesPagedServiceResult.Pagination);
 
         filterContext = new(ImagesPagedServiceResult.Filter.ToFormModel());
     }

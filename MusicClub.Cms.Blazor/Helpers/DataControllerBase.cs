@@ -71,8 +71,8 @@ namespace MusicClub.Cms.Blazor.Helpers
         {
             var paginationRequest = new PaginationRequest
             {
-                Page = memoryService.ActPagination?.Page ?? MemoryService.DefaultPage,
-                PageSize = memoryService.ActPagination?.PageSize ?? MemoryService.DefaultPageSize
+                Page = memoryService.Get<PaginationResult>()?.Page ?? MemoryService.DefaultPage,
+                PageSize = memoryService.Get<PaginationResult>()?.PageSize ?? MemoryService.DefaultPageSize
             };
 
             var filterResult = memoryService.Get<TFilterResult>();
