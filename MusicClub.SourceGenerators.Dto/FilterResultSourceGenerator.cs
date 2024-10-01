@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace MusicClub.SourceGenerators.Dto
@@ -28,20 +29,34 @@ namespace MusicClub.SourceGenerators.Dto
                 }
 
                 //var classNamespace = classSymbol.ContainingNamespace.ToDisplayString(); 
+                var requestClassName = classSymbol.Name;
 
-                var className = classSymbol.Name;
-                if (className.Contains("Request"))
+                var resultClassName = requestClassName;
+                if (resultClassName.Contains("Request"))
                 {
-                    className = className.Replace("Request", "Result");
+                    resultClassName = resultClassName.Replace("Request", "Result");
                 }
                 else
                 {
-                    className += "Result";
+                    resultClassName += "Result";
                 }
 
                 var classProperties = classSymbol.GetMembers().OfType<IPropertySymbol>();
 
-                context.AddSource($"{className}.g.cs", GenerateFilterResultClass("MusicClub.Dto.Filters.GeneratedResults", className, classProperties));
+                var baseClassSymbol = classSymbol.BaseType;
+                IEnumerable<IPropertySymbol> baseClassProperties = new List<IPropertySymbol>();
+                //todo: get namespace of the baseclass!!
+
+                //TODO: dynamic NAMESPACES !!
+
+                if (baseClassSymbol != null && !SymbolHelper.IsObjectType(baseClassSymbol, context.Compilation))
+                {
+                    baseClassProperties = baseClassSymbol.GetMembers().OfType<IPropertySymbol>();
+                }
+
+                context.AddSource($"{resultClassName}.g.cs", GenerateFilterResultClass("MusicClub.Dto.Filters.GeneratedResults", resultClassName, baseClassSymbol.Name, classProperties));
+
+                context.AddSource($"{resultClassName}Extensions.g.cs", GenerateFilterResultExtensionsClass(requestClassName, resultClassName, classProperties.Concat(baseClassProperties)));
             }
         }
 
@@ -77,22 +92,26 @@ namespace MusicClub.SourceGenerators.Dto
             return classes;
         }
 
-        private string GenerateFilterResultClass(string classNamespace, string className, IEnumerable<IPropertySymbol> classProperties)
+        private string GenerateFilterResultClass(string classNamespace, string className, string baseClassName, IEnumerable<IPropertySymbol> classProperties)
         {
+            var b = " : ";
+
             var builder = new StringBuilder();
+            builder.AppendLine($"using MusicClub.Dto.Filters.Extensions;");
+            builder.AppendLine($"using MusicClub.Dto.Filters;");
             builder.AppendLine($"using MusicClub.Dto.Filters.Requests;"); //TODO: make dynamic (get all the different namespace from all the annoted filterrequests)
             builder.AppendLine($"using MusicClub.Dto.Results;"); //TODO: make dynamic (get all the different namespace from all the annoted filterrequests)
             builder.AppendLine();
             builder.AppendLine($"namespace {classNamespace}");
             builder.AppendLine($"{{");
-            builder.AppendLine($"\tpublic class {className}");
+            builder.AppendLine($"\tpublic class {className}{(string.IsNullOrWhiteSpace(baseClassName) ? string.Empty : b + baseClassName)}");
             builder.AppendLine($"\t{{");
 
-            foreach(var property in classProperties)
+            foreach (var property in classProperties)
             {
                 builder.AppendLine($"\t\tpublic {property.Type} {property.Name} {{get; set;}}");
 
-                if((!property.Name.Equals("Id")) && property.Name.EndsWith("Id"))
+                if ((!property.Name.Equals("Id")) && property.Name.EndsWith("Id"))
                 {
                     var name = property.Name.Replace("Id", "Result");
 
@@ -102,17 +121,41 @@ namespace MusicClub.SourceGenerators.Dto
 
             builder.AppendLine($"\t\tpublic {className.Replace("Result", "Request")} ToRequest()");
             builder.AppendLine($"\t\t{{");
-
-            //TEMP HACK
-            builder.AppendLine($"\t\t\treturn new {className.Replace("Result", "Request")}();");
-
-            //builder.AppendLine($"\t\t\treturn {className}Extensions.ToRequest(this);");
-            
+            builder.AppendLine($"\t\t\treturn {className}Extensions.ToRequest(this);");
             builder.AppendLine($"\t\t}}");
 
             builder.AppendLine($"\t}}");
             builder.AppendLine($"}}");
-            
+
+            return builder.ToString();
+        }
+
+        private string GenerateFilterResultExtensionsClass(string requestClassName, string resultClassName, IEnumerable<IPropertySymbol> classProperties)
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine($"using MusicClub.Dto.Filters.Requests;"); //TODO: make dynamic (get all the different namespace from all the annoted filterrequests)
+            builder.AppendLine($"using MusicClub.Dto.Filters.GeneratedResults;");
+            builder.AppendLine();
+            builder.AppendLine($"namespace MusicClub.Dto.Filters.Extensions");
+            builder.AppendLine($"{{");
+            builder.AppendLine($"\tpublic static class {resultClassName}Extensions");
+            builder.AppendLine($"\t{{");
+            builder.AppendLine($"\t\tpublic static {requestClassName} ToRequest(this {resultClassName} result)");
+            builder.AppendLine($"\t\t{{");
+
+            builder.AppendLine($"\t\t\treturn new {requestClassName} {{");
+
+            foreach (var property in classProperties)
+            {
+                builder.AppendLine($"\t\t\t\t{property.Name} = result.{property.Name},");
+            }
+
+            builder.AppendLine($"\t\t\t}};");
+            builder.AppendLine($"\t\t}}");
+            builder.AppendLine($"\t}}");
+            builder.AppendLine($"}}");
+
+
             return builder.ToString();
         }
     }
