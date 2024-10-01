@@ -11,7 +11,7 @@ namespace MusicClub.SourceGenerators
     {
         public void Execute(GeneratorExecutionContext context)
         {
-            if (!(context.SyntaxReceiver is DataControllerSyntaxReceiver receiver))
+            if (!(context.SyntaxReceiver is ClassDeclarationSyntaxReceiver receiver))
                 return;
 
             var parameters = new Dictionary<string, string>();
@@ -34,8 +34,7 @@ namespace MusicClub.SourceGenerators
 
         public void Initialize(GeneratorInitializationContext context)
         {
-            context.RegisterForSyntaxNotifications(() => new DataControllerSyntaxReceiver());
-
+            context.RegisterForSyntaxNotifications(() => new ClassDeclarationSyntaxReceiver());
         }
 
         private string GenerateRouteHandlers(string name, string type)
@@ -78,7 +77,7 @@ namespace MusicClub.SourceGenerators
             return builder.ToString();
         }
 
-        private ClassDeclarationSyntax FindGeneratedDataControllerAttribute(DataControllerSyntaxReceiver receiver, Compilation compilation)
+        private ClassDeclarationSyntax FindGeneratedDataControllerAttribute(ClassDeclarationSyntaxReceiver receiver, Compilation compilation)
         {
             foreach (var classDeclaration in receiver.Classes)
             {
@@ -101,34 +100,6 @@ namespace MusicClub.SourceGenerators
             }
 
             return null;
-        }
-    }
-
-    public class RazorClassSyntaxReceiver : ISyntaxReceiver
-    {
-        //todo: filter on razor.cs classes
-
-        public List<ClassDeclarationSyntax> Classes { get; } = new List<ClassDeclarationSyntax>();
-
-        public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
-        {
-            if (syntaxNode is ClassDeclarationSyntax classDeclaration)
-            {
-                Classes.Add(classDeclaration);
-            }
-        }
-    }
-
-    public class DataControllerSyntaxReceiver : ISyntaxReceiver
-    {
-        public List<ClassDeclarationSyntax> Classes { get; } = new List<ClassDeclarationSyntax>();
-
-        public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
-        {
-            if (syntaxNode is ClassDeclarationSyntax classDeclaration)
-            {
-                Classes.Add(classDeclaration);
-            }
         }
     }
 

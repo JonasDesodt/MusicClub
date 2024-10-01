@@ -2,6 +2,7 @@
 
 namespace MusicClub.Dto.Filters.Requests
 {
+    [GenerateFilterResult]
     public class PerformanceFilterRequest : Sort
     {
         public string? Instrument { get; set; }

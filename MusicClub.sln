@@ -15,9 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicClub.Dto", "MusicClub.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicClub.Cms.Blazor", "MusicClub.Cms.Blazor\MusicClub.Cms.Blazor.csproj", "{30559686-58F8-4B82-B6F0-9AB70902065D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicClub.SourceGenerators", "MusicClub.SourceGenerators\MusicClub.SourceGenerators.csproj", "{EF528077-E29F-4C46-A7F7-A4EE3134E333}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicClub.SourceGenerators", "MusicClub.SourceGenerators\MusicClub.SourceGenerators.csproj", "{EF528077-E29F-4C46-A7F7-A4EE3134E333}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicClub.Testzone", "MusicClub.Testzone\MusicClub.Testzone.csproj", "{70AAB9A1-BA6C-4C45-848F-4873F2FBB7F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicClub.SourceGenerators.Dto", "MusicClub.SourceGenerators.Dto\MusicClub.SourceGenerators.Dto.csproj", "{B567D30A-9F4A-438F-8FC7-B994D74E2CFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -125,6 +127,18 @@ Global
 		{70AAB9A1-BA6C-4C45-848F-4873F2FBB7F1}.Release|x64.Build.0 = Release|Any CPU
 		{70AAB9A1-BA6C-4C45-848F-4873F2FBB7F1}.Release|x86.ActiveCfg = Release|Any CPU
 		{70AAB9A1-BA6C-4C45-848F-4873F2FBB7F1}.Release|x86.Build.0 = Release|Any CPU
+		{B567D30A-9F4A-438F-8FC7-B994D74E2CFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B567D30A-9F4A-438F-8FC7-B994D74E2CFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B567D30A-9F4A-438F-8FC7-B994D74E2CFD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B567D30A-9F4A-438F-8FC7-B994D74E2CFD}.Debug|x64.Build.0 = Debug|Any CPU
+		{B567D30A-9F4A-438F-8FC7-B994D74E2CFD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B567D30A-9F4A-438F-8FC7-B994D74E2CFD}.Debug|x86.Build.0 = Debug|Any CPU
+		{B567D30A-9F4A-438F-8FC7-B994D74E2CFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B567D30A-9F4A-438F-8FC7-B994D74E2CFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B567D30A-9F4A-438F-8FC7-B994D74E2CFD}.Release|x64.ActiveCfg = Release|Any CPU
+		{B567D30A-9F4A-438F-8FC7-B994D74E2CFD}.Release|x64.Build.0 = Release|Any CPU
+		{B567D30A-9F4A-438F-8FC7-B994D74E2CFD}.Release|x86.ActiveCfg = Release|Any CPU
+		{B567D30A-9F4A-438F-8FC7-B994D74E2CFD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

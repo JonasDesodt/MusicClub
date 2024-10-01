@@ -1,4 +1,6 @@
-﻿namespace MusicClub.Dto.Requests
+﻿using MusicClub.Dto.Attributes;
+
+namespace MusicClub.Dto.Requests
 {
     public class ImageDbRequest
     {

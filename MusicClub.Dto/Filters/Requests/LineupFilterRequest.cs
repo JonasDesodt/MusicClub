@@ -1,5 +1,8 @@
-﻿namespace MusicClub.Dto.Filters.Requests
+﻿using MusicClub.Dto.Attributes;
+
+namespace MusicClub.Dto.Filters.Requests
 {
+    [GenerateFilterResult]
     public class LineupFilterRequest : Sort
     {
         public string? Title { get; set; }
