@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
 using System.Text;
@@ -10,37 +11,37 @@ namespace MusicClub.SourceGenerators.ApiServices
     {
         public void Initialize(GeneratorInitializationContext context)
         {
-            context.RegisterForSyntaxNotifications(() => new InterfaceDeclarationSyntaxReceiver());
+            context.RegisterForSyntaxNotifications(() => new ClassDeclarationSyntaxReceiver());
         }
 
         public void Execute(GeneratorExecutionContext context)
         {
-            if (!(context.SyntaxReceiver is InterfaceDeclarationSyntaxReceiver receiver))
+            if (!(context.SyntaxReceiver is ClassDeclarationSyntaxReceiver receiver))
             {
                 return;
             }
 
-            var interfaceDeclarationSyntaxes = GetServiceInterfaces(receiver, context.Compilation);
+            var classDeclarationSyntaxes = GetApiServiceClasses(receiver, context.Compilation);
 
-            foreach (var (attributeSyntax, interfaceDeclarationSyntax) in interfaceDeclarationSyntaxes)
+            foreach (var (attributeSyntax, classDeclarationSyntax) in classDeclarationSyntaxes)
             {
-                var interfaceSemanticModel = context.Compilation.GetSemanticModel(interfaceDeclarationSyntax.SyntaxTree);
+                //var classSemanticModel = context.Compilation.GetSemanticModel(classDeclarationSyntax.SyntaxTree);
 
                 //todo: search for 'model' arg or '_model' field
                 var attributeArgument = attributeSyntax.ArgumentList?.Arguments.FirstOrDefault()?.Expression;
                 var model = attributeArgument is LiteralExpressionSyntax literalExpression ? literalExpression.Token.ValueText : attributeArgument?.ToString() ?? "unknown";
 
-                context.AddSource($"{model}ApiService.g.cs", GetApiServiceClass(GetImports(), "MusicClub.ApiServices", model, "MusicClubApi"));
+                context.AddSource($"{model}ApiService.g.cs", GetApiServiceClass(GetImports(), NamespaceHelper.GetContainingNamespace(classDeclarationSyntax), classDeclarationSyntax.Identifier.Text, model, "MusicClubApi"));
             }
         }
 
-        private IEnumerable<(AttributeSyntax attributeSyntax, InterfaceDeclarationSyntax inferfaceDeclarationSyntax)> GetServiceInterfaces(InterfaceDeclarationSyntaxReceiver receiver, Compilation compilation)
+        private IEnumerable<(AttributeSyntax attributeSyntax, ClassDeclarationSyntax classDeclarationSyntax)> GetApiServiceClasses(ClassDeclarationSyntaxReceiver receiver, Compilation compilation)
         {
             //var interfaces = new List<InterfaceDeclarationSyntax>();
 
-            foreach (var interfaceDeclaration in receiver.Interfaces)
+            foreach (var classDeclaration in receiver.Classes)
             {
-                foreach (var attributeList in interfaceDeclaration.AttributeLists)
+                foreach (var attributeList in classDeclaration.AttributeLists)
                 {
                     foreach (var attribute in attributeList.Attributes)
                     {
@@ -51,7 +52,7 @@ namespace MusicClub.SourceGenerators.ApiServices
                         {
                             if (attributeSymbol.ToString() == $"MusicClub.Dto.Attributes.GenerateApiService.GenerateApiService(string)")
                             {
-                                yield return (attribute, interfaceDeclaration);
+                                yield return (attribute, classDeclaration);
                             }
                         }
                     }
@@ -59,7 +60,7 @@ namespace MusicClub.SourceGenerators.ApiServices
             }
         }
 
-        private string GetApiServiceClass(IList<string> importedNamespaces, string containingNamespace, string model, string client)
+        private string GetApiServiceClass(IList<string> importedNamespaces, string containingNamespace, string name, string model, string client)
         {
             var builder = new StringBuilder();
 
@@ -71,7 +72,7 @@ namespace MusicClub.SourceGenerators.ApiServices
             builder.AppendLine();
             builder.AppendLine($"namespace {containingNamespace}");
             builder.AppendLine($"{{");
-            builder.AppendLine($"\tpublic class {model}ApiService(IHttpClientFactory httpClientFactory) : I{model}ApiService");
+            builder.AppendLine($"\tpublic partial class {name}(IHttpClientFactory httpClientFactory) : I{model}Service");
             builder.AppendLine($"\t{{");
 
             builder.AppendLine($"\t\tpublic async Task<ServiceResult<{model}Result>> Create({model}Request request)");

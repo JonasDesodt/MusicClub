@@ -1,6 +1,4 @@
-﻿using MusicClub.Dto.Attributes;
-
-namespace MusicClub.ApiServices
+﻿namespace MusicClub.ApiServices
 {
     [GenerateApiService("Act")]
     public interface IActApiService : IActService { }

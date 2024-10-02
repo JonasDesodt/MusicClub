@@ -1,6 +1,4 @@
-﻿using MusicClub.ApiServices.Extensions;
-
-namespace MusicClub.ApiServices
+﻿namespace MusicClub.ApiServices
 {
     public class ImageApiService(IHttpClientFactory httpClientFactory) : IImageApiService
     {

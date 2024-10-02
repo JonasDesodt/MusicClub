@@ -7,12 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ActApiService.cs" />
-    <Compile Remove="ArtistApiService.cs" />
-    <Compile Remove="LineupApiService.cs" />
-    <Compile Remove="PerformanceApiService.cs" />
-    <Compile Remove="PersonApiService.cs" />
-    <Compile Remove="WorkerApiService.cs" />
+    <Compile Remove="IActApiService.cs" />
+    <Compile Remove="IArtistApiService.cs" />
+    <Compile Remove="ILineupApiService.cs" />
+    <Compile Remove="IPerformanceApiService.cs" />
+    <Compile Remove="IPersonApiService.cs" />
   </ItemGroup>
 
   <ItemGroup>
