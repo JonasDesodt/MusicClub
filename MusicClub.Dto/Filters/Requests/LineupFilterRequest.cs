@@ -1,14 +1,27 @@
 ﻿using MusicClub.Dto.Attributes;
+using MusicClub.Dto.Filters.Results;
+using MusicClub.Dto.Filters.Extensions;
+using MusicClub.Dto.Abstractions;
 
 namespace MusicClub.Dto.Filters.Requests
 {
     [GenerateFilterResult]
-    public class LineupFilterRequest : Sort
+    public class LineupFilterRequest : Sort, IFilterRequestConverter<LineupFilterResult>
     {
         public string? Title { get; set; }
 
         public DateTime? Doors { get; set; }
 
         public int? ImageId { get; set; }
+
+        public string ToQueryString()
+        {
+            return "";
+        }
+
+        public LineupFilterResult ToResult()
+        {
+            return LineupFilterRequestExtensions.ToResult(this);
+        }
     }
 }

@@ -16,91 +16,27 @@ namespace MusicClub.ApiServices
     {
         public async Task<ServiceResult<ImageResult>> Create(ImageApiRequest request)
         {
-            var httpClient = httpClientFactory.CreateClient("MusicClubApi");
-
-            var httpResponseMessage = await httpClient.PostAsync("Image/", request.ToMultipartFormDataContent());
-
-            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<ImageResult>>() is not { } result)
-            {
-                return new ServiceResult<ImageResult>
-                {
-                    Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Fetch error." }],
-                };
-            }
-
-            return result;
+            return await httpClientFactory.Create<ImageApiRequest, ImageResult>("MusicClubApi", "Image/", request);
         }
 
         public async Task<ServiceResult<ImageResult>> Delete(int id)
         {
-            var httpClient = httpClientFactory.CreateClient("MusicClubApi");
-
-            var httpResponseMessage = await httpClient.DeleteAsync("Image/" + id);
-
-            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<ImageResult>>() is not { } result)
-            {
-                return new ServiceResult<ImageResult>
-                {
-                    Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Failed to fetch the Image." }],
-                };
-            }
-
-            return result;
+            return await httpClientFactory.Delete<ImageResult>("MusicClubApi", "Image/", id);
         }
 
         public async Task<ServiceResult<bool>> Exists(int id)
         {
             throw new NotImplementedException();
-
-            //var httpClient = httpClientFactory.CreateClient("MusicClubApi");
-
-            //var httpResponseMessage = await httpClient.GetAsync("Image/Exists/" + id);
-
-            //if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<bool>>() is not { } result)
-            //{
-            //    return new ServiceResult<bool>
-            //    {
-            //        Messages = [new ServiceMessage { Description = "Failed to search the Image." }],
-            //    };
-            //}
-
-            //return result;
         }
 
         public async Task<ServiceResult<ImageResult>> Get(int id)
         {
-            var httpClient = httpClientFactory.CreateClient("MusicClubApi");
-
-            var httpResponseMessage = await httpClient.GetAsync("Image/" + id);
-
-            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<ImageResult>>() is not { } result)
-            {
-                return new ServiceResult<ImageResult>
-                {
-                    Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Failed to fetch the Image." }],
-                };
-            }
-
-            return result;
+            return await httpClientFactory.Get<ImageResult>("MusicClubApi", "Image/", id);
         }
 
         public async Task<PagedServiceResult<IList<ImageResult>, ImageFilterResult>> GetAll(PaginationRequest paginationRequest, ImageFilterRequest filterRequest)
         {
-            var httpClient = httpClientFactory.CreateClient("MusicClubApi");
-
-            var httpResponseMessage = await httpClient.GetAsync("Image?" + paginationRequest.ToQueryString() + filterRequest.ToQueryString());
-
-            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<PagedServiceResult<IList<ImageResult>, ImageFilterResult>>() is not { } result)
-            {
-                return new PagedServiceResult<IList<ImageResult>, ImageFilterResult>
-                {
-                    Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Failed to fetch the Images." }],
-                    Pagination = paginationRequest.ToResult(0),
-                    Filter = filterRequest.ToResult()
-                };
-            }
-
-            return result;
+            return await httpClientFactory.GetAll<ImageResult, ImageFilterRequest, ImageFilterResult>("MusicClubApi", "Image?", paginationRequest, filterRequest);
         }
 
         public Task<ServiceResult<bool>> IsReferenced(int id)
@@ -110,19 +46,7 @@ namespace MusicClub.ApiServices
 
         public async Task<ServiceResult<ImageResult>> Update(int id, ImageApiRequest request)
         {
-            var httpClient = httpClientFactory.CreateClient("MusicClubApi");
-
-            var httpResponseMessage = await httpClient.PutAsync("Image/" + id, request.ToMultipartFormDataContent());
-
-            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<ImageResult>>() is not { } result)
-            {
-                return new ServiceResult<ImageResult>
-                {
-                    Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = "Failed to update the image." }],
-                };
-            }
-
-            return result;
+            return await httpClientFactory.Update<ImageApiRequest, ImageResult>("MusicClubApi", "Image/", id, request);
         }
     }
 }

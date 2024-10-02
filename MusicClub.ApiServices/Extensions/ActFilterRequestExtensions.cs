@@ -25,12 +25,12 @@ namespace MusicClub.ApiServices.Extensions
                 builder.Append($"&{nameof(ActFilterRequest.Duration)}={actFilter.Duration}");
             }
 
-            if(actFilter.Start is not null)
+            if (actFilter.Start is not null)
             {
                 builder.Append($"&{nameof(ActFilterRequest.Start)}={actFilter.Start}");
             }
 
-            if(actFilter.ImageId > 0)
+            if (actFilter.ImageId > 0)
             {
                 builder.Append($"&{nameof(ActFilterRequest.ImageId)}={actFilter.ImageId}");
             }
