@@ -2,7 +2,7 @@
 using MusicClub.Dto.Abstractions;
 using MusicClub.Dto.Enums;
 using MusicClub.Dto.Extensions;
-using MusicClub.Dto.Extensions.Performance;
+using MusicClub.Dto.Filters.Extensions;
 using MusicClub.Dto.Filters.Requests;
 using MusicClub.Dto.Filters.Results;
 using MusicClub.Dto.Requests;

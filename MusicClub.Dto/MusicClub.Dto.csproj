@@ -4,6 +4,26 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="Extensions\Act\ActFilterRequestExtensions.cs" />
+	  <Compile Remove="Extensions\Act\ActFilterResultExtensions.cs" />
+	  <Compile Remove="Extensions\Artist\ArtistFilterRequestExtensions.cs" />
+	  <Compile Remove="Extensions\Artist\ArtistFilterResultExtensions.cs" />
+	  <Compile Remove="Extensions\Image\ImageFilterRequestExtensions.cs" />
+	  <Compile Remove="Extensions\Image\ImageFilterResultExtensions.cs" />
+	  <Compile Remove="Extensions\Lineup\LineupFilterRequestExtensions.cs" />
+	  <Compile Remove="Extensions\Lineup\LineupFilterResultExtensions.cs" />
+	  <Compile Remove="Extensions\Performance\PerformanceFilterRequestExtensions.cs" />
+	  <Compile Remove="Extensions\Performance\PerformanceFilterResultExtensions.cs" />
+	  <Compile Remove="Extensions\Person\PersonFilterRequestExtensions.cs" />
+	  <Compile Remove="Extensions\Person\PersonFilterResultExtensions.cs" />
+	  <Compile Remove="Filters\Results\ActFilterResult.cs" />
+	  <Compile Remove="Filters\Results\ArtistFilterResult.cs" />
+	  <Compile Remove="Filters\Results\ImageFilterResult.cs" />
+	  <Compile Remove="Filters\Results\LineupFilterResult.cs" />
+	  <Compile Remove="Filters\Results\PerformanceFilterResult.cs" />
+	  <Compile Remove="Filters\Results\PersonFilterResult.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.7" />
@@ -11,5 +31,15 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\MusicClub.SourceGenerators.Dto\MusicClub.SourceGenerators.Dto.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Extensions\Act\" />
+	  <Folder Include="Extensions\Artist\" />
+	  <Folder Include="Extensions\Image\" />
+	  <Folder Include="Extensions\Lineup\" />
+	  <Folder Include="Extensions\Performance\" />
+	  <Folder Include="Extensions\Person\" />
+	  <Folder Include="Filters\Results\" />
 	</ItemGroup>
 </Project>

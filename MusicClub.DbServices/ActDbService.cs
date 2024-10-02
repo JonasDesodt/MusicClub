@@ -13,7 +13,7 @@ using MusicClub.DbServices.Extensions.Act;
 using MusicClub.DbServices.Extensions.Lineup;
 using MusicClub.DbServices.Extensions.Performance;
 using MusicClub.DbServices.Extensions.Job;
-using MusicClub.Dto.Extensions.Act;
+using MusicClub.Dto.Filters.Extensions;
 using MusicClub.DbServices.Extensions.Image;
 
 namespace MusicClub.DbServices
@@ -94,7 +94,7 @@ namespace MusicClub.DbServices
                 }
                 else
                 {
-                    filterResult.Image = imageResult;
+                    filterResult.ImageResult = imageResult;
                 }
             }
 
@@ -109,7 +109,7 @@ namespace MusicClub.DbServices
                 }
                 else
                 {
-                    filterResult.Lineup = lineupResult;
+                    filterResult.LineupResult = lineupResult;
                 }
             }  
 

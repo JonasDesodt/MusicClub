@@ -10,7 +10,7 @@ using MusicClub.Dto.Results;
 using MusicClub.Dto.Transfer;
 using MusicClub.Dto.Extensions;
 using MusicClub.DbServices.Extensions.Image;
-using MusicClub.Dto.Extensions.Image;
+using MusicClub.Dto.Filters.Extensions;
 
 namespace MusicClub.DbServices
 {

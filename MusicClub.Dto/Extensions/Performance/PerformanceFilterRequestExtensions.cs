@@ -11,14 +11,14 @@ namespace MusicClub.Dto.Extensions.Performance
             return new PerformanceFilterResult
             {
                 ActId = request.ActId,
-                Act = actResult,
+                ActResult = actResult,
                 ArtistId = request.ArtistId,
-                Artist = artistResult,
+                ArtistResult = artistResult,
                 BandnameId = request.BandnameId,
-                Bandname = bandnameResult,
+                BandnameResult = bandnameResult,
                 Created = request.Created,
                 ImageId = request.ImageId,
-                Image = imageResult,
+                ImageResult = imageResult,
                 Instrument = request.Instrument,
                 SortDirection = request.SortDirection,
                 SortProperty = request.SortProperty,

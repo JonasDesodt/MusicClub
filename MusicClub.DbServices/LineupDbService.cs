@@ -12,7 +12,7 @@ using MusicClub.Dto.Filters.Requests;
 using MusicClub.DbServices.Extensions.Act;
 using MusicClub.DbServices.Extensions.Lineup;
 using MusicClub.DbServices.Extensions.Service;
-using MusicClub.Dto.Extensions.Lineup;
+using MusicClub.Dto.Filters.Extensions;
 
 namespace MusicClub.DbServices
 {

@@ -12,13 +12,13 @@ namespace MusicClub.Cms.Blazor.Extensions.Performance.Filters
                 Updated = result.Updated,
                 Created = result.Created,
                 ActId = result.ActId,
-                Act = result.Act,
+                Act = result.ActResult,
                 ArtistId = result.ArtistId,
-                Artist = result.Artist,
+                Artist = result.ArtistResult,
                 BandnameId = result.BandnameId,
-                Bandname = result.Bandname,
+                Bandname = result.BandnameResult,
                 ImageId = result.ImageId,   
-                ImageResult = result.Image,
+                ImageResult = result.ImageResult,
                 SortDirection = result.SortDirection,
                 SortProperty = result.SortProperty
             };

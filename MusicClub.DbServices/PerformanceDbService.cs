@@ -4,7 +4,7 @@ using MusicClub.DbCore.Models;
 using MusicClub.DbServices.Extensions;
 using MusicClub.DbServices.Extensions.Artist;
 using MusicClub.DbServices.Extensions.Performance;
-using MusicClub.Dto.Extensions.Performance;
+using MusicClub.Dto.Filters.Extensions;
 using MusicClub.Dto.Abstractions;
 using MusicClub.Dto.Filters.Requests;
 using MusicClub.Dto.Filters.Results;
@@ -94,7 +94,7 @@ namespace MusicClub.DbServices
                 }
                 else
                 {
-                    filterResult.Act = actResult;
+                    filterResult.ActResult = actResult;
                 }
             }
 
@@ -109,7 +109,7 @@ namespace MusicClub.DbServices
                 }
                 else
                 {
-                    filterResult.Artist = artistResult;
+                    filterResult.ArtistResult = artistResult;
                 }
             }
 
@@ -124,7 +124,7 @@ namespace MusicClub.DbServices
                 }
                 else
                 {
-                    filterResult.Bandname = bandnameResult;
+                    filterResult.BandnameResult = bandnameResult;
                 }
             }
 
@@ -139,7 +139,7 @@ namespace MusicClub.DbServices
                 }
                 else
                 {
-                    filterResult.Image = imageResult;
+                    filterResult.ImageResult = imageResult;
                 }
             }
 

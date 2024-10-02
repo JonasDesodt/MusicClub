@@ -6,7 +6,7 @@ using MusicClub.DbServices.Extensions.Artist;
 using MusicClub.DbServices.Extensions.Performance;
 using MusicClub.Dto.Abstractions;
 using MusicClub.Dto.Extensions;
-using MusicClub.Dto.Extensions.Artist;
+using MusicClub.Dto.Filters.Extensions;
 using MusicClub.Dto.Filters.Requests;
 using MusicClub.Dto.Filters.Results;
 using MusicClub.Dto.Requests;

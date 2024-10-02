@@ -18,7 +18,7 @@ namespace MusicClub.Cms.Blazor.Models.FormModels.Filters
 
         [Min(1)]
         public int? LineupId { get; set; }
-        public LineupResult? Lineup { get; set; }
+        public LineupResult? LineupResult { get; set; }
 
         [Min(1)]
         public int? ImageId { get; set; }

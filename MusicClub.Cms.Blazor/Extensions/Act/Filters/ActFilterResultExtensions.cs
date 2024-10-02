@@ -15,8 +15,8 @@ namespace MusicClub.Cms.Blazor.Extensions.Act.Filters
                 LineupId = result.LineupId,
                 ImageId = result.ImageId,
                 Duration = result.Duration,
-                ImageResult = result.Image,
-                Lineup = result.Lineup,
+                ImageResult = result.ImageResult,
+                LineupResult = result.LineupResult,
                 Start = result.Start,
                 Title = result.Title
             };
