@@ -1,14 +1,4 @@
 ﻿using MusicClub.ApiServices.Extensions;
-using MusicClub.Dto.Abstractions;
-using MusicClub.Dto.Enums;
-using MusicClub.Dto.Extensions;
-using MusicClub.Dto.Filters.Extensions;
-using MusicClub.Dto.Filters.Requests;
-using MusicClub.Dto.Filters.Results;
-using MusicClub.Dto.Requests;
-using MusicClub.Dto.Results;
-using MusicClub.Dto.Transfer;
-using System.Net.Http.Json;
 
 namespace MusicClub.ApiServices
 {

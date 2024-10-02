@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MusicClub.ApiServices;
 using MusicClub.Cms.Blazor.Attributes;
 using MusicClub.Cms.Blazor.Helpers;
 using MusicClub.Cms.Blazor.Services;
@@ -12,15 +13,15 @@ using System.Diagnostics.CodeAnalysis;
 namespace MusicClub.Cms.Blazor.Controllers
 {
     [GeneratedDataController]
-    public partial class DataController(NavigationManager navigationManager, MemoryService memoryService, IActService actApiService, IArtistService artistApiService, IPersonService personApiService, IPerformanceService performanceApiService, IImageApiService imageApiService, ILineupService lineupApiService) : DataControllerBase(navigationManager, memoryService)
+    public partial class DataController(NavigationManager navigationManager, MemoryService memoryService, IActApiService actApiService, IArtistApiService artistApiService, IPersonApiService personApiService, IPerformanceApiService performanceApiService, IImageApiService imageApiService, ILineupApiService lineupApiService) : DataControllerBase(navigationManager, memoryService)
     {
         [PreFetch("Act")]
         [SuppressMessage("Style", "IDE0052:Remove unread private member", Justification = "Used by generated code")]
-        private readonly IActService _actApiService = actApiService;
+        private readonly IActApiService _actApiService = actApiService;
 
         [PreFetch("Artist")]
         [SuppressMessage("Style", "IDE0052:Remove unread private member", Justification = "Used by generated code")]
-        private readonly IArtistService _artistApiService = artistApiService;
+        private readonly IArtistApiService _artistApiService = artistApiService;
 
         [PreFetch("Image")]
         [SuppressMessage("Style", "IDE0052:Remove unread private member", Justification = "Used by generated code")]
@@ -28,14 +29,14 @@ namespace MusicClub.Cms.Blazor.Controllers
 
         [PreFetch("Lineup")]
         [SuppressMessage("Style", "IDE0052:Remove unread private member", Justification = "Used by generated code")]
-        private readonly ILineupService _lineupApiService = lineupApiService;
+        private readonly ILineupApiService _lineupApiService = lineupApiService;
 
         [PreFetch("Performance")]
-        private readonly IPerformanceService _performanceApiService = performanceApiService;
+        private readonly IPerformanceApiService _performanceApiService = performanceApiService;
 
         [PreFetch("Person")]
         [SuppressMessage("Style", "IDE0052:Remove unread private member", Justification = "Used by generated code")]
-        private readonly IPersonService _personApiService = personApiService;
+        private readonly IPersonApiService _personApiService = personApiService;
 
         protected override partial Task<bool> HandleRoute(string route);
 

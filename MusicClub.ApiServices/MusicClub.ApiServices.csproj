@@ -7,11 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ActApiService.cs" />
+    <Compile Remove="ArtistApiService.cs" />
+    <Compile Remove="LineupApiService.cs" />
+    <Compile Remove="PerformanceApiService.cs" />
+    <Compile Remove="PersonApiService.cs" />
+    <Compile Remove="WorkerApiService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MusicClub.Dto\MusicClub.Dto.csproj" />
   </ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\MusicClub.SourceGenerators.ApiServices\MusicClub.SourceGenerators.ApiServices.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
 
 </Project>

@@ -17,12 +17,12 @@ builder.Services.AddHttpClient("MusicClubApi", httpClient =>
     httpClient.BaseAddress = new Uri("https://localhost:7061");
 });
 
-builder.Services.AddScoped<IActService, ActApiService>();
-builder.Services.AddScoped<IArtistService, ArtistApiService>();
+builder.Services.AddScoped<IActApiService, ActApiService>();
+builder.Services.AddScoped<IArtistApiService, ArtistApiService>();
 builder.Services.AddScoped<IImageApiService, ImageApiService>();
-builder.Services.AddScoped<ILineupService, LineupApiService>();
-builder.Services.AddScoped<IPerformanceService, PerformanceApiService>();
-builder.Services.AddScoped<IPersonService, PersonApiService>();
+builder.Services.AddScoped<ILineupApiService, LineupApiService>();
+builder.Services.AddScoped<IPerformanceApiService, PerformanceApiService>();
+builder.Services.AddScoped<IPersonApiService, PersonApiService>();
 
 builder.Services.AddScoped<DataController>();
 
