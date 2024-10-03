@@ -1,14 +1,11 @@
-﻿using MusicClub.Dto.Abstractions;
-using MusicClub.Dto.Enums;
+﻿using MusicClub.Dto.Enums;
 using MusicClub.Dto.Extensions;
 using MusicClub.Dto.Filters.Extensions;
-using MusicClub.Dto.Transfer;
-using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace MusicClub.ApiServices.Extensions
 {
-    internal static class HttpClientFactoryExtensions
+    internal static class HttpClientFactoryExtensions 
     {
         public static async Task<ServiceResult<TDataResult>> Create<TDataRequest, TDataResult>(this IHttpClientFactory httpClientFactory, string client, string endpoint, TDataRequest dataRequest)
         {

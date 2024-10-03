@@ -112,6 +112,7 @@ namespace MusicClub.SourceGenerators.ApiServices
 
             builder.AppendLine($"\t}}");
             builder.AppendLine($"}}");
+
             return builder.ToString();
         }
 

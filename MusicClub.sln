@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicClub.Testzone", "Music
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicClub.SourceGenerators.Dto", "MusicClub.SourceGenerators.Dto\MusicClub.SourceGenerators.Dto.csproj", "{B567D30A-9F4A-438F-8FC7-B994D74E2CFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicClub.SourceGenerators.ApiServices", "MusicClub.SourceGenerators.ApiServices\MusicClub.SourceGenerators.ApiServices.csproj", "{B961818A-1F44-4612-A87D-044A9B80CFB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicClub.SourceGenerators.ApiServices", "MusicClub.SourceGenerators.ApiServices\MusicClub.SourceGenerators.ApiServices.csproj", "{B961818A-1F44-4612-A87D-044A9B80CFB7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SourceGenerators", "SourceGenerators", "{547CA781-2A40-41CF-8B30-D7096EC688DA}"
 EndProject
@@ -30,6 +30,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cms", "Cms", "{86F96333-897F-4FE6-BF12-A5D80654CC51}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dto", "Dto", "{A8A74977-6777-4A9D-A43E-CA17C1B4E39C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicClub.Abstractions", "MusicClub.Abstractions\MusicClub.Abstractions.csproj", "{D00A4CEE-5B43-4EBD-BBCC-ED4DA5D19B28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -161,6 +163,18 @@ Global
 		{B961818A-1F44-4612-A87D-044A9B80CFB7}.Release|x64.Build.0 = Release|Any CPU
 		{B961818A-1F44-4612-A87D-044A9B80CFB7}.Release|x86.ActiveCfg = Release|Any CPU
 		{B961818A-1F44-4612-A87D-044A9B80CFB7}.Release|x86.Build.0 = Release|Any CPU
+		{D00A4CEE-5B43-4EBD-BBCC-ED4DA5D19B28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D00A4CEE-5B43-4EBD-BBCC-ED4DA5D19B28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D00A4CEE-5B43-4EBD-BBCC-ED4DA5D19B28}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D00A4CEE-5B43-4EBD-BBCC-ED4DA5D19B28}.Debug|x64.Build.0 = Debug|Any CPU
+		{D00A4CEE-5B43-4EBD-BBCC-ED4DA5D19B28}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D00A4CEE-5B43-4EBD-BBCC-ED4DA5D19B28}.Debug|x86.Build.0 = Debug|Any CPU
+		{D00A4CEE-5B43-4EBD-BBCC-ED4DA5D19B28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D00A4CEE-5B43-4EBD-BBCC-ED4DA5D19B28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D00A4CEE-5B43-4EBD-BBCC-ED4DA5D19B28}.Release|x64.ActiveCfg = Release|Any CPU
+		{D00A4CEE-5B43-4EBD-BBCC-ED4DA5D19B28}.Release|x64.Build.0 = Release|Any CPU
+		{D00A4CEE-5B43-4EBD-BBCC-ED4DA5D19B28}.Release|x86.ActiveCfg = Release|Any CPU
+		{D00A4CEE-5B43-4EBD-BBCC-ED4DA5D19B28}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

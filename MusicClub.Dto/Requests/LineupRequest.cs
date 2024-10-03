@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MusicClub.Dto.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace MusicClub.Dto.Requests
 {
+    [GenerateDataResult]
     public class LineupRequest
     {
         public string? Title { get; set; }
