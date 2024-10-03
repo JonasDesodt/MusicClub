@@ -9,8 +9,8 @@ namespace MusicClub.Cms.Blazor.Extensions.Person.Data
         {
             return new PersonFormModel
             {
-                ImageId = result.Image?.Id,
-                ImageResult = result.Image,
+                ImageId = result.ImageResult?.Id,
+                ImageResult = result.ImageResult,
                 Firstname = result.Firstname,
                 Lastname = result.Lastname
             };

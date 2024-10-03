@@ -1,6 +1,6 @@
 ﻿namespace MusicClub.Dto.Results
 {
-    public class BandResult
+    public partial class BandResult
     {
         public required int Id { get; set; }
 

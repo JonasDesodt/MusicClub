@@ -9,14 +9,14 @@ namespace MusicClub.Cms.Blazor.Extensions.Performance.Data
         {
             return new PerformanceFormModel
             {
-                ActId = result.Act?.Id,
-                ActResult = result.Act,
-                ArtistId = result.Artist?.Id,
-                ArtistResult = result.Artist,
-                BandnameId = result.Bandname?.Id,
-                BandnameResult = result.Bandname,
-                ImageId = result.Image?.Id,
-                ImageResult = result.Image,
+                ActId = result.ActResult?.Id,
+                ActResult = result.ActResult,
+                ArtistId = result.ArtistResult?.Id,
+                ArtistResult = result.ArtistResult,
+                BandnameId = result.BandnameResult?.Id,
+                BandnameResult = result.BandnameResult,
+                ImageId = result.ImageResult?.Id,
+                ImageResult = result.ImageResult,
                 Instrument = result.Instrument
             };
         }

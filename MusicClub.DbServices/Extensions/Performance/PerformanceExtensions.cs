@@ -36,12 +36,12 @@ namespace MusicClub.DbServices.Extensions.Performance
             {
                 Created = p.Created,
                 Id = p.Id,
-                Image = p.Image != null ? p.Image.ToResult() : null,
+                ImageResult = p.Image != null ? p.Image.ToResult() : null,
                 Updated = p.Updated,
                 Instrument = p.Instrument,
-                Bandname = p.Bandname != null ? p.Bandname.ToResult() : null,
-                Act = p.Act!.ToResult(), //todo: temp hack, deal with null reference    
-                Artist = p.Artist!.ToResult()  //todo: temp hack, deal with null reference    
+                BandnameResult = p.Bandname != null ? p.Bandname.ToResult() : null,
+                ActResult = p.Act!.ToResult(), //todo: temp hack, deal with null reference    
+                ArtistResult = p.Artist!.ToResult()  //todo: temp hack, deal with null reference    
             });
         }
 
@@ -126,12 +126,12 @@ namespace MusicClub.DbServices.Extensions.Performance
             {
                 Created = performance.Created,
                 Id = performance.Id,
-                Image = performance.Image != null ? performance.Image.ToResult() : null,
+                ImageResult = performance.Image != null ? performance.Image.ToResult() : null,
                 Updated = performance.Updated,
                 Instrument = performance.Instrument,
-                Bandname = performance.Bandname != null ? performance.Bandname.ToResult() : null,
-                Act = performance.Act!.ToResult(), //todo: temp hack, deal with null reference    
-                Artist = performance.Artist!.ToResult()  //todo: temp hack, deal with null reference    
+                BandnameResult = performance.Bandname != null ? performance.Bandname.ToResult() : null,
+                ActResult = performance.Act!.ToResult(), //todo: temp hack, deal with null reference    
+                ArtistResult = performance.Artist!.ToResult()  //todo: temp hack, deal with null reference    
             };
         }
     }

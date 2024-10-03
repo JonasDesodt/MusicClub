@@ -25,15 +25,15 @@
 
                 <div>
 
-                    @if (PerformanceFormModel.ArtistResult is { Person: not null } artistResult)
+                    @if (PerformanceFormModel.ArtistResult is { PersonResult: not null } artistResult)
                     {
                         if (artistResult.Alias is { Length: > 0 } alias)
                         {
-                            <h4>@alias (@artistResult.Person.Firstname @artistResult.Person.Lastname)</h4>
+                            <h4>@alias (@artistResult.PersonResult.Firstname @artistResult.PersonResult.Lastname)</h4>
                         }
                         else
                         {
-                            <h4>@artistResult.Person.Firstname @artistResult.Person.Lastname</h4>
+                            <h4>@artistResult.PersonResult.Firstname @artistResult.PersonResult.Lastname</h4>
                         }
                     }
                     else

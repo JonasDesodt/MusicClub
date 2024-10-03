@@ -24,9 +24,9 @@
                    PagedServiceResult="ArtistsPagedServiceResult" Context="ArtistResult">
             <ItemTemplate>
                 <div>
-                    @if (ArtistResult.Image is not null)
+                    @if (ArtistResult.ImageResult is not null)
                     {
-                        <img src="@($"https://localhost:7061/image/download/{ArtistResult.Image?.Id}")" />
+                        <img src="@($"https://localhost:7061/image/download/{ArtistResult.ImageResult?.Id}")" />
 
                     }
                     else
@@ -39,14 +39,14 @@
                         {
                             <h4>@ArtistResult.Alias</h4>
 
-                            @if (ArtistResult.Person is not null)
+                            @if (ArtistResult.PersonResult is not null)
                             {
-                                <p>(@ArtistResult.Person.Firstname @ArtistResult.Person?.Lastname)</p>
+                                <p>(@ArtistResult.PersonResult.Firstname @ArtistResult.PersonResult?.Lastname)</p>
                             }
                         }
-                        else if (ArtistResult.Person is not null)
+                        else if (ArtistResult.PersonResult is not null)
                         {
-                            <h4>@ArtistResult.Person.Firstname @ArtistResult.Person.Lastname</h4>
+                            <h4>@ArtistResult.PersonResult.Firstname @ArtistResult.PersonResult.Lastname</h4>
                         }
 
                         <NavLink href="@($"artist/edit/{ArtistResult.Id}")" class="button">Edit</NavLink>

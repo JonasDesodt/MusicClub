@@ -10,10 +10,10 @@ namespace MusicClub.Cms.Blazor.Extensions.Act.Data
             return new ActFormModel
             {
                 Duration = result.Duration,
-                ImageId = result.Image?.Id ?? null,
-                ImageResult = result.Image,
-                LineupId = result.Lineup.Id,
-                LineupResult = result.Lineup,
+                ImageId = result.ImageResult?.Id ?? null,
+                ImageResult = result.ImageResult,
+                LineupId = result.LineupResult.Id,
+                LineupResult = result.LineupResult,
                 Name = result.Name,
                 Start = result.Start,
                 Title = result.Title                      

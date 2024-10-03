@@ -34,9 +34,9 @@ namespace MusicClub.DbServices.Extensions.Artist
                 PerformancesCount = a.Performances.Count,
                 Created = a.Created,
                 Id = a.Id,
-                Image = a.Image != null ? a.Image.ToResult() : null,
+                ImageResult = a.Image != null ? a.Image.ToResult() : null,
                 Updated = a.Updated,
-                Person = a.Person != null ? a.Person.ToResult() : null
+                PersonResult = a.Person != null ? a.Person.ToResult() : null
             });
         }
 
@@ -105,9 +105,9 @@ namespace MusicClub.DbServices.Extensions.Artist
                 Alias = artist.Alias,
                 Created = artist.Created,
                 Id = artist.Id,
-                Image = artist.Image?.ToResult(),
+                ImageResult = artist.Image?.ToResult(),
                 Updated = artist.Updated,
-                Person = artist.Person?.ToResult(),
+                PersonResult = artist.Person?.ToResult(),
                 PerformancesCount = artist.Performances.Count
             };
         }

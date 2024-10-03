@@ -26,9 +26,9 @@
                    PagedServiceResult="ActsPagedServiceResult" Context="ActResult">
             <ItemTemplate>
                 <div>
-                    @if (ActResult.Image is not null)
+                    @if (ActResult.ImageResult is not null)
                     {
-                        <img src="@($"https://localhost:7061/image/download/{ActResult.Image?.Id}")" />
+                        <img src="@($"https://localhost:7061/image/download/{ActResult.ImageResult?.Id}")" />
 
                     }
                     else

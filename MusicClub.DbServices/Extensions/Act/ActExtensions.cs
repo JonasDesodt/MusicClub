@@ -35,10 +35,10 @@ namespace MusicClub.DbServices.Extensions.Act
                 PerformancesCount = a.Performances.Count,
                 Created = a.Created,
                 Id = a.Id,
-                Image = a.Image != null ? a.Image.ToResult() : null,
+                ImageResult = a.Image != null ? a.Image.ToResult() : null,
                 Updated = a.Updated,
                 JobsCount = a.Jobs.Count,
-                Lineup = a.Lineup!.ToResult() //TODO: temp hack (!), deal w/ null reference
+                LineupResult = a.Lineup!.ToResult() //TODO: temp hack (!), deal w/ null reference
             });
         }
 
@@ -139,10 +139,10 @@ namespace MusicClub.DbServices.Extensions.Act
                 PerformancesCount = act.Performances.Count,
                 Created = act.Created,
                 Id = act.Id,
-                Image = act.Image != null ? act.Image.ToResult() : null,
+                ImageResult = act.Image != null ? act.Image.ToResult() : null,
                 Updated = act.Updated,
                 JobsCount = act.Jobs.Count,
-                Lineup = act.Lineup!.ToResult() //TODO: temp hack (!), deal w/ null reference
+                LineupResult = act.Lineup!.ToResult() //TODO: temp hack (!), deal w/ null reference
             };
         }
     }

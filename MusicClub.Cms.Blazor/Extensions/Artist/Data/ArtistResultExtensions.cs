@@ -9,10 +9,10 @@ namespace MusicClub.Cms.Blazor.Extensions.Artist.Data
         {
             return new ArtistFormModel
             {
-                ImageId = result.Image?.Id,
-                ImageResult = result.Image,
-                PersonId = result.Person?.Id,
-                PersonResult = result.Person,
+                ImageId = result.ImageResult?.Id,
+                ImageResult = result.ImageResult,
+                PersonId = result.PersonResult?.Id,
+                PersonResult = result.PersonResult,
                 Alias = result.Alias
             };
         }

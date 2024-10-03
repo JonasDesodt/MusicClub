@@ -26,9 +26,9 @@
                    PagedServiceResult="PerformancesPagedServiceResult" Context="PerformanceResult">
             <ItemTemplate>
                 <div>
-                    @if (PerformanceResult.Image is not null)
+                    @if (PerformanceResult.ImageResult is not null)
                     {
-                        <img src="@($"https://localhost:7061/image/download/{PerformanceResult.Image?.Id}")" />
+                        <img src="@($"https://localhost:7061/image/download/{PerformanceResult.ImageResult?.Id}")" />
 
                     }
                     else
@@ -37,19 +37,19 @@
                     }
 
                     <div>
-                        @if (!string.IsNullOrWhiteSpace(PerformanceResult.Artist.Alias))
+                        @if (!string.IsNullOrWhiteSpace(PerformanceResult.ArtistResult.Alias))
                         {
-                            <h4>@PerformanceResult.Artist.Alias (@PerformanceResult.Artist.Person?.Firstname @PerformanceResult.Artist.Person?.Lastname)</h4>
+                            <h4>@PerformanceResult.ArtistResult.Alias (@PerformanceResult.ArtistResult.PersonResult?.Firstname @PerformanceResult.ArtistResult.PersonResult?.Lastname)</h4>
                             
                         }
                         else
                         {
-                            <h4>@PerformanceResult.Artist.Person?.Firstname @PerformanceResult.Artist.Person?.Lastname</h4>
+                            <h4>@PerformanceResult.ArtistResult.PersonResult?.Firstname @PerformanceResult.ArtistResult.PersonResult?.Lastname</h4>
                         }
 
                         <ul>
-                            <li>Lineup: @PerformanceResult.Act.Lineup.Doors.ToLongDateString() @PerformanceResult.Act.Lineup.Title</li>
-                            <li>Act: @PerformanceResult.Act.Start?.ToLongDateString() @PerformanceResult.Act.Name</li>
+                            <li>Lineup: @PerformanceResult.ActResult.LineupResult.Doors.ToLongDateString() @PerformanceResult.ActResult.LineupResult.Title</li>
+                            <li>Act: @PerformanceResult.ActResult.Start?.ToLongDateString() @PerformanceResult.ActResult.Name</li>
                         </ul>
 
                         <NavLink href="@($"performance/edit/{PerformanceResult.Id}")" class="button">Edit</NavLink>

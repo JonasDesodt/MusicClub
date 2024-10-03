@@ -24,7 +24,7 @@ namespace MusicClub.DbServices.Extensions.Lineup
                 ServicesCount = lineup.Services.Count,
                 Updated = lineup.Updated,
                 Title = lineup.Title,
-                Image = lineup.Image?.ToResult()
+                ImageResult = lineup.Image?.ToResult()
             };
         }
 
@@ -46,7 +46,7 @@ namespace MusicClub.DbServices.Extensions.Lineup
                 ServicesCount = a.Services.Count,
                 Updated = a.Updated,
                 Title = a.Title,
-                Image = a.Image != null ? a.Image.ToResult() : null
+                ImageResult = a.Image != null ? a.Image.ToResult() : null
             });
         }
 

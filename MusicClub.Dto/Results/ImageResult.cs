@@ -1,6 +1,6 @@
 ﻿namespace MusicClub.Dto.Results
 {
-    public class ImageResult
+    public partial class ImageResult
     {
         public required int Id { get; set; }
 

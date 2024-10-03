@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MusicClub.Dto.Requests
 {
+    [GenerateDataResult]
     public class ArtistRequest
     {
         public string? Alias { get; set; }

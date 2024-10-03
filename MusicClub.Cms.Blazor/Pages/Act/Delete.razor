@@ -42,9 +42,9 @@
 
         <li class="@(showLineupImg ? "show-img" : "hide-img")">
             <p class="label">Lineup</p>
-            <p class="input">@actResult.Lineup.Doors.ToShortDateString() @actResult.Lineup.Title</p>
+            <p class="input">@actResult.LineupResult.Doors.ToShortDateString() @actResult.LineupResult.Title</p>
 
-            @if(actResult.Lineup?.Image is not null)
+            @if(actResult.LineupResult?.ImageResult is not null)
             {
 
                 if (showLineupImg)
@@ -56,16 +56,16 @@
                     <button @onclick="() => showLineupImg = true">Show image</button>
                 }
 
-                <img src="@($"https://localhost:7061/image/download/{actResult.Lineup.Image.Id}?updated={actResult.Lineup.Image.Updated}")" />
+                <img src="@($"https://localhost:7061/image/download/{actResult.LineupResult.ImageResult?.Id}?updated={actResult.LineupResult.ImageResult?.Updated}")" />
             }
 
         </li>
 
         <li class="@(showImageImg ? "show-img" : "hide-img")">
             <p class="label">Image</p>
-            <p class="input">@(actResult.Image?.Alt ?? "/")</p>
+            <p class="input">@(actResult.ImageResult?.Alt ?? "/")</p>
 
-            @if(actResult.Image is not null)
+            @if(actResult.ImageResult is not null)
             {
                 @if (showImageImg)
                 {
@@ -76,7 +76,7 @@
                     <button @onclick="() => showImageImg = true">Show image</button>
                 }
 
-                <img src="@($"https://localhost:7061/image/download/{actResult.Image.Id}?updated={actResult.Image.Updated}")" />
+                <img src="@($"https://localhost:7061/image/download/{actResult.ImageResult.Id}?updated={actResult.ImageResult.Updated}")" />
             }
         </li>
 

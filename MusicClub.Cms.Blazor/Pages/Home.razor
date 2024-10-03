@@ -22,9 +22,9 @@ Welcome to your new app.
         {
             <li>
                 <div>
-                    @if (performanceResult.Image is not null)
+                    @if (performanceResult.ImageResult is not null)
                     {
-                        <img src="@($"https://localhost:7061/image/download/{performanceResult.Image?.Id}")" />
+                        <img src="@($"https://localhost:7061/image/download/{performanceResult.ImageResult?.Id}")" />
 
                     }
                     else
@@ -33,19 +33,19 @@ Welcome to your new app.
                     }
 
                     <div>
-                        @if (!string.IsNullOrWhiteSpace(performanceResult.Artist.Alias))
+                        @if (!string.IsNullOrWhiteSpace(performanceResult.ArtistResult.Alias))
                         {
-                            <h4>@performanceResult.Artist.Alias (@performanceResult.Artist.Person?.Firstname @performanceResult.Artist.Person?.Lastname)</h4>
+                            <h4>@performanceResult.ArtistResult.Alias (@performanceResult.ArtistResult.PersonResult?.Firstname @performanceResult.ArtistResult.PersonResult?.Lastname)</h4>
 
                         }
                         else
                         {
-                            <h4>@performanceResult.Artist.Person?.Firstname @performanceResult.Artist.Person?.Lastname</h4>
+                            <h4>@performanceResult.ArtistResult.PersonResult?.Firstname @performanceResult.ArtistResult.PersonResult?.Lastname</h4>
                         }
 
                         <ul>
-                            <li>Lineup: @performanceResult.Act.Lineup.Doors.ToLongDateString() @performanceResult.Act.Lineup.Title</li>
-                            <li>Act: @performanceResult.Act.Start?.ToLongDateString() @performanceResult.Act.Name</li>
+                            <li>Lineup: @performanceResult.ActResult.LineupResult.Doors.ToLongDateString() @performanceResult.ActResult.LineupResult.Title</li>
+                            <li>Act: @performanceResult.ActResult.Start?.ToLongDateString() @performanceResult.ActResult.Name</li>
                         </ul>
 
                         <NavLink href="@($"performance/edit/{performanceResult.Id}")" class="button">Edit</NavLink>

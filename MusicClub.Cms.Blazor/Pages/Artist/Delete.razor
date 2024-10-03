@@ -27,7 +27,7 @@
 
         <li>
             <p class="label">Person</p>
-            <p class="input">@artistResult.Person?.Firstname @artistResult.Person?.Lastname</p>
+            <p class="input">@artistResult.PersonResult?.Firstname @artistResult.PersonResult?.Lastname</p>
         </li>
 
         <li>
@@ -38,8 +38,8 @@
         <li>
             <p class="label">Image</p>
             <p class="input">
-                @artistResult.Image?.Alt
-                <img src="@($"https://localhost:7061/image/download/{artistResult.Image?.Id}")" />
+                @artistResult.ImageResult?.Alt
+                <img src="@($"https://localhost:7061/image/download/{artistResult.ImageResult?.Id}")" />
             </p>+
         </li>
     </ul>
@@ -57,7 +57,7 @@ else if (artistResult is not null)
     <ul>
         <li>Id: @artistResult.Id</li>
         <li>Alias: @artistResult.Alias</li>
-        <li>Person: @artistResult.Person?.Firstname @artistResult.Person?.Lastname</li>
+        <li>Person: @artistResult.PersonResult?.Firstname @artistResult.PersonResult?.Lastname</li>
         <li>Performances: @artistResult.PerformancesCount</li>
     </ul>
 
