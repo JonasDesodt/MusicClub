@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MusicClub.DbServices\MusicClub.DbServices.csproj" />
+    <ProjectReference Include="..\MusicClub.SourceGenerators.Api\MusicClub.SourceGenerators.Api.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
   </ItemGroup>
 
 </Project>

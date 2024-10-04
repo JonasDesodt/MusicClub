@@ -1,11 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace MusicClub.Dto.Attributes
+namespace MusicClub.Api.Attributes
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class GenerateApiService(string model) : Attribute 
+    public class GenerateApiControllers(string models) : Attribute
     {
         [SuppressMessage("Style", "IDE0052:Remove unread private member", Justification = "The constructor param is used by source generators")]
-        private readonly string _model = model;
+        private readonly string _models = models;
     }
 }

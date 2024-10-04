@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MusicClub.Api.Attributes;
+using MusicClub.DbCore.Models;
 using MusicClub.Dto.Attributes;
 using MusicClub.Dto.Transfer;
 
@@ -6,6 +8,7 @@ namespace MusicClub.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [GenerateApiControllers("Act, Artist, Lineup, Performance, Person")]
     public class ApiControllerBase<TDataRequest, TDataResult, TFilterRequest, TFilterResult>(IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult> dbService) : Controller
     {
         [HttpPost]
@@ -64,3 +67,6 @@ namespace MusicClub.Api.Controllers
         }
     }
 }
+
+//implementation example:
+//public class ActController(IActService dbService) : ApiControllerBase<ActRequest, ActResult, ActFilterRequest, ActFilterResult>(dbService) { }

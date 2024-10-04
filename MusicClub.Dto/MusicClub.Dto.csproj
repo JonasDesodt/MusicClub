@@ -17,12 +17,6 @@
 	  <Compile Remove="Extensions\Performance\PerformanceFilterResultExtensions.cs" />
 	  <Compile Remove="Extensions\Person\PersonFilterRequestExtensions.cs" />
 	  <Compile Remove="Extensions\Person\PersonFilterResultExtensions.cs" />
-	  <Compile Remove="Filters\Results\ActFilterResult.cs" />
-	  <Compile Remove="Filters\Results\ArtistFilterResult.cs" />
-	  <Compile Remove="Filters\Results\ImageFilterResult.cs" />
-	  <Compile Remove="Filters\Results\LineupFilterResult.cs" />
-	  <Compile Remove="Filters\Results\PerformanceFilterResult.cs" />
-	  <Compile Remove="Filters\Results\PersonFilterResult.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -40,6 +34,5 @@
 	  <Folder Include="Extensions\Lineup\" />
 	  <Folder Include="Extensions\Performance\" />
 	  <Folder Include="Extensions\Person\" />
-	  <Folder Include="Filters\Results\" />
 	</ItemGroup>
 </Project>

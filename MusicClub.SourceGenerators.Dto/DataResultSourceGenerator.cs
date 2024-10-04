@@ -87,6 +87,7 @@ namespace MusicClub.SourceGenerators.Dto
         private string GenerateDataResultClass(string classNamespace, string className, string requestClassName, IEnumerable<IPropertySymbol> classProperties)
         {
             var builder = new StringBuilder();
+
             builder.AppendLine($"namespace {classNamespace}");
             builder.AppendLine($"{{");
             builder.AppendLine($"\tpublic partial class {className}");

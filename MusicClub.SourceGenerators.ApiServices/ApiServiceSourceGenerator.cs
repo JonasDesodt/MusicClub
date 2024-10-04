@@ -25,7 +25,6 @@ namespace MusicClub.SourceGenerators.ApiServices
             var (classDeclaration, models) = GetModels(receiver, context.Compilation, "MusicClub.Dto.Attributes.GenerateApiServices.GenerateApiServices(string)");
             if (classDeclaration is null)
             {
-                context.AddSource($"error.g.cs", "//classdeclaration is null");
                 return;
             }
 
@@ -53,16 +52,16 @@ namespace MusicClub.SourceGenerators.ApiServices
                             if (attributeSymbol.ToString() == attributeConstructorName)
                             {
                                 var modelArgument = attribute.ArgumentList.Arguments.FirstOrDefault().Expression;
-                               
-                                
+
+
                                 if (modelArgument != null)
                                 {
                                     var modelValues = modelArgument is LiteralExpressionSyntax literalExpression
-                                    ? literalExpression.Token.ValueText  
-                                    : modelArgument?.ToString() ?? "unknown";  
+                                    ? literalExpression.Token.ValueText
+                                    : modelArgument?.ToString() ?? "unknown";
 
                                     return (classDeclaration, modelValues.Split(',').Select(s => s.Trim()));
-                               
+
                                     //var arrayInitializer = arrayArgument.Expression as ArrayCreationExpressionSyntax;
 
                                     //if (arrayInitializer != null)
