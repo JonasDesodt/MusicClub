@@ -27,7 +27,7 @@ namespace MusicClub.Dto.Filters.Requests
 
         public string ToQueryString()
         {
-            return "";
+            return PerformanceFilterRequestExtensions.ToQueryString(this);
         }
 
         public PerformanceFilterResult ToResult()

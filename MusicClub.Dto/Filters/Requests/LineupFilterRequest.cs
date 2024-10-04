@@ -16,7 +16,7 @@ namespace MusicClub.Dto.Filters.Requests
 
         public string ToQueryString()
         {
-            return "";
+            return LineupFilterRequestExtensions.ToQueryString(this);
         }
 
         public LineupFilterResult ToResult()

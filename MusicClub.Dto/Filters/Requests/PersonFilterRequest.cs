@@ -14,7 +14,7 @@ namespace MusicClub.Dto.Filters.Requests
 
         public string ToQueryString()
         {
-            return "";
+            return PersonFilterRequestExtensions.ToQueryString(this);
         }
 
         public PersonFilterResult ToResult()

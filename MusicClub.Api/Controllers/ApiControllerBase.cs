@@ -67,6 +67,3 @@ namespace MusicClub.Api.Controllers
         }
     }
 }
-
-//implementation example:
-//public class ActController(IActService dbService) : ApiControllerBase<ActRequest, ActResult, ActFilterRequest, ActFilterResult>(dbService) { }

@@ -25,7 +25,7 @@ namespace MusicClub.Dto.Filters.Requests
 
         public string ToQueryString()
         {
-            return "";
+            return ActFilterRequestExtensions.ToQueryString(this);
         }
 
         public ActFilterResult ToResult()

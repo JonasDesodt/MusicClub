@@ -12,7 +12,7 @@ namespace MusicClub.Dto.Filters.Requests
 
         public string ToQueryString()
         {
-            return "";
+            return ImageFilterRequestExtensions.ToQueryString(this);
         }
 
         public ImageFilterResult ToResult()

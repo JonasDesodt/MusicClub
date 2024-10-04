@@ -59,7 +59,7 @@ namespace MusicClub.SourceGenerators.Dto
                 var allProperties = classProperties.Concat(baseClassProperties);
 
                 context.AddSource($"{resultClassName}Extensions.g.cs", GenerateFilterResultExtensionsClass(requestClassName, resultClassName, allProperties));
-           
+
                 context.AddSource($"{requestClassName}Extensions.g.cs", GenerateFilterRequestExtensionsClass(requestClassName, resultClassName, allProperties));
             }
         }
@@ -167,16 +167,12 @@ namespace MusicClub.SourceGenerators.Dto
         private string GenerateFilterRequestExtensionsClass(string requestClassName, string resultClassName, IEnumerable<IPropertySymbol> classProperties)
         {
             var builder = new StringBuilder();
-            builder.AppendLine($"using MusicClub.Dto.Filters.Requests;"); //TODO: make dynamic (get all the different namespace from all the annoted filterrequests)
-            builder.AppendLine($"using MusicClub.Dto.Filters.Results;");
-            builder.AppendLine($"using MusicClub.Dto.Results;");
-            builder.AppendLine();
             builder.AppendLine($"namespace MusicClub.Dto.Filters.Extensions");
             builder.AppendLine($"{{");
             builder.AppendLine($"\tpublic static class {requestClassName}Extensions");
             builder.AppendLine($"\t{{");
             builder.Append($"\t\tpublic static {resultClassName} ToResult(this {requestClassName} request");
-            
+
             //TODO: only loop once over the classProperties
 
             foreach (var property in classProperties)
@@ -204,6 +200,50 @@ namespace MusicClub.SourceGenerators.Dto
 
             builder.AppendLine($"\t\t\t}};");
             builder.AppendLine($"\t\t}}");
+
+            builder.AppendLine($"\t\tpublic static string ToQueryString(this {requestClassName} filter)");
+            builder.AppendLine($"\t\t{{");
+            builder.AppendLine($"\t\t\tvar builder = new StringBuilder();");
+            builder.AppendLine();
+
+            foreach (var property in classProperties)
+            {
+                switch (property.Type.ToString())
+                {
+                    case "string?":
+                        builder.AppendLine($"\t\t\tif(!string.IsNullOrWhiteSpace(filter.{property.Name}))");
+                        builder.AppendLine($"\t\t\t{{");
+                        builder.AppendLine($"\t\t\t\tbuilder.Append($\"&{property.Name}={{filter.{property.Name}}}\");");
+                        builder.AppendLine($"\t\t\t}}");
+                        break;
+                    case "int?":
+                        builder.AppendLine($"\t\t\tif(filter.{property.Name} >= 0)");
+                        builder.AppendLine($"\t\t\t{{");
+                        builder.AppendLine($"\t\t\t\tbuilder.Append($\"&{property.Name}={{filter.{property.Name}}}\");");
+                        builder.AppendLine($"\t\t\t}}");
+                        break;
+                    case "System.DateTime?":
+                        builder.AppendLine($"\t\t\tif(filter.{property.Name} is not null)");
+                        builder.AppendLine($"\t\t\t{{");
+                        builder.AppendLine($"\t\t\t\tbuilder.Append($\"&{property.Name}={{filter.{property.Name}}}\");");
+                        builder.AppendLine($"\t\t\t}}");
+                        break;
+                    case "MusicClub.Dto.Enums.SortDirection":
+                        builder.AppendLine($"\t\t\tif(filter.{property.Name} is SortDirection.Descending)");
+                        builder.AppendLine($"\t\t\t{{");
+                        builder.AppendLine($"\t\t\t\tbuilder.Append($\"&{property.Name}={{filter.{property.Name}}}\");");
+                        builder.AppendLine($"\t\t\t}}");
+                        break;
+                    default:
+                        builder.AppendLine($"//{property.Type} {property.Type.ToDisplayString()}");
+                        break;
+                }
+            }
+
+            builder.AppendLine($"\t\t\treturn builder.ToString();");
+
+            builder.AppendLine($"\t\t}}");
+
             builder.AppendLine($"\t}}");
             builder.AppendLine($"}}");
 
