@@ -1,6 +1,8 @@
-﻿using MusicClub.Dto.Enums;
+﻿using MusicClub.Dto.Abstractions;
+using MusicClub.Dto.Enums;
 using MusicClub.Dto.Extensions;
 using MusicClub.Dto.Filters.Extensions;
+using MusicClub.Dto.Transfer;
 using System.Net.Http.Json;
 
 namespace MusicClub.ApiServices.Extensions

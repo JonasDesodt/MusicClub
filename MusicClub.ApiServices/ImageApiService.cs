@@ -1,4 +1,8 @@
-﻿namespace MusicClub.ApiServices
+﻿using MusicClub.ApiServices.Extensions;
+using MusicClub.Dto.Abstractions;
+using MusicClub.Dto.Transfer;
+
+namespace MusicClub.ApiServices
 {
     public class ImageApiService(IHttpClientFactory httpClientFactory) : IImageApiService
     {

@@ -5,6 +5,9 @@ using MusicClub.Cms.Blazor;
 using MusicClub.Dto.Abstractions;
 using MusicClub.Cms.Blazor.Services;
 using MusicClub.Cms.Blazor.Controllers;
+using MusicClub.Dto.Requests;
+using MusicClub.Dto.Results;
+using MusicClub.Dto.Filters.Requests;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

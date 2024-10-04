@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace MusicClub.SourceGenerators.ApiServices
@@ -21,23 +22,22 @@ namespace MusicClub.SourceGenerators.ApiServices
                 return;
             }
 
-            var classDeclarationSyntaxes = GetApiServiceClasses(receiver, context.Compilation);
-
-            foreach (var (attributeSyntax, classDeclarationSyntax) in classDeclarationSyntaxes)
+            var (classDeclaration, models) = GetModels(receiver, context.Compilation, "MusicClub.Dto.Attributes.GenerateApiServices.GenerateApiServices(string)");
+            if (classDeclaration is null)
             {
-                //var classSemanticModel = context.Compilation.GetSemanticModel(classDeclarationSyntax.SyntaxTree);
+                context.AddSource($"error.g.cs", "//classdeclaration is null");
+                return;
+            }
 
-                //todo: search for 'model' arg or '_model' field
-                var attributeArgument = attributeSyntax.ArgumentList?.Arguments.FirstOrDefault()?.Expression;
-                var model = attributeArgument is LiteralExpressionSyntax literalExpression ? literalExpression.Token.ValueText : attributeArgument?.ToString() ?? "unknown";
-
-                context.AddSource($"{model}ApiService.g.cs", GetApiServiceClass(GetImports(), NamespaceHelper.GetContainingNamespace(classDeclarationSyntax), classDeclarationSyntax.Identifier.Text, model, "MusicClubApi"));
+            foreach (var model in models)
+            {
+                context.AddSource($"{model}ApiService.g.cs", GetApiServiceClass(NamespaceHelper.GetContainingNamespace(classDeclaration), model, classDeclaration.Identifier.Text));
             }
         }
 
-        private IEnumerable<(AttributeSyntax attributeSyntax, ClassDeclarationSyntax classDeclarationSyntax)> GetApiServiceClasses(ClassDeclarationSyntaxReceiver receiver, Compilation compilation)
+        private (ClassDeclarationSyntax, IEnumerable<string>) GetModels(ClassDeclarationSyntaxReceiver receiver, Compilation compilation, string attributeConstructorName)
         {
-            //var interfaces = new List<InterfaceDeclarationSyntax>();
+            var models = new List<string>();
 
             foreach (var classDeclaration in receiver.Classes)
             {
@@ -50,75 +50,54 @@ namespace MusicClub.SourceGenerators.ApiServices
 
                         if (attributeSymbol != null)
                         {
-                            if (attributeSymbol.ToString() == $"MusicClub.Dto.Attributes.GenerateApiService.GenerateApiService(string)")
+                            if (attributeSymbol.ToString() == attributeConstructorName)
                             {
-                                yield return (attribute, classDeclaration);
+                                var modelArgument = attribute.ArgumentList.Arguments.FirstOrDefault().Expression;
+                               
+                                
+                                if (modelArgument != null)
+                                {
+                                    var modelValues = modelArgument is LiteralExpressionSyntax literalExpression
+                                    ? literalExpression.Token.ValueText  
+                                    : modelArgument?.ToString() ?? "unknown";  
+
+                                    return (classDeclaration, modelValues.Split(',').Select(s => s.Trim()));
+                               
+                                    //var arrayInitializer = arrayArgument.Expression as ArrayCreationExpressionSyntax;
+
+                                    //if (arrayInitializer != null)
+                                    //{
+                                    //    // Get the initializers (the values inside the array)
+                                    //    var initializerExpressions = arrayInitializer.Initializer.Expressions;
+
+                                    //    // Convert the values to strings
+                                    //    var values = initializerExpressions.Select(expr => expr.ToString().Trim('"'));
+
+                                    //    return (classDeclaration, models);
+                                    //}
+                                }
                             }
                         }
                     }
                 }
             }
+
+            return (null, models);
         }
 
-        private string GetApiServiceClass(IList<string> importedNamespaces, string containingNamespace, string name, string model, string client)
+        private string GetApiServiceClass(string containingNamespace, string model, string baseClassName)
         {
             var builder = new StringBuilder();
 
-            foreach (var importedNamespace in importedNamespaces)
-            {
-                builder.AppendLine($"using {importedNamespace};");
-            }
-
-            builder.AppendLine();
             builder.AppendLine($"namespace {containingNamespace}");
             builder.AppendLine($"{{");
-            builder.AppendLine($"\tpublic partial class {name}(IHttpClientFactory httpClientFactory) : I{model}Service");
+            builder.AppendLine($"\tpublic class {model}ApiService(IHttpClientFactory httpClientFactory) : {baseClassName}<{model}Request,{model}Result, {model}FilterRequest, {model}FilterResult>(httpClientFactory), I{model}Service"); // todo: make the constructor params dynamic
             builder.AppendLine($"\t{{");
-
-            builder.AppendLine($"\t\tpublic async Task<ServiceResult<{model}Result>> Create({model}Request request)");
-            builder.AppendLine($"\t\t{{");
-            builder.AppendLine($"\t\t\treturn await httpClientFactory.Create<{model}Request, {model}Result>(\"{client}\", \"{model}/\", request);");
-            builder.AppendLine($"\t\t}}");
-
-            builder.AppendLine($"\t\tpublic async Task<ServiceResult<{model}Result>> Delete(int id)");
-            builder.AppendLine($"\t\t{{");
-            builder.AppendLine($"\t\t\treturn await httpClientFactory.Delete<{model}Result>(\"{client}\", \"{model}/\", id);");
-            builder.AppendLine($"\t\t}}");
-
-            builder.AppendLine($"\t\tpublic Task<ServiceResult<bool>> Exists(int id)");
-            builder.AppendLine($"\t\t{{");
-            builder.AppendLine($"\t\t\tthrow new NotImplementedException();");
-            builder.AppendLine($"\t\t}}");
-
-            builder.AppendLine($"\t\tpublic async Task<ServiceResult<{model}Result>> Get(int id)");
-            builder.AppendLine($"\t\t{{");
-            builder.AppendLine($"\t\t\treturn await httpClientFactory.Get<{model}Result>(\"{client}\", \"{model}/\", id);");
-            builder.AppendLine($"\t\t}}");
-
-            builder.AppendLine($"\t\tpublic async Task<PagedServiceResult<IList<{model}Result>, {model}FilterResult>> GetAll(PaginationRequest paginationRequest, {model}FilterRequest filterRequest)");
-            builder.AppendLine($"\t\t{{");
-            builder.AppendLine($"\t\t\treturn await httpClientFactory.GetAll<{model}Result, {model}FilterRequest, {model}FilterResult>(\"{client}\", \"{model}?\", paginationRequest, filterRequest);");
-            builder.AppendLine($"\t\t}}");
-
-            builder.AppendLine($"\t\tpublic Task<ServiceResult<bool>> IsReferenced(int id)");
-            builder.AppendLine($"\t\t{{");
-            builder.AppendLine($"\t\t\tthrow new NotImplementedException();");
-            builder.AppendLine($"\t\t}}");
-
-            builder.AppendLine($"\t\tpublic async Task<ServiceResult<{model}Result>> Update(int id, {model}Request request)");
-            builder.AppendLine($"\t\t{{");
-            builder.AppendLine($"\t\t\treturn await httpClientFactory.Update<{model}Request, {model}Result>(\"{client}\", \"{model}/\", id, request);");
-            builder.AppendLine($"\t\t}}");
-
+            builder.AppendLine($"\t\tprotected override string Endpoint {{ get; }} = \"{model}\";");
             builder.AppendLine($"\t}}");
             builder.AppendLine($"}}");
 
             return builder.ToString();
         }
-
-        private IList<string> GetImports()
-        {
-            return new List<string>(){};
-        }    
     }
 }

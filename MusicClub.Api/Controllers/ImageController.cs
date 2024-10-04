@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MusicClub.Dto.Abstractions;
 using MusicClub.Dto.Attributes;
-using MusicClub.Dto.Requests;
 using MusicClub.Dto.Transfer;
 using MusicClub.DbCore;
-using MusicClub.Dto.Filters.Requests;
 
 namespace MusicClub.Api.Controllers
 {

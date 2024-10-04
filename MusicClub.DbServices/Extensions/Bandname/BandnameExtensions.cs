@@ -11,7 +11,7 @@ namespace MusicClub.DbServices.Extensions.Bandname
         {
             return new BandnameResult
             {
-                Band = bandname.Band!.ToResult(), // todo: deal w/ null reference, temp hack
+                BandResult = bandname.Band!.ToResult(), // todo: deal w/ null reference, temp hack
                 Created = bandname.Created,
                 Id = bandname.Id,
                 Name = bandname.Name,
@@ -31,10 +31,10 @@ namespace MusicClub.DbServices.Extensions.Bandname
         {
             return query.Select(a => new BandnameResult
             {
-                Band = a.Band!.ToResult(),// todo: deal with null reference
+                BandResult = a.Band!.ToResult(),// todo: deal with null reference
                 Created = a.Created,
                 Id = a.Id,
-                Image = a.Image != null ? a.Image.ToResult() : null,
+                ImageResult = a.Image != null ? a.Image.ToResult() : null,
                 Name = a.Name,
                 PerformancesCount = a.Performances.Count,
                 Updated = a.Updated              
