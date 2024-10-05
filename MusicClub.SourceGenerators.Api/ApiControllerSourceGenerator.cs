@@ -18,7 +18,7 @@ namespace MusicClub.SourceGenerators.Api
                 return;
             }
 
-            var (classDeclaration, models) = receiver.GetModels(context.Compilation, "MusicClub.Api.Attributes.GenerateApiControllers.GenerateApiControllers(string)");
+            var (classDeclaration, models) = receiver.GetModels(context.Compilation, "MusicClub.Api.Attributes.GenerateApiControllers.GenerateApiControllers(params string[])");
             if (classDeclaration is null)
             {
                 return;

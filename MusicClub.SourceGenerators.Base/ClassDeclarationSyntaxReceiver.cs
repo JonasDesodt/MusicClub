@@ -3,9 +3,9 @@ using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MusicClub.SourceGenerators.Api
+namespace MusicClub.SourceGenerators.Base
 {
-    internal class ClassDeclarationSyntaxReceiver : ISyntaxReceiver
+   public class ClassDeclarationSyntaxReceiver : ISyntaxReceiver
     {
         public List<ClassDeclarationSyntax> Classes { get; } = new List<ClassDeclarationSyntax>();
 

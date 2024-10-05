@@ -1,5 +1,4 @@
 ﻿using MusicClub.Dto.Attributes;
-using MusicClub.Dto.Filters.Results;
 using MusicClub.Dto.Filters.Extensions;
 using MusicClub.Dto.Abstractions;
 

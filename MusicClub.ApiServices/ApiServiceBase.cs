@@ -3,8 +3,7 @@ using MusicClub.ApiServices.Extensions;
 
 namespace MusicClub.ApiServices
 {
-    //todo : try again to pass a list or array with the strings, or args
-    [GenerateApiServices("Act, Artist, Lineup, Performance, Person")]
+    [GenerateApiServices("Act", "Artist", "Lineup", "Performance", "Person")]
     public abstract class ApiServiceBase<TDataRequest, TDataResult, TFilterRequest, TFilterResult>(IHttpClientFactory httpClientFactory) : IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult>  where TFilterRequest : IFilterRequestConverter<TFilterResult>
     {
         protected abstract string Endpoint { get; }

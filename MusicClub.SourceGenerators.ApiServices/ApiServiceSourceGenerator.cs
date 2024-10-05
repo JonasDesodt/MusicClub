@@ -22,7 +22,7 @@ namespace MusicClub.SourceGenerators.ApiServices
                 return;
             }
 
-            var (classDeclaration, models) = GetModels(receiver, context.Compilation, "MusicClub.Dto.Attributes.GenerateApiServices.GenerateApiServices(string)");
+            var (classDeclaration, models) = GetModels(receiver, context.Compilation, "MusicClub.Dto.Attributes.GenerateApiServices.GenerateApiServices(params string[])");
             if (classDeclaration is null)
             {
                 return;
@@ -51,29 +51,18 @@ namespace MusicClub.SourceGenerators.ApiServices
                         {
                             if (attributeSymbol.ToString() == attributeConstructorName)
                             {
-                                var modelArgument = attribute.ArgumentList.Arguments.FirstOrDefault().Expression;
 
-
-                                if (modelArgument != null)
+                                if (attributeSymbol != null)
                                 {
-                                    var modelValues = modelArgument is LiteralExpressionSyntax literalExpression
-                                    ? literalExpression.Token.ValueText
-                                    : modelArgument?.ToString() ?? "unknown";
+                                    if (attributeSymbol.ToString() == attributeConstructorName)
+                                    {
+                                        models.AddRange(attribute.ArgumentList.Arguments
+                                            .Select(a => a.Expression is LiteralExpressionSyntax literalExpression
+                                            ? literalExpression.Token.ValueText
+                                            : a?.ToString() ?? "unknown"));
 
-                                    return (classDeclaration, modelValues.Split(',').Select(s => s.Trim()));
-
-                                    //var arrayInitializer = arrayArgument.Expression as ArrayCreationExpressionSyntax;
-
-                                    //if (arrayInitializer != null)
-                                    //{
-                                    //    // Get the initializers (the values inside the array)
-                                    //    var initializerExpressions = arrayInitializer.Initializer.Expressions;
-
-                                    //    // Convert the values to strings
-                                    //    var values = initializerExpressions.Select(expr => expr.ToString().Trim('"'));
-
-                                    //    return (classDeclaration, models);
-                                    //}
+                                        return (classDeclaration, models);
+                                    }
                                 }
                             }
                         }
