@@ -8,16 +8,16 @@
 @inject NavigationManager NavigationManager
 
 <section class="layout">
-    @if (NavigationManager.ToBaseRelativePath(NavigationManager.Uri) == "performance")
+    @if (NavigationManager.ToBaseRelativePath(NavigationManager.Uri) == Model.ToLower())
     {
         <NavLink href="/" class="button">Home</NavLink>
     }
     else
     {
-        <NavLink href="/performance" class="button">Index</NavLink>
+        <NavLink href="@($"/{Model.ToLower()}")" class="button">Index</NavLink>
     }
 
-    <h2>Performance</h2>
+    <h2>@Model</h2>
 
     @Body
 </section>
