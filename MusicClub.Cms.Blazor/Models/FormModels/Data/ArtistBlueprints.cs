@@ -11,4 +11,7 @@ namespace MusicClub.Cms.Blazor.Models.FormModels.Data
 
     [GenerateDataFormModelExtensions("Artist")]
     public abstract class ArtistDataFormModelExtensionsBlueprint : ArtistRequest { }
+
+    [GenerateDataResultExtensions("Artist")]
+    public abstract class ArtistDataResultBlueprint : ArtistResult { }
 }

@@ -11,4 +11,7 @@ namespace MusicClub.Cms.Blazor.Models.FormModels.Data
 
     [GenerateDataFormModelExtensions("Act")]
     public abstract class ActDataFormModelExtensionsBlueprint: ActRequest { }
+
+    [GenerateDataResultExtensions("Act")]
+    public abstract class ActDataResultBlueprint : ActResult { }
 }

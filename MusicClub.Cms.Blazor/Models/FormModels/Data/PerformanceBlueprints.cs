@@ -11,4 +11,7 @@ namespace MusicClub.Cms.Blazor.Models.FormModels.Data
 
     [GenerateDataFormModelExtensions("Performance")]
     public abstract class PerformanceDataFormModelExtensionsBlueprint : PerformanceRequest { }
+
+    [GenerateDataResultExtensions("Performance")]
+    public abstract class PerformanceDataResultBlueprint : PerformanceResult { }
 }
