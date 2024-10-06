@@ -2,6 +2,8 @@
 
 @layout ImageCrudLayout
 
+@using MusicClub.Cms.Blazor.Models.FormModels.Data
+
 @inject IImageApiService ImageApiService
 @inject NavigationManager NavigationManager
 @inject MemoryService MemoryService
@@ -28,7 +30,7 @@
 
     private Guid inputFileId = Guid.NewGuid();
 
-    private ImageCreateFormModel? imageFormModel { get; set; }
+    private ImageCreateDataFormModel? imageFormModel { get; set; }
 
     private PagedServiceResult<IList<PersonResult>, PersonFilterResult>? peoplePagedServiceResult { get; set; }
     private PagedServiceResult<IList<ImageResult>, ImageFilterResult>? imagesPagedServiceResult { get; set; }

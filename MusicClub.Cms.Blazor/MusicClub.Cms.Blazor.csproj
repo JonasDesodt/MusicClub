@@ -19,6 +19,7 @@
 	<ItemGroup>
 		<Folder Include="Extensions\Lineup\Data\" />
 	</ItemGroup>
+	
 
 	<!--<PropertyGroup>
 		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>

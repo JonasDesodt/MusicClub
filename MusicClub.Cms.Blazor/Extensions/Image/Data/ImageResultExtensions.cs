@@ -5,9 +5,9 @@ namespace MusicClub.Cms.Blazor.Extensions.Image.Data
 {
     internal static class ImageResultExtensions
     {
-        public static ImageEditFormModel ToEditFormModel(this ImageResult result)
+        public static ImageEditDataFormModel ToEditFormModel(this ImageResult result)
         {
-            return new ImageEditFormModel
+            return new ImageEditDataFormModel
             {
                 Alt = result.Alt,
             };

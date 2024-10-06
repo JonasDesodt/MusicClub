@@ -2,6 +2,8 @@
 
 @layout ImageCrudLayout
 
+@using MusicClub.Cms.Blazor.Models.FormModels.Data
+
 @inject IImageApiService ImageApiService
 @inject NavigationManager NavigationManager
 @inject DataController DataController
@@ -40,7 +42,7 @@
     [CascadingParameter]
     public bool IsOpen { get; set; }
 
-    private ImageEditFormModel? imageEditFormModel;
+    private ImageEditDataFormModel? imageEditFormModel;
 
     private ImageResult? properties;
 

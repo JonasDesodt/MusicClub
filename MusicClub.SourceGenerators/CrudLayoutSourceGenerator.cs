@@ -26,11 +26,11 @@ namespace MusicClub.SourceGenerators
 
             foreach (var model in models)
             {
-                context.AddSource($"{model}{classDeclaration.Identifier.Text}.g.cs", GetApiControllerClass(classDeclaration.GetContainingNamespace(), model, classDeclaration.Identifier.Text));
+                context.AddSource($"{model}{classDeclaration.Identifier.Text}.g.cs", GetCrudLayoutClass(classDeclaration.GetContainingNamespace(), model, classDeclaration.Identifier.Text));
             }
         }
 
-        private string GetApiControllerClass(string containingNamespace, string model, string baseClassName)
+        private string GetCrudLayoutClass(string containingNamespace, string model, string baseClassName)
         {
             var builder = new StringBuilder();
 

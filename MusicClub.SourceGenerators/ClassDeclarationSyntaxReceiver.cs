@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace MusicClub.SourceGenerators
 {
@@ -46,6 +47,32 @@ namespace MusicClub.SourceGenerators
                 }
             }
             return (null, models);
+        }
+
+        public IEnumerable<(ClassDeclarationSyntax, string)> GetGenerateParams(Compilation compilation, string attributeConstructorName)
+        {
+            foreach (var classDeclaration in this.Classes)
+            {
+                foreach (var attributeList in classDeclaration.AttributeLists)
+                {
+                    foreach (var attribute in attributeList.Attributes)
+                    {
+                        var semanticModel = compilation.GetSemanticModel(attribute.SyntaxTree);
+                        var attributeSymbol = semanticModel.GetSymbolInfo(attribute).Symbol;
+
+                        if (attributeSymbol != null)
+                        {
+                            if (attributeSymbol.ToString() == attributeConstructorName)
+                            {
+                                yield return (classDeclaration, 
+                                    attribute.ArgumentList.Arguments.FirstOrDefault()?.Expression is LiteralExpressionSyntax literalExpression
+                                    ? literalExpression.Token.ValueText
+                                    : null);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
