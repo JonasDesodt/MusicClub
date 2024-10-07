@@ -26,38 +26,42 @@ namespace MusicClub.SourceGenerators
 
         public static IEnumerable<string> GetInterfaces(this ClassDeclarationSyntax classDeclaration, Compilation compilation)
         {
-            //foreach (var baseTypeSyntax in classDeclaration.BaseList?.Types)
-            //{
-                var semanticModel = compilation.GetSemanticModel(classDeclaration.SyntaxTree);
+            var semanticModel = compilation.GetSemanticModel(classDeclaration.SyntaxTree);
 
-                var classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration) as INamedTypeSymbol;
+            var classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration) as INamedTypeSymbol;
 
-                foreach(var @interface in classSymbol.Interfaces)
-                {
-                    yield return @interface.Name;
-                }
-
-                //if (baseTypeSyntax.Type.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.ExplicitInterfaceSpecifier))
-                //{
-                //    yield return baseTypeSyntax.Type.ToString();
-
-                //}
-
-                //if (baseTypeSyntax.Type is IdentifierNameSyntax)// && baseTypeSyntax.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.InterfaceDeclaration))
-                //{                   
-                //    yield return baseTypeSyntax.Type.ToString();
-                //}
-           // }
+            foreach (var @interface in classSymbol.Interfaces)
+            {
+                yield return @interface.Name;
+            }
         }
 
         public static IEnumerable<IPropertySymbol> GetProperties(this ClassDeclarationSyntax classDeclaration, Compilation compilation)
         {
             var semanticModel = compilation.GetSemanticModel(classDeclaration.SyntaxTree);
 
-            var childClassSymbol = semanticModel.GetDeclaredSymbol(classDeclaration) as INamedTypeSymbol;
-            var baseClassSymbol = childClassSymbol.BaseType;
+            INamedTypeSymbol classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration) as INamedTypeSymbol;
+           
+            var properties = classSymbol.GetMembers().OfType<IPropertySymbol>();
 
-            return childClassSymbol.GetMembers().OfType<IPropertySymbol>().Concat(baseClassSymbol?.GetMembers().OfType<IPropertySymbol>() ??  Enumerable.Empty<IPropertySymbol>());
+            while (true)
+            {
+                classSymbol = classSymbol.BaseType;
+
+                if (SymbolHelper.IsObjectType(classSymbol, compilation))
+                {
+                    break;
+                }
+
+                properties = properties.Concat(classSymbol.GetMembers().OfType<IPropertySymbol>());
+            }
+
+            return properties;
+
+
+            //var childClassSymbol = semanticModel.GetDeclaredSymbol(classDeclaration) as INamedTypeSymbol;
+            //var baseClassSymbol = childClassSymbol.BaseType;
+            //return childClassSymbol.GetMembers().OfType<IPropertySymbol>().Concat(baseClassSymbol?.GetMembers().OfType<IPropertySymbol>() ?? Enumerable.Empty<IPropertySymbol>());
 
         }
     }

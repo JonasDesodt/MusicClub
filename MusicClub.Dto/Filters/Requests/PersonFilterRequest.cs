@@ -12,6 +12,9 @@ namespace MusicClub.Dto.Filters.Requests
 
         public string? Lastname { get; set; }
 
+        [Min(1)]
+        public int? ImageId { get; set; }
+
         public string ToQueryString()
         {
             return PersonFilterRequestExtensions.ToQueryString(this);

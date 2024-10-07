@@ -2,7 +2,7 @@
 
 namespace MusicClub.Cms.Blazor.Interfaces
 {
-    internal interface IImageSelect
+    public interface IImageSelect
     {
         int? ImageId { get; set; }
         ImageResult? ImageResult { get; set; }

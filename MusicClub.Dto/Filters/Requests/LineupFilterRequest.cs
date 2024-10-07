@@ -12,6 +12,7 @@ namespace MusicClub.Dto.Filters.Requests
 
         public DateTime? Doors { get; set; }
 
+        [Min(1)]
         public int? ImageId { get; set; }
 
         public string ToQueryString()

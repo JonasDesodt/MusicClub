@@ -2,7 +2,7 @@
 
 namespace MusicClub.Cms.Blazor.Layout
 {
-    [GenerateLayouts("Act", "Artist", "Image", "Lineup", "Performance", "Person")]
+    [GenerateLayouts("Act", "Artist", "Band", "Image", "Lineup", "Performance", "Person")]
 
     public abstract partial class CrudLayout
     {
