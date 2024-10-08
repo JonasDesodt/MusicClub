@@ -88,6 +88,9 @@ namespace MusicClub.SourceGenerators.Dto
         {
             var builder = new StringBuilder();
 
+            builder.AppendLine($"#nullable enable");
+            builder.AppendLine();
+
             builder.AppendLine($"namespace {classNamespace}");
             builder.AppendLine($"{{");
             builder.AppendLine($"\tpublic partial class {className}");

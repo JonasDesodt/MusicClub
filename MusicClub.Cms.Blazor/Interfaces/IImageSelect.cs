@@ -1,6 +1,4 @@
-﻿using MusicClub.Dto.Results;
-
-namespace MusicClub.Cms.Blazor.Interfaces
+﻿namespace MusicClub.Cms.Blazor.Interfaces
 {
     public interface IImageSelect
     {

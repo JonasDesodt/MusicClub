@@ -8,5 +8,5 @@ namespace MusicClub.Cms.Blazor.Models.FormModels.Filters
     {
         public ImageResult? ImageResult { get; set; }
     }
-    public partial class ArtistFilterFormModel {  }
+    public partial class ArtistFilterFormModel { }
 }

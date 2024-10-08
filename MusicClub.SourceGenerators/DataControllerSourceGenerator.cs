@@ -57,6 +57,8 @@ namespace MusicClub.SourceGenerators
         private string GenerateClass(string containingNamespace, string className, Dictionary<string, string> parameters)
         {
             var builder = new StringBuilder();
+            builder.AppendLine($"#nullable enable");
+            builder.AppendLine();
             builder.AppendLine($"using System.Text.RegularExpressions;");
             builder.AppendLine($"\nnamespace {containingNamespace}");
             builder.AppendLine($"{{");

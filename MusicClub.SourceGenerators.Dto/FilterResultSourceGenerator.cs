@@ -101,6 +101,10 @@ namespace MusicClub.SourceGenerators.Dto
             var b = " : ";
 
             var builder = new StringBuilder();
+
+            builder.AppendLine($"#nullable enable");
+            builder.AppendLine();
+
             builder.AppendLine($"using MusicClub.Dto.Abstractions;");
             builder.AppendLine($"using MusicClub.Dto.Filters.Extensions;");
             builder.AppendLine($"using MusicClub.Dto.Filters;");
@@ -138,6 +142,10 @@ namespace MusicClub.SourceGenerators.Dto
         private string GenerateFilterResultExtensionsClass(string requestClassName, string resultClassName, IEnumerable<IPropertySymbol> classProperties)
         {
             var builder = new StringBuilder();
+
+            builder.AppendLine($"#nullable enable");
+            builder.AppendLine();
+
             builder.AppendLine($"using MusicClub.Dto.Filters.Requests;"); //TODO: make dynamic (get all the different namespace from all the annoted filterrequests)
             builder.AppendLine($"using MusicClub.Dto.Filters.Results;");
             builder.AppendLine();
@@ -167,6 +175,10 @@ namespace MusicClub.SourceGenerators.Dto
         private string GenerateFilterRequestExtensionsClass(string requestClassName, string resultClassName, IEnumerable<IPropertySymbol> classProperties)
         {
             var builder = new StringBuilder();
+
+            builder.AppendLine($"#nullable enable");
+            builder.AppendLine();
+
             builder.AppendLine($"namespace MusicClub.Dto.Filters.Extensions");
             builder.AppendLine($"{{");
             builder.AppendLine($"\tpublic static class {requestClassName}Extensions");

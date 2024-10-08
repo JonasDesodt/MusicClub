@@ -31,7 +31,11 @@ namespace MusicClub.SourceGenerators
                 var interfaces = blueprint.GetInterfaces(context.Compilation);
                 var properties = blueprint.GetProperties(context.Compilation);
 
-                context.AddSource($"{model}FormModel.g.cs", GetDataFormModelClass(containingNamespace, model, interfaces, properties));
+                var source = GetDataFormModelClass(containingNamespace, model, interfaces, properties);
+
+                context.AddSource($"{model}Testje.g.cs", "/*" + source + "*/");
+
+                context.AddSource($"{model}FormModel.g.cs", source);
             }
         }
 
