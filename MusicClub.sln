@@ -31,7 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dto", "Dto", "{A8A74977-677
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicClub.SourceGenerators.Api", "MusicClub.SourceGenerators.Api\MusicClub.SourceGenerators.Api.csproj", "{D1312AF6-AB97-40A4-8970-98D6696F2B19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicClub.SourceGenerators.Base", "MusicClub.SourceGenerators.Base\MusicClub.SourceGenerators.Base.csproj", "{42B7BF0A-9EDB-4770-9CFE-71B71940EF48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicClub.SourceGenerators.Base", "MusicClub.SourceGenerators.Base\MusicClub.SourceGenerators.Base.csproj", "{42B7BF0A-9EDB-4770-9CFE-71B71940EF48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

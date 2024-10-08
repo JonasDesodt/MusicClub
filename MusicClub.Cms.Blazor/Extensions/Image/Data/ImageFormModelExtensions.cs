@@ -3,7 +3,7 @@ using MusicClub.Dto.Requests;
 
 namespace MusicClub.Cms.Blazor.Extensions.Image.Data
 {
-    internal static class ImageFormModelExtensions
+    internal static partial class ImageFormModelExtensions
     {
         public static MultipartFormDataContent? ToMultipartFormDataContent(this ImageCreateDataFormModel model)
         {

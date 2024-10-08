@@ -20,17 +20,14 @@
                 <InputText @bind-Value="ArtistFormModel.Alias" id="alias" />
             </div>
 
-            <div>
-                <label for="personId">Person</label>
-
-                <div>
-                    <p>@ArtistFormModel.PersonResult?.Firstname @ArtistFormModel.PersonResult?.Lastname</p>
-
-                    <InputNumber @bind-Value="ArtistFormModel.PersonId" id="personId" hidden />
-
-                    <button type="button" @onclick="() => FetchPeople(new PaginationRequest { Page = 1, PageSize = 2}, new PersonFilterRequest {})">@(ArtistFormModel.PersonId == null ? "Add" : "Change")</button>
-                </div>
-            </div>
+            <PersonResultInput DataResult="ArtistFormModel.PersonResult"
+                               Context="PersonResult"
+                               OnDataRequest="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), new PersonFilterRequest {})"
+                               @bind-Id="ArtistFormModel.PersonId">
+                <Info>
+                    <p>@PersonResult.Firstname @PersonResult.Lastname</p>
+                </Info>
+            </PersonResultInput>
 
             <SelectImage Model="ArtistFormModel.ImageResult"
                          OnClicked="async () => await FetchImages(new PaginationRequest { Page = 1, PageSize = 2}, new ImageFilterRequest ())"
@@ -130,7 +127,7 @@
 
         peoplePagedServiceResult = await PersonApiService.GetAll(paginationRequest, personFilterRequest);
 
-        personFilterContext = new(personFilterRequest);
+        personFilterContext = new(peoplePagedServiceResult.Filter.ToFormModel());
 
     }
 
