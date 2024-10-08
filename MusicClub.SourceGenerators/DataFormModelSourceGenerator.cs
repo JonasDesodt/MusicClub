@@ -33,8 +33,6 @@ namespace MusicClub.SourceGenerators
 
                 var source = GetDataFormModelClass(containingNamespace, model, interfaces, properties);
 
-                context.AddSource($"{model}Testje.g.cs", "/*" + source + "*/");
-
                 context.AddSource($"{model}FormModel.g.cs", source);
             }
         }

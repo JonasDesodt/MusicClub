@@ -8,5 +8,7 @@ namespace MusicClub.Cms.Blazor.Models.FormModels.Filters
     {
         public ImageResult? ImageResult { get; set; }
     }
-    public partial class PersonFilterFormModel { }
+
+    [GenerateFilterFormModelExtensions("Person")]
+    internal abstract class PersonFilterFormModelExtensionsBlueprint : PersonFilterRequest;
 }
