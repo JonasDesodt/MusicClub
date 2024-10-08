@@ -11,4 +11,7 @@ namespace MusicClub.Cms.Blazor.Models.FormModels.Filters
 
     [GenerateFilterFormModelExtensions("Act")]
     internal abstract class ActFilterFormModelExtensionsBlueprint : ActFilterRequest;
+
+    [GenerateFilterResultExtensions("Act")]
+    internal abstract class ActFilterResultExtensionsBlueprint : ActFilterResult;
 }

@@ -11,4 +11,7 @@ namespace MusicClub.Cms.Blazor.Models.FormModels.Filters
 
     [GenerateFilterFormModelExtensions("Lineup")]
     internal abstract class LineupFilterFormModelExtensionsBlueprint : LineupFilterRequest;
+
+    [GenerateFilterResultExtensions("Lineup")]
+    internal abstract class LineupFilterResultExtensionsBlueprint : LineupFilterResult;
 }

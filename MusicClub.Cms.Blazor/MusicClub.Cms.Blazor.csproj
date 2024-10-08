@@ -15,14 +15,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\MusicClub.ApiServices\MusicClub.ApiServices.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Extensions\Act\Data\" />
-		<Folder Include="Extensions\Artist\Data\" />
-		<Folder Include="Extensions\Lineup\Data\" />
-		<Folder Include="Extensions\Performance\Data\" />
-		<Folder Include="Extensions\Person\Data\" />
-	</ItemGroup>
 	
 
 	<!--<PropertyGroup>

@@ -11,4 +11,7 @@ namespace MusicClub.Cms.Blazor.Models.FormModels.Filters
 
     [GenerateFilterFormModelExtensions("Performance")]
     internal abstract class PerformanceFilterFormModelExtensionsBlueprint : PerformanceFilterRequest;
+
+    [GenerateFilterResultExtensions("Performance")]
+    internal abstract class PerformanceFilterResultExtensionsBlueprint : PerformanceFilterResult;
 }

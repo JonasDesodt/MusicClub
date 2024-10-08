@@ -36,14 +36,7 @@ namespace MusicClub.SourceGenerators
 
                 var source = GetDataFormModelClass(containingNamespace, model, interfaces, properties);
 
-
-                context.AddSource($"{model}test.g.cs", "/*" + source + "*/");
-
                 context.AddSource($"{model}FilterFormModel.g.cs", source);
-
-
-
-
             }
         }
 
