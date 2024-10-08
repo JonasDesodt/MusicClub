@@ -1,6 +1,4 @@
-﻿@using MusicClub.Cms.Blazor.Models.FormModels.Data
-
-@implements IDisposable
+﻿@implements IDisposable
 
 @inject IImageApiService ImageApiService
 @inject IPersonService PersonApiService
@@ -20,14 +18,14 @@
                 <InputText @bind-Value="ArtistFormModel.Alias" id="alias" />
             </div>
 
-            <PersonResultInput DataResult="ArtistFormModel.PersonResult"
-                               Context="PersonResult"
-                               OnDataRequest="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), new PersonFilterRequest {})"
-                               @bind-Id="ArtistFormModel.PersonId">
+            <MusicClub.Cms.Blazor.Components.Person.PersonDataResultInput DataResult="ArtistFormModel.PersonResult"
+                                   Context="PersonResult"
+                                   OnDataRequest="() =>  FetchPeople(MemoryService.GetDefaultPaginationRequest(), new PersonFilterRequest {})"
+                                   @bind-Value="ArtistFormModel.PersonId">
                 <Info>
                     <p>@PersonResult.Firstname @PersonResult.Lastname</p>
                 </Info>
-            </PersonResultInput>
+            </MusicClub.Cms.Blazor.Components.Person.PersonDataResultInput>
 
             <SelectImage Model="ArtistFormModel.ImageResult"
                          OnClicked="async () => await FetchImages(new PaginationRequest { Page = 1, PageSize = 2}, new ImageFilterRequest ())"

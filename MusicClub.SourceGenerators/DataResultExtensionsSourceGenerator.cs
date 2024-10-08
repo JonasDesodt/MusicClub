@@ -38,6 +38,9 @@ namespace MusicClub.SourceGenerators
         {
             var builder = new StringBuilder();
 
+            builder.AppendLine($"#nullable enable");
+            builder.AppendLine();
+
             builder.AppendLine($"namespace {containingNamespace}");
             builder.AppendLine($"{{"); //open namespace
 

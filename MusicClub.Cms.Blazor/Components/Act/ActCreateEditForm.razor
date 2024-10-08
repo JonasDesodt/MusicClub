@@ -39,7 +39,16 @@
                 <InputNumber @bind-Value="ActFormModel.Duration" id="duration" />
             </div>
 
-            <div>
+@*             <LineupDataResultInput DataResult="ActFormModel.LineupResult"
+                                   Context="LineupResult"
+                                   OnDataRequest="() => FetchLineups(MemoryService.GetDefaultPaginationRequest(), new LineupFilterRequest {})"
+                                   @bind-Id="ActFormModel.LineupId">
+                <Info>
+                    <p>@LineupResult.Doors.ToShortDateString() @LineupResult.Title</p>
+                </Info>
+            </LineupDataResultInput> *@
+
+@*             <div>
                 <label for="lineupId">Lineup</label>
 
                 <div>
@@ -50,7 +59,7 @@
                     <button type="button" @onclick="() => FetchLineups(new PaginationRequest { Page = 1, PageSize = 2}, new LineupFilterRequest {})">@(ActFormModel.LineupId == null ? "Add" : "Change")</button>
                 </div>
             </div>
-
+ *@
             <SelectImage Model="ActFormModel.ImageResult"
                          OnClicked="async () => await FetchImages(new PaginationRequest { Page = 1, PageSize = 2}, new ImageFilterRequest ())"
                          OnRemoveRequest="() => { ActFormModel.ImageId = null; ActFormModel.ImageResult = null; MemoryService.HasUnsavedData = true; }" />

@@ -1,13 +1,15 @@
 ﻿using Microsoft.AspNetCore.Components;
-using MusicClub.Dto.Abstractions;
-using MusicClub.Dto.Transfer;
+using MusicClub.Cms.Blazor.Attributes;
 
 namespace MusicClub.Cms.Blazor.Components.Shared
 {
-    public abstract partial class DataResultInput<TApiService, TDataRequest, TDataResult, TFilterRequest, TFilterResult> where TApiService : IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult> where TDataResult : class where TFilterRequest : new() 
+    [GenerateDataResultInputs("Act", "Artist", "Lineup", "Person")]
+    public abstract partial class DataResultInput<TDataResult, TFilterRequest> where TDataResult : class where TFilterRequest : new()
+
+        //public abstract partial class DataResultInput<TApiService, TDataRequest, TDataResult, TFilterRequest, TFilterResult> where TApiService : IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult> where TDataResult : class where TFilterRequest : new() 
     {
-        [Inject]
-        public required abstract TApiService ApiService { get; set; }
+        //[Inject]
+        //public required abstract TApiService ApiService { get; set; }
 
         [Parameter, EditorRequired]
         public required TDataResult? DataResult { get; set; }
@@ -21,27 +23,22 @@ namespace MusicClub.Cms.Blazor.Components.Shared
         protected abstract string Model { get; }
 
         [Parameter]
-        public int? Id { get; set; }
+        public int? Value { get; set; }
 
         [Parameter]
-        public EventCallback<int?> IdChanged { get; set; }
+        public EventCallback<int?> ValueChanged { get; set; }
 
-        private int? CurrentId
+        private int? CurrentValue
         {
-            get => Id;
+            get => Value;
             set
             {
-                if (Id != value)
+                if (Value != value)
                 {
-                    Id = value;
-                    IdChanged.InvokeAsync(value); // Notify parent of change
+                    Value = value;
+                    ValueChanged.InvokeAsync(value); // Notify parent of change
                 }
             }
-        }
-
-        private async Task FetchAll(PaginationRequest paginationRequest, TFilterRequest filterRequest)
-        {
-            await ApiService.GetAll(paginationRequest, filterRequest);
         }
     }
 }

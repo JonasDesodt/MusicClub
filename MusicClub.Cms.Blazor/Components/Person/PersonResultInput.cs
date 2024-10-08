@@ -4,10 +4,12 @@ using MusicClub.Dto.Abstractions;
 
 namespace MusicClub.Cms.Blazor.Components.Person
 {
-    public partial class PersonResultInput : DataResultInput<IPersonService, PersonRequest, PersonResult, PersonFilterRequest, PersonFilterResult> 
+    //public partial class PersonResultInput : DataResultInput<IPersonService, PersonRequest, PersonResult, PersonFilterRequest, PersonFilterResult>
+
+    public partial class PersonResultInput : DataResultInput<PersonResult, PersonFilterRequest> 
     {
-        [Inject]
-        public override required IPersonService ApiService { get;  set; }
+        //[Inject]
+        //public override required IPersonService ApiService { get;  set; }
 
         protected override string Model => "Person";
     }

@@ -34,6 +34,9 @@ namespace MusicClub.SourceGenerators.Api
         {
             var builder = new StringBuilder();
 
+            builder.AppendLine($"#nullable enable");
+            builder.AppendLine();
+
             builder.AppendLine($"namespace {containingNamespace}");
             builder.AppendLine($"{{");
             builder.AppendLine($"\tpublic class {model}Controller(I{model}Service dbService) : {baseClassName}<{model}Request,{model}Result, {model}FilterRequest, {model}FilterResult>(dbService) {{ }}"); // todo: make the constructor params dynamic

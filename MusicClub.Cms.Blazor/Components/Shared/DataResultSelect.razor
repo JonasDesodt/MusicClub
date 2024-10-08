@@ -1,0 +1,21 @@
+﻿@* <section>
+    <button @onclick="() => peoplePagedServiceResult = null" class="warning">&#128939;</button>
+
+    <h3>Select person</h3>
+
+    <div>
+        <PersonFilterForm EditContext="personFilterContext"
+                          OnReset="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), new PersonFilterRequest())"
+                          OnValidSubmit="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), ((PersonFilterFormModel?)personFilterContext?.Model)?.ToRequest() ?? new PersonFilterRequest())" />
+
+
+        <PagedList OnPageChanged="(model) => FetchPeople(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, peoplePagedServiceResult.Filter?.ToRequest() ?? new PersonFilterRequest {})"
+                   PagedServiceResult="peoplePagedServiceResult" Context="PersonResult">
+
+            <ItemTemplate>
+                <SelectPersonItem Model="PersonResult"
+                                  OnSelected="(selectedPerson) => SelectPerson(selectedPerson)" />
+            </ItemTemplate>
+        </PagedList>
+    </div>
+</section> *@

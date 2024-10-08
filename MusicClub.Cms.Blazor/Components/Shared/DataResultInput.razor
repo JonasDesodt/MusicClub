@@ -1,9 +1,5 @@
-﻿@typeparam TApiService
-@typeparam TDataRequest
-@typeparam TDataResult
+﻿@typeparam TDataResult
 @typeparam TFilterRequest
-@typeparam TFilterResult
-
 
 <div>
     <label for="@($"{Model}Id")">@Model</label>
@@ -20,10 +16,6 @@
 
         <button type="button" @onclick="() => OnDataRequest.InvokeAsync()">@(DataResult == null ? "Add" : "Change")</button>
       
-        <InputNumber @bind-Value="CurrentId" id="@($"{Model}Id")" hidden />    
+        <InputNumber @bind-Value="CurrentValue" id="@($"{Model}Id")" hidden />    
     </div>
 </div>
-
-@code {
-
-}

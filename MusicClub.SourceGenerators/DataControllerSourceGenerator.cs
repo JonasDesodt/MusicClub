@@ -41,6 +41,9 @@ namespace MusicClub.SourceGenerators
         {
             var builder = new StringBuilder();
 
+            builder.AppendLine($"#nullable enable");
+            builder.AppendLine();
+
             builder.AppendLine($"\t\t\tif(new Regex(@$\"^/{type.ToLower()}/edit/\\d+$\").IsMatch(route))");
             builder.AppendLine($"\t\t\t{{");
             builder.AppendLine($"\t\t\t\treturn await HandleEditRouteMatchFound({name}, route);");

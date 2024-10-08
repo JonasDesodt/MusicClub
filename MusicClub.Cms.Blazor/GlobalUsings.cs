@@ -7,3 +7,5 @@ global using MusicClub.Dto.Filters.Requests;
 global using MusicClub.Dto.Filters.Results;
 global using System;
 global using MusicClub.Cms.Blazor.Models.FormModels.Data;
+global using MusicClub.Dto.Abstractions;
+global using MusicClub.Cms.Blazor.Components.Shared;
