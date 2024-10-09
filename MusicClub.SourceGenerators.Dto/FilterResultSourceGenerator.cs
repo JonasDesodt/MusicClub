@@ -113,6 +113,7 @@ namespace MusicClub.SourceGenerators.Dto
             builder.AppendLine();
             builder.AppendLine($"namespace {classNamespace}");
             builder.AppendLine($"{{");
+            //builder.AppendLine($"\tpublic class {className}{(string.IsNullOrWhiteSpace(baseClassName) ? string.Empty : b + baseClassName)}, IConvertToRequest<{requestClassName}>, IConvertToFormModel<{className.Replace("Result", "FormModel")}>");
             builder.AppendLine($"\tpublic class {className}{(string.IsNullOrWhiteSpace(baseClassName) ? string.Empty : b + baseClassName)}, IConvertToRequest<{requestClassName}>");
             builder.AppendLine($"\t{{");
 
@@ -132,6 +133,11 @@ namespace MusicClub.SourceGenerators.Dto
             builder.AppendLine($"\t\t{{");
             builder.AppendLine($"\t\t\treturn {className}Extensions.ToRequest(this);");
             builder.AppendLine($"\t\t}}");
+
+            //builder.AppendLine($"\t\tpublic {className.Replace("Result", "FormModel")} ToFormModel()");
+            //builder.AppendLine($"\t\t{{");
+            //builder.AppendLine($"\t\t\treturn {className}Extensions.ToFormModel(this);");
+            //builder.AppendLine($"\t\t}}");
 
             builder.AppendLine($"\t}}");
             builder.AppendLine($"}}");

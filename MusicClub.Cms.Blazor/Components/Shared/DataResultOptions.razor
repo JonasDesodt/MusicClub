@@ -1,0 +1,125 @@
+﻿@using MusicClub.Cms.Blazor.Helpers
+
+@typeparam TDataRequest
+@typeparam TDataResult where TDataResult : class
+@typeparam TFilterRequest where TFilterRequest : class, new()
+@typeparam TFilterResult where TFilterResult : IConvertToRequest<TFilterRequest>
+@typeparam TApiService where TApiService : IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult>
+@typeparam TFilterFormModel where TFilterFormModel : class, new()//where TFilterFormModel : IConvertToRequest<TFilterRequest>
+
+@inject TApiService ApiService
+@inject DataController DataController
+
+@inject IFilterResultHelpers<TFilterResult, TFilterFormModel> FilterResultHelper
+@inject IFilterFormModelHelpers<TFilterRequest, TFilterFormModel> FilterFormModelHelpers
+
+<section class="data-result-select">
+    <button @onclick="HandleOnCloseButtonClicked" class="warning">&#128939;</button>
+
+    <h3>Select @typeof(TDataResult).ToString().Replace("Result", string.Empty)</h3>
+
+    <div>
+        @if(filterEditContext is not null)
+        {
+            <Filters EditContext="filterEditContext"
+                     GetTags="GetTags"
+                     OnValidSubmit="HandleOnValidSubmit"
+                     OnReset="HandleOnReset">
+                <Inputs>
+                    @FilterInputs(filterFormModel)
+                </Inputs>
+            </Filters>
+        }
+
+        <PagedList OnPageChanged="(model) => HandleOnPageChanged(model)"
+                   PagedServiceResult="pagedServiceResult" Context="DataResult">
+
+            <ItemTemplate>
+                <div>
+                    @Template(DataResult)
+
+                    <button @onclick="async () => { await OnDataResultSelected.InvokeAsync(DataResult); await OnSelectDisplayStateChanged.InvokeAsync(false); }">Select</button>
+                </div>
+            </ItemTemplate>
+        </PagedList>
+    </div>
+</section>
+
+@code {
+    [Parameter, EditorRequired]
+    public EventCallback<bool> OnSelectDisplayStateChanged { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback<TDataResult> OnDataResultSelected { get; set; }
+
+
+    [Parameter, EditorRequired]
+    public required RenderFragment<TFilterFormModel> FilterInputs { get; set; }
+
+    [Parameter, EditorRequired]
+    public required RenderFragment<TDataResult> Template { get; set; }
+
+
+
+    private PagedServiceResult<IList<TDataResult>, TFilterResult>? pagedServiceResult { get; set; }
+    private EditContext? filterEditContext;
+    private TFilterFormModel filterFormModel = new ();
+
+    protected override async Task OnInitializedAsync()
+    {
+        pagedServiceResult = await DataController.Fetch<PagedServiceResult<IList<TDataResult>, TFilterResult>>(async () => await FetchAll(MemoryService.GetDefaultPaginationRequest(), new TFilterRequest { }));
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task<PagedServiceResult<IList<TDataResult>, TFilterResult>> FetchAll(PaginationRequest paginationRequest, TFilterRequest filterRequest)
+    {
+        var imagesPagedServiceResult = await ApiService.GetAll(paginationRequest, filterRequest);
+
+        if (imagesPagedServiceResult.Messages?.HasMessage is not true)
+        {
+            await OnSelectDisplayStateChanged.InvokeAsync(true);
+        }
+
+        filterFormModel = FilterResultHelper.ToFormModel(imagesPagedServiceResult.Filter);
+
+        filterEditContext = new EditContext(filterFormModel);
+
+        // imageFilterContext = new EditContext(imagesPagedServiceResult.Filter.ToFormModel());
+
+        return imagesPagedServiceResult;
+    }
+
+    private Dictionary<string, Action<string?>>? GetTags()
+    {
+        return FilterFormModelHelpers.GetTags(filterFormModel);
+    }
+
+    private async Task HandleOnReset()
+    {
+        pagedServiceResult = await DataController.Fetch<PagedServiceResult<IList<TDataResult>, TFilterResult>>(async () => await FetchAll(MemoryService.GetDefaultPaginationRequest(), new TFilterRequest { }));
+    }
+
+    private async Task HandleOnValidSubmit()
+    {
+        pagedServiceResult = await FetchAll(MemoryService.GetDefaultPaginationRequest(), FilterFormModelHelpers.ToRequest(((TFilterFormModel?)filterEditContext?.Model)) ?? new TFilterRequest { });
+    }
+
+    private async Task HandleOnPageChanged(PaginationRequest paginationRequest)
+    {
+
+        //create new PaginationReques to prevent binding to the old page/pagesize
+
+        if (pagedServiceResult is null) return;
+
+        pagedServiceResult = await FetchAll(new PaginationRequest { Page = paginationRequest.Page, PageSize = paginationRequest.PageSize }, pagedServiceResult.Filter.ToRequest());
+    }
+
+    private async Task HandleOnCloseButtonClicked()
+    {
+        //unnecessary?
+        pagedServiceResult = null;
+
+        await OnSelectDisplayStateChanged.InvokeAsync(false);
+    }
+}

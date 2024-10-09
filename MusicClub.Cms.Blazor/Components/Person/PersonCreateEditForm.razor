@@ -25,9 +25,17 @@
                 <InputText @bind-Value="PersonFormModel.Lastname" id="lastname" />
             </div>
 
-            <SelectImage Model="PersonFormModel.ImageResult"
-                         OnClicked="async () => await FetchImages(new PaginationRequest { Page = 1, PageSize = 2}, new ImageFilterRequest ())"
-                         OnRemoveRequest="() => { PersonFormModel.ImageId = null; PersonFormModel.ImageResult = null; MemoryService.HasUnsavedData = true;}" />
+            <ImageDataResultInput DataResult="PersonFormModel.ImageResult"
+                                  Context="ImageResult"                                  
+                                  OnDataRequest="() => FetchImages(MemoryService.GetDefaultPaginationRequest(), new ImageFilterRequest {})"
+                                  OnRemoveRequest="() => { PersonFormModel.ImageId = null; PersonFormModel.ImageResult = null; MemoryService.HasUnsavedData = true; }"
+                                  @bind-Value="PersonFormModel.ImageId">
+                <Info>
+                    <p>@ImageResult.Alt</p>
+
+                    <img src="@($"https://localhost:7061/image/download/{ImageResult.Id}")" />
+                </Info>
+            </ImageDataResultInput>
         </div>
 
         <div>

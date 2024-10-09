@@ -11,10 +11,25 @@
         }
         else
         {
-            <p>no @Model</p>
+            if(Model == "Image")
+            {
+                <p class="image">no Image</p>
+            } else
+            {
+                <p>no @Model</p>
+            }
         }
 
-        <button type="button" @onclick="() => OnDataRequest.InvokeAsync()">@(DataResult == null ? "Add" : "Change")</button>
+        @if (DataResult is not null)
+        {
+            <button type="button" @onclick="() => OnDataRequest.InvokeAsync()">Change</button>
+
+            <button type="button" @onclick="() => OnRemoveRequest.InvokeAsync()" class="warning">Remove</button>
+        }
+        else
+        {
+            <button type="button" @onclick="() => OnDataRequest.InvokeAsync()">Add</button>
+        }
       
         <InputNumber @bind-Value="CurrentValue" id="@($"{Model}Id")" hidden />    
     </div>

@@ -5,6 +5,8 @@ using MusicClub.Cms.Blazor;
 using MusicClub.Dto.Abstractions;
 using MusicClub.Cms.Blazor.Services;
 using MusicClub.Cms.Blazor.Controllers;
+using MusicClub.Cms.Blazor.Helpers;
+using MusicClub.Cms.Blazor.Models.FormModels.Filters;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -23,6 +25,15 @@ builder.Services.AddScoped<IImageApiService, ImageApiService>();
 builder.Services.AddScoped<ILineupService, LineupApiService>();
 builder.Services.AddScoped<IPerformanceService, PerformanceApiService>();
 builder.Services.AddScoped<IPersonService, PersonApiService>();
+
+builder.Services.AddScoped<IFilterResultHelpers<ActFilterResult, ActFilterFormModel>, ActFilterResultHelpers>();
+builder.Services.AddScoped<IFilterResultHelpers<ArtistFilterResult, ArtistFilterFormModel>, ArtistFilterResultHelpers>();
+builder.Services.AddScoped<IFilterResultHelpers<ImageFilterResult, ImageFilterFormModel>, ImageFilterResultHelpers>();
+builder.Services.AddScoped<IFilterResultHelpers<LineupFilterResult, LineupFilterFormModel>, LineupFilterResultHelpers>();
+builder.Services.AddScoped<IFilterResultHelpers<PerformanceFilterResult, PerformanceFilterFormModel>, PerformanceFilterResultHelpers>();
+builder.Services.AddScoped<IFilterResultHelpers<PersonFilterResult, PersonFilterFormModel>, PersonFilterResultHelpers>();
+
+builder.Services.AddScoped<IFilterFormModelHelpers<ActFilterRequest, ActFilterFormModel>, ActFilterFormModelHelpers>();
 
 builder.Services.AddScoped<DataController>();
 

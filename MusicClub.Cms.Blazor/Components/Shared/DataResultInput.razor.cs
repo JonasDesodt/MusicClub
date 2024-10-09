@@ -3,7 +3,7 @@ using MusicClub.Cms.Blazor.Attributes;
 
 namespace MusicClub.Cms.Blazor.Components.Shared
 {
-    [GenerateDataResultInputs("Act", "Artist", "Lineup", "Person")]
+    [GenerateDataResultInputs("Act", "Artist", "Image", "Lineup", "Person")]
     public abstract partial class DataResultInput<TDataResult, TFilterRequest> where TDataResult : class where TFilterRequest : new()
 
         //public abstract partial class DataResultInput<TApiService, TDataRequest, TDataResult, TFilterRequest, TFilterResult> where TApiService : IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult> where TDataResult : class where TFilterRequest : new() 
@@ -19,6 +19,9 @@ namespace MusicClub.Cms.Blazor.Components.Shared
 
         [Parameter, EditorRequired]
         public required EventCallback OnDataRequest { get; set; }
+
+        [Parameter, EditorRequired]
+        public required EventCallback OnRemoveRequest { get; set; }
 
         protected abstract string Model { get; }
 

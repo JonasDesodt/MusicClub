@@ -39,30 +39,27 @@
                 <InputNumber @bind-Value="ActFormModel.Duration" id="duration" />
             </div>
 
-@*             <LineupDataResultInput DataResult="ActFormModel.LineupResult"
+            <LineupDataResultInput DataResult="ActFormModel.LineupResult"
                                    Context="LineupResult"
                                    OnDataRequest="() => FetchLineups(MemoryService.GetDefaultPaginationRequest(), new LineupFilterRequest {})"
-                                   @bind-Id="ActFormModel.LineupId">
+                                   OnRemoveRequest="() => {ActFormModel.LineupId = null; ActFormModel.LineupResult = null; MemoryService.HasUnsavedData = true; }"
+                                   @bind-Value="ActFormModel.LineupId">
                 <Info>
                     <p>@LineupResult.Doors.ToShortDateString() @LineupResult.Title</p>
                 </Info>
-            </LineupDataResultInput> *@
+            </LineupDataResultInput>
 
-@*             <div>
-                <label for="lineupId">Lineup</label>
+            <ImageDataResultInput DataResult="ActFormModel.ImageResult"
+                                  Context="ImageResult"
+                                  OnDataRequest="() => FetchImages(MemoryService.GetDefaultPaginationRequest(), new ImageFilterRequest {})"
+                                  OnRemoveRequest="() => { ActFormModel.ImageId = null; ActFormModel.ImageResult = null; MemoryService.HasUnsavedData = true; }"
+                                  @bind-Value="ActFormModel.ImageId">
+                <Info>
+                    <p>@ImageResult.Alt</p>
 
-                <div>
-                    <p>@ActFormModel.LineupResult?.Doors.ToShortDateString() @ActFormModel.LineupResult?.Title</p>
-
-                    <InputNumber @bind-Value="ActFormModel.LineupId" id="lineupId" hidden />
-
-                    <button type="button" @onclick="() => FetchLineups(new PaginationRequest { Page = 1, PageSize = 2}, new LineupFilterRequest {})">@(ActFormModel.LineupId == null ? "Add" : "Change")</button>
-                </div>
-            </div>
- *@
-            <SelectImage Model="ActFormModel.ImageResult"
-                         OnClicked="async () => await FetchImages(new PaginationRequest { Page = 1, PageSize = 2}, new ImageFilterRequest ())"
-                         OnRemoveRequest="() => { ActFormModel.ImageId = null; ActFormModel.ImageResult = null; MemoryService.HasUnsavedData = true; }" />
+                    <img src="@($"https://localhost:7061/image/download/{ImageResult.Id}")" />
+                </Info>
+            </ImageDataResultInput>
         </div>
 
         <div>

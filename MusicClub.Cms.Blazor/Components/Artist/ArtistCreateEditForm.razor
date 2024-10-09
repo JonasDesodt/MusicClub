@@ -18,18 +18,27 @@
                 <InputText @bind-Value="ArtistFormModel.Alias" id="alias" />
             </div>
 
-            <MusicClub.Cms.Blazor.Components.Person.PersonDataResultInput DataResult="ArtistFormModel.PersonResult"
+            <PersonDataResultInput DataResult="ArtistFormModel.PersonResult"
                                    Context="PersonResult"
                                    OnDataRequest="() =>  FetchPeople(MemoryService.GetDefaultPaginationRequest(), new PersonFilterRequest {})"
+                                   OnRemoveRequest="() => {ArtistFormModel.PersonId = null; ArtistFormModel.PersonResult = null; MemoryService.HasUnsavedData = true; }"
                                    @bind-Value="ArtistFormModel.PersonId">
                 <Info>
                     <p>@PersonResult.Firstname @PersonResult.Lastname</p>
                 </Info>
-            </MusicClub.Cms.Blazor.Components.Person.PersonDataResultInput>
+            </PersonDataResultInput>
 
-            <SelectImage Model="ArtistFormModel.ImageResult"
-                         OnClicked="async () => await FetchImages(new PaginationRequest { Page = 1, PageSize = 2}, new ImageFilterRequest ())"
-                         OnRemoveRequest="() => { ArtistFormModel.ImageId = null; ArtistFormModel.ImageResult = null; MemoryService.HasUnsavedData = true; }" />
+            <ImageDataResultInput DataResult="ArtistFormModel.ImageResult"
+                                  Context="ImageResult"
+                                  OnDataRequest="() => FetchImages(MemoryService.GetDefaultPaginationRequest(), new ImageFilterRequest {})"
+                                  OnRemoveRequest="() => { ArtistFormModel.ImageId = null; ArtistFormModel.ImageResult = null; MemoryService.HasUnsavedData = true; }"
+                                  @bind-Value="ArtistFormModel.ImageId">
+                <Info>
+                    <p>@ImageResult.Alt</p>
+
+                    <img src="@($"https://localhost:7061/image/download/{ImageResult.Id}")" />
+                </Info>
+            </ImageDataResultInput>
         </div>
 
         <div>
