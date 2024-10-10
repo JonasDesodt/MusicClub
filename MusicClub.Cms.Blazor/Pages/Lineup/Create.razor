@@ -1,5 +1,58 @@
-﻿<h3>Create</h3>
+﻿@page "/lineup/create"
+
+@layout LineupCrudLayout
+
+@using MusicClub.Cms.Blazor.Models.FormModels.Data
+
+@inject ILineupService LineupApiService
+@inject NavigationManager NavigationManager
+@inject MemoryService MemoryService
+@inject DataController DataController
+
+<h3>Create</h3>
+
+<LineupCreateEditForm FormModel="lineupFormModel" OnValidSubmit="() => Post()">
+    <Buttons>
+        <button type="submit">Submit</button>
+
+        <button type="reset">Clear</button>
+    </Buttons>
+</LineupCreateEditForm>
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
 
+    [CascadingParameter]
+    public bool IsOpen { get; set; }
+
+    private LineupFormModel? lineupFormModel { get; set; }
+
+    protected override void OnInitialized()
+    {
+        lineupFormModel = new();
+
+        base.OnInitialized();
+    }
+
+    private async Task Post()
+    {
+        if (IsOpen)
+        {
+            return;
+        }
+
+        if (lineupFormModel?.ToRequest() is not { } lineupRequest)
+        {
+            return;
+        }
+
+        var serviceResult = await DataController.Fetch(async () => await LineupApiService.Create(lineupRequest));
+        if (serviceResult.Messages is null)
+        {
+            MemoryService.HasUnsavedData = false;
+
+            NavigationManager.NavigateTo("/lineup");
+        }
+    }
 }

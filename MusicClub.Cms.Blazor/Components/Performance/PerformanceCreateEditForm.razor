@@ -1,9 +1,5 @@
 ﻿@inherits CreateEditForm<PerformanceFormModel>
 
-@inject IActService ActApiService
-@inject IArtistService ArtistApiService
-@inject IImageApiService ImageApiService
-
 <div class="@(!showActDataResultOptions && !showArtistDataResultOptions && !showImageDataResultOptions ? "select-closed" : "select-open")">
     <EditForm EditContext="editContext" OnValidSubmit="() => OnValidSubmit.InvokeAsync(FormModel)">
         <DataAnnotationsValidator></DataAnnotationsValidator>
@@ -23,17 +19,17 @@
                                     OnRemoveRequest="() => {FormModel.ArtistId = null; FormModel.ArtistResult = null; NotifyFormChanged(); }"
                                     @bind-Value="FormModel.ArtistId">
                 <Info>
-                    <ArtistDataResultInfo ArtistDataResult="FormModel.ArtistResult" />
+                    <ArtistDataResultInfo DataResult="FormModel.ArtistResult" />
                 </Info>
             </ArtistDataResultSelect>
 
             <ActDataResultSelect DataResult="FormModel.ActResult"
                                  Context="ActResult"
                                  OnDataRequest="() => showActDataResultOptions = true"
-                                 OnRemoveRequest="() => {FormModel.ActId = null; FormModel.ActResult = null; NotifyFormChanged();}"
+                                 OnRemoveRequest="() => { FormModel.ActId = null; FormModel.ActResult = null; NotifyFormChanged();}"
                                  @bind-Value="FormModel.ActId">
                 <Info>
-                    <ActDataResultInfo ActDataResult="FormModel.ActResult" />
+                    <ActDataResultInfo DataResult="FormModel.ActResult" />
                 </Info>
             </ActDataResultSelect>
 
@@ -55,8 +51,7 @@
 
     @if (showActDataResultOptions)
     {
-        <ActDataResultOptions OnDataResultSelected="(dataResult) => editContext.SelectDataResult(dataResult, () => dataResult.Id, value => FormModel.ActId = value, value => FormModel.ActResult = value)"
-                              OnSelectDisplayStateChanged="(state) => showActDataResultOptions = state"
+        <ActDataResultOptions OnSelectDisplayStateChanged="(state) => showActDataResultOptions = state"
                               Context="Context">
             <FilterInputs>
                 <div>
@@ -79,7 +74,9 @@
             </FilterInputs>
 
             <Template>
-                <ActDataResultInfo ActDataResult="Context" />
+                <ActDataResultInfo DataResult="Context" />
+
+                <button @onclick="() => { editContext.SelectDataResult(Context, () => Context.Id, value => FormModel.ActId = value, value => FormModel.ActResult = value); showActDataResultOptions = false; }">Select</button>
             </Template>
         </ActDataResultOptions>
     }
@@ -110,7 +107,7 @@
             </FilterInputs>
 
             <Template>
-                <ArtistDataResultInfo ArtistDataResult="Context" />
+                <ArtistDataResultInfo DataResult="Context" />
             </Template>
         </ArtistDataResultOptions>
     }
@@ -135,9 +132,7 @@
     }
 </div>
 
-
-
-@code{
+@code {
     private bool showImageDataResultOptions = false;
     private bool showArtistDataResultOptions = false;
     private bool showActDataResultOptions = false;

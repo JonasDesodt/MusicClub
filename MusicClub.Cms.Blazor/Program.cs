@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MusicClub.ApiServices;
 using MusicClub.Cms.Blazor;
-using MusicClub.Dto.Abstractions;
 using MusicClub.Cms.Blazor.Services;
 using MusicClub.Cms.Blazor.Controllers;
 using MusicClub.Cms.Blazor.Helpers;
@@ -35,6 +34,10 @@ builder.Services.AddScoped<IFilterResultHelpers<PersonFilterResult, PersonFilter
 
 builder.Services.AddScoped<IFilterFormModelHelpers<ActFilterRequest, ActFilterFormModel>, ActFilterFormModelHelpers>();
 builder.Services.AddScoped<IFilterFormModelHelpers<ArtistFilterRequest, ArtistFilterFormModel>, ArtistFilterFormModelHelpers>();
+builder.Services.AddScoped<IFilterFormModelHelpers<ImageFilterRequest, ImageFilterFormModel>, ImageFilterFormModelHelpers>();
+builder.Services.AddScoped<IFilterFormModelHelpers<LineupFilterRequest, LineupFilterFormModel>, LineupFilterFormModelHelpers>();
+builder.Services.AddScoped<IFilterFormModelHelpers<PerformanceFilterRequest, PerformanceFilterFormModel>, PerformanceFilterFormModelHelpers>();
+builder.Services.AddScoped<IFilterFormModelHelpers<PersonFilterRequest, PersonFilterFormModel>, PersonFilterFormModelHelpers>();
 
 builder.Services.AddScoped<DataController>();
 

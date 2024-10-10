@@ -14,9 +14,26 @@
 
     <NavLink class="button" href="person/create">Create</NavLink>
 
-    <PersonFilterForm EditContext="filterContext"
-                      OnReset="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), new PersonFilterRequest())"
-                      OnValidSubmit="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), ((PersonFilterFormModel?)filterContext?.Model)?.ToRequest() ?? new PersonFilterRequest())" />
+    <Filters TFilterRequest="PersonFilterRequest"
+             TFilterFormModel="PersonFilterFormModel"
+             EditContext="filterContext"
+             OnReset="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), new PersonFilterRequest())"
+             OnValidSubmit="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), ((PersonFilterFormModel?)filterContext?.Model)?.ToRequest() ?? new PersonFilterRequest())"
+             Context="FilterFormModel">
+        <Inputs>
+            <div>
+                <label for="firstname">Firstname</label>
+
+                <InputText @bind-Value="FilterFormModel.Firstname" id="firstname" />
+            </div>
+
+            <div>
+                <label for="lastname">Lastname</label>
+
+                <InputText @bind-Value="FilterFormModel.Lastname" id="lastname" />
+            </div>
+        </Inputs>
+    </Filters>
 
     @if (ImagesPagedServiceResult is not null)
     {

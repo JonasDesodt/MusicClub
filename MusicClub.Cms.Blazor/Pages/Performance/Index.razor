@@ -9,63 +9,106 @@
 @inject DataController DataControllerService
 @inject MemoryService MemoryService
 
-<section class="index-page @(isSelectOpen ? "select-open" : "select-closed")">
-    <h3>Index</h3>
+@if (filterEditContext is { Model : not null, Model : PerformanceFilterFormModel } editContext)
+{
+    <section class="index-page @(showImageDataResultOptions ? "select-open" : "select-closed")">
+        <h3>Index</h3>
 
-    <NavLink class="button" href="performance/create">Create</NavLink>
+        <NavLink class="button" href="performance/create">Create</NavLink>
 
-    <PerformanceFilterForm EditContext="filterContext"
-                   OnSelectDisplayStateChanged="(state) => isSelectOpen = state"
-                   OnReset="() => FetchPerformances(MemoryService.GetDefaultPaginationRequest(), new PerformanceFilterRequest())"
-                   OnValidSubmit="() => FetchPerformances(MemoryService.GetDefaultPaginationRequest(), ((PerformanceFilterFormModel?)filterContext?.Model)?.ToRequest() ?? new PerformanceFilterRequest())" />
-
-    @if (PerformancesPagedServiceResult is not null)
-    {
-
-        <PagedList OnPageChanged="@(async (request) => { await FetchPerformances(request, PerformancesPagedServiceResult.Filter.ToRequest());  })"
-                   PagedServiceResult="PerformancesPagedServiceResult" Context="PerformanceResult">
-            <ItemTemplate>
+        <Filters TFilterRequest="PerformanceFilterRequest"
+                 TFilterFormModel="PerformanceFilterFormModel"
+                 EditContext="editContext"
+                 OnReset="() => FetchPerformances(MemoryService.GetDefaultPaginationRequest(), new PerformanceFilterRequest())"
+                 OnValidSubmit="() => FetchPerformances(MemoryService.GetDefaultPaginationRequest(), ((PerformanceFilterFormModel)editContext.Model).ToRequest() ?? new PerformanceFilterRequest())"
+                 Context="FilterFormModel">
+            <Inputs>
                 <div>
-                    @if (PerformanceResult.ImageResult is not null)
-                    {
-                        <img src="@($"https://localhost:7061/image/download/{PerformanceResult.ImageResult?.Id}")" />
+                    <label for="instrument">Instrument</label>
 
-                    }
-                    else
-                    {
-                        <p>no image</p>
-                    }
+                    <InputText @bind-Value="FilterFormModel.Instrument" id="instrument" />
+                </div>
 
+                <ImageDataResultSelect DataResult="FilterFormModel.ImageResult"
+                                       Context="ImageResult"
+                                       OnDataRequest="() => showImageDataResultOptions = true"
+                                       OnRemoveRequest="() => { FilterFormModel.ImageId = null; FilterFormModel.ImageResult = null; MemoryService.HasUnsavedData = true; }"
+                                       @bind-Value="FilterFormModel.ImageId">
+                    <Info>
+                        <ImageDataResultInfo ImageDataResult="FilterFormModel.ImageResult" />
+                    </Info>
+                </ImageDataResultSelect>
+            </Inputs>
+        </Filters>
+
+        @if (PerformancesPagedServiceResult is not null)
+        {
+
+            <PagedList OnPageChanged="@(async (request) => { await FetchPerformances(request, PerformancesPagedServiceResult.Filter.ToRequest());  })"
+                       PagedServiceResult="PerformancesPagedServiceResult" Context="PerformanceResult">
+                <ItemTemplate>
                     <div>
-                        @if (!string.IsNullOrWhiteSpace(PerformanceResult.ArtistResult.Alias))
+                        @if (PerformanceResult.ImageResult is not null)
                         {
-                            <h4>@PerformanceResult.ArtistResult.Alias (@PerformanceResult.ArtistResult.PersonResult?.Firstname @PerformanceResult.ArtistResult.PersonResult?.Lastname)</h4>
-                            
+                            <img src="@($"https://localhost:7061/image/download/{PerformanceResult.ImageResult?.Id}")" />
+
                         }
                         else
                         {
-                            <h4>@PerformanceResult.ArtistResult.PersonResult?.Firstname @PerformanceResult.ArtistResult.PersonResult?.Lastname</h4>
+                            <p>no image</p>
                         }
 
-                        <ul>
-                            <li>Lineup: @PerformanceResult.ActResult.LineupResult.Doors.ToLongDateString() @PerformanceResult.ActResult.LineupResult.Title</li>
-                            <li>Act: @PerformanceResult.ActResult.Start?.ToLongDateString() @PerformanceResult.ActResult.Name</li>
-                        </ul>
+                        <div>
+                            @if (!string.IsNullOrWhiteSpace(PerformanceResult.ArtistResult.Alias))
+                            {
+                                <h4>@PerformanceResult.ArtistResult.Alias (@PerformanceResult.ArtistResult.PersonResult?.Firstname @PerformanceResult.ArtistResult.PersonResult?.Lastname)</h4>
 
-                        <NavLink href="@($"performance/edit/{PerformanceResult.Id}")" class="button">Edit</NavLink>
+                            }
+                            else
+                            {
+                                <h4>@PerformanceResult.ArtistResult.PersonResult?.Firstname @PerformanceResult.ArtistResult.PersonResult?.Lastname</h4>
+                            }
+
+                            <ul>
+                                <li>Lineup: @PerformanceResult.ActResult.LineupResult.Doors.ToLongDateString() @PerformanceResult.ActResult.LineupResult.Title</li>
+                                <li>Act: @PerformanceResult.ActResult.Start?.ToLongDateString() @PerformanceResult.ActResult.Name</li>
+                            </ul>
+
+                            <NavLink href="@($"performance/edit/{PerformanceResult.Id}")" class="button">Edit</NavLink>
+                        </div>
                     </div>
-                </div>
-            </ItemTemplate>
-        </PagedList>
-    }
-</section>
+                </ItemTemplate>
+            </PagedList>
+        }
+
+        @if (showImageDataResultOptions)
+        {
+            <ImageDataResultOptions OnDataResultSelected="(dataResult) => filterEditContext.SelectDataResult(dataResult, () => dataResult.Id, value => ((PerformanceFilterFormModel)editContext.Model).ImageId = value, value => ((PerformanceFilterFormModel)editContext.Model).ImageResult = value)"
+                                    OnSelectDisplayStateChanged="(state) => showImageDataResultOptions = state"
+                                    Context="Context">
+                <FilterInputs>
+                    <div>
+                        <label for="alt">Alt</label>
+
+                        <InputText @bind-Value="Context.Alt" id="alt" />
+                    </div>
+                </FilterInputs>
+
+                <Template>
+                    <ImageDataResultInfo ImageDataResult="Context" />
+                </Template>
+            </ImageDataResultOptions>
+        }
+    </section>
+}
+
 
 @code {
     private PagedServiceResult<IList<PerformanceResult>, PerformanceFilterResult>? PerformancesPagedServiceResult;
 
-    private EditContext? filterContext { get; set; }
+    private EditContext? filterEditContext;
 
-    private bool isSelectOpen = false;
+    private bool showImageDataResultOptions = false;
 
     protected override void OnInitialized()
     {
@@ -73,7 +116,7 @@
 
         if (PerformancesPagedServiceResult is null) return;
 
-        filterContext = new(PerformancesPagedServiceResult.Filter.ToFormModel());
+        filterEditContext = new(PerformancesPagedServiceResult.Filter.ToFormModel());
 
         base.OnInitialized();
     }
@@ -85,7 +128,7 @@
         MemoryService.Set(PerformancesPagedServiceResult.Filter);
         MemoryService.Set(PerformancesPagedServiceResult.Pagination);
 
-        filterContext = new(PerformancesPagedServiceResult.Filter.ToFormModel());
+        filterEditContext = new(PerformancesPagedServiceResult.Filter.ToFormModel());
     }
 
     public void Dispose()

@@ -34,4 +34,56 @@ namespace MusicClub.Cms.Blazor.Helpers
             return ArtistFilterFormModelExtensions.ToRequest(model);
         }
     }
+
+    public class ImageFilterFormModelHelpers : IFilterFormModelHelpers<ImageFilterRequest, ImageFilterFormModel>
+    {
+        public Dictionary<string, Action<string?>>? GetTags(ImageFilterFormModel model)
+        {
+            return ImageFilterFormModelExtensions.GetTags(model);
+        }
+
+        public ImageFilterRequest? ToRequest(ImageFilterFormModel model)
+        {
+            return ImageFilterFormModelExtensions.ToRequest(model);
+        }
+    }
+
+    public class LineupFilterFormModelHelpers : IFilterFormModelHelpers<LineupFilterRequest, LineupFilterFormModel>
+    {
+        public Dictionary<string, Action<string?>>? GetTags(LineupFilterFormModel model)
+        {
+            return LineupFilterFormModelExtensions.GetTags(model);
+        }
+
+        public LineupFilterRequest? ToRequest(LineupFilterFormModel model)
+        {
+            return LineupFilterFormModelExtensions.ToRequest(model);
+        }
+    }
+
+    public class PerformanceFilterFormModelHelpers : IFilterFormModelHelpers<PerformanceFilterRequest, PerformanceFilterFormModel>
+    {
+        public Dictionary<string, Action<string?>>? GetTags(PerformanceFilterFormModel model)
+        {
+            return PerformanceFilterFormModelExtensions.GetTags(model);
+        }
+
+        public PerformanceFilterRequest? ToRequest(PerformanceFilterFormModel model)
+        {
+            return PerformanceFilterFormModelExtensions.ToRequest(model);
+        }
+    }
+
+    public class PersonFilterFormModelHelpers : IFilterFormModelHelpers<PersonFilterRequest, PersonFilterFormModel>
+    {
+        public Dictionary<string, Action<string?>>? GetTags(PersonFilterFormModel model)
+        {
+            return PersonFilterFormModelExtensions.GetTags(model);
+        }
+
+        public PersonFilterRequest? ToRequest(PersonFilterFormModel model)
+        {
+            return PersonFilterFormModelExtensions.ToRequest(model);
+        }
+    }
 }

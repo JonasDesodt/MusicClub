@@ -5,7 +5,7 @@
 @typeparam TFilterRequest where TFilterRequest : class, new()
 @typeparam TFilterResult where TFilterResult : IConvertToRequest<TFilterRequest>
 @typeparam TApiService where TApiService : IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult>
-@typeparam TFilterFormModel where TFilterFormModel : class, new()//where TFilterFormModel : IConvertToRequest<TFilterRequest>
+@typeparam TFilterFormModel where TFilterFormModel : class, new()
 
 @inject TApiService ApiService
 @inject DataController DataController
@@ -19,17 +19,19 @@
     <h3>Select @typeof(TDataResult).ToString().Replace("Result", string.Empty)</h3>
 
     <div>
-        @if(filterEditContext is not null)
+        @if (filterEditContext is not null)
         {
             <Filters EditContext="filterEditContext"
-                     GetTags="GetTags"
                      OnValidSubmit="HandleOnValidSubmit"
-                     OnReset="HandleOnReset">
+                     OnReset="HandleOnReset"
+                     TFilterRequest="TFilterRequest"
+                     TFilterFormModel="TFilterFormModel"
+                     Context="FilterFormModel">
                 <Inputs>
-                    @FilterInputs(filterFormModel)
+                    @FilterInputs(FilterFormModel)
                 </Inputs>
             </Filters>
-        }
+        }                  
 
         <PagedList OnPageChanged="(model) => HandleOnPageChanged(model)"
                    PagedServiceResult="pagedServiceResult" Context="DataResult">
@@ -59,11 +61,9 @@
     [Parameter, EditorRequired]
     public required RenderFragment<TDataResult> Template { get; set; }
 
-
-
     private PagedServiceResult<IList<TDataResult>, TFilterResult>? pagedServiceResult { get; set; }
     private EditContext? filterEditContext;
-    private TFilterFormModel filterFormModel = new ();
+    private TFilterFormModel filterFormModel = new();
 
     protected override async Task OnInitializedAsync()
     {

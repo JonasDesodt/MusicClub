@@ -1,12 +1,8 @@
-﻿@implements IDisposable
+﻿@inherits CreateEditForm<ArtistFormModel>
 
-@inject IImageApiService ImageApiService
-@inject IPersonService PersonApiService
-@inject MemoryService MemoryService
+<div class="@(!showPersonDataResultOptions && !showImageDataResultOptions ? "select-closed" : "select-open")">
 
-<div class="@(peoplePagedServiceResult == null && imagesPagedServiceResult == null ? "select-closed" : "select-open")">
-
-    <EditForm EditContext="artistEditContext" OnValidSubmit="() => OnValidSubmit.InvokeAsync(ArtistFormModel)">
+    <EditForm EditContext="editContext" OnValidSubmit="() => OnValidSubmit.InvokeAsync(FormModel)">
         <DataAnnotationsValidator></DataAnnotationsValidator>
 
         <ValidationSummary></ValidationSummary>
@@ -15,28 +11,26 @@
             <div>
                 <label for="alias">Alias</label>
 
-                <InputText @bind-Value="ArtistFormModel.Alias" id="alias" />
+                <InputText @bind-Value="FormModel.Alias" id="alias" />
             </div>
 
-            <PersonDataResultSelect DataResult="ArtistFormModel.PersonResult"
-                                   Context="PersonResult"
-                                   OnDataRequest="() =>  FetchPeople(MemoryService.GetDefaultPaginationRequest(), new PersonFilterRequest {})"
-                                   OnRemoveRequest="() => {ArtistFormModel.PersonId = null; ArtistFormModel.PersonResult = null; MemoryService.HasUnsavedData = true; }"
-                                   @bind-Value="ArtistFormModel.PersonId">
+            <PersonDataResultSelect DataResult="FormModel.PersonResult"
+                                    Context="PersonResult"
+                                    OnDataRequest="() => showPersonDataResultOptions = true"
+                                    OnRemoveRequest="() => {FormModel.PersonId = null; FormModel.PersonResult = null; NotifyFormChanged(); }"
+                                    @bind-Value="FormModel.PersonId">
                 <Info>
-                    <p>@PersonResult.Firstname @PersonResult.Lastname</p>
+                    <PersonDataResultInfo DataResult="PersonResult" />
                 </Info>
             </PersonDataResultSelect>
 
-            <ImageDataResultSelect DataResult="ArtistFormModel.ImageResult"
-                                  Context="ImageResult"
-                                  OnDataRequest="() => FetchImages(MemoryService.GetDefaultPaginationRequest(), new ImageFilterRequest {})"
-                                  OnRemoveRequest="() => { ArtistFormModel.ImageId = null; ArtistFormModel.ImageResult = null; MemoryService.HasUnsavedData = true; }"
-                                  @bind-Value="ArtistFormModel.ImageId">
+            <ImageDataResultSelect DataResult="FormModel.ImageResult"
+                                   Context="ImageResult"
+                                   OnDataRequest="() => showImageDataResultOptions = true"
+                                   OnRemoveRequest="() => { FormModel.ImageId = null; FormModel.ImageResult = null; NotifyFormChanged(); }"
+                                   @bind-Value="FormModel.ImageId">
                 <Info>
-                    <p>@ImageResult.Alt</p>
-
-                    <img src="@($"https://localhost:7061/image/download/{ImageResult.Id}")" />
+                    <ImageDataResultInfo ImageDataResult="FormModel.ImageResult" />
                 </Info>
             </ImageDataResultSelect>
         </div>
@@ -46,134 +40,53 @@
         </div>
     </EditForm>
 
-    @if (peoplePagedServiceResult is not null)
+    @if (showPersonDataResultOptions)
     {
-        <section>
-            <button @onclick="() => peoplePagedServiceResult = null" class="warning">&#128939;</button>
+        <PersonDataResultOptions OnDataResultSelected="(dataResult) => editContext.SelectDataResult(dataResult, () => dataResult.Id, value => FormModel.PersonId = value, value => FormModel.PersonResult = value)"
+                                 OnSelectDisplayStateChanged="(state) => showPersonDataResultOptions = state"
+                                 Context="Context">
+            <FilterInputs>
+                <div>
+                    <label for="firstName">Firstname</label>
 
-            <h3>Select person</h3>
+                    <InputText @bind-Value="Context.Firstname" id="firstName" />
+                </div>
 
-            <div>
-                <PersonFilterForm EditContext="personFilterContext"
-                                  OnReset="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), new PersonFilterRequest())"
-                                  OnValidSubmit="() => FetchPeople(MemoryService.GetDefaultPaginationRequest(), ((PersonFilterFormModel?)personFilterContext?.Model)?.ToRequest() ?? new PersonFilterRequest())" />
+                <div>
+                    <label for="lastName">Lastname</label>
 
+                    <InputText @bind-Value="Context.Lastname" id="lastName" />
+                </div>
+            </FilterInputs>
 
-                <PagedList OnPageChanged="(model) => FetchPeople(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, peoplePagedServiceResult.Filter?.ToRequest() ?? new PersonFilterRequest {})"
-                           PagedServiceResult="peoplePagedServiceResult" Context="PersonResult">
-
-                    <ItemTemplate>
-                        <SelectPersonItem Model="PersonResult"
-                                          OnSelected="(selectedPerson) => SelectPerson(selectedPerson)" />
-                    </ItemTemplate>
-                </PagedList>
-            </div>
-        </section>
+            <Template>
+                <PersonDataResultInfo DataResult="Context" />
+            </Template>
+        </PersonDataResultOptions>
     }
 
-    @if (imagesPagedServiceResult is not null)
+    @if (showImageDataResultOptions)
     {
-        <section>
-            <h3>Select image</h3>
+        <ImageDataResultOptions OnDataResultSelected="(dataResult) => editContext.SelectDataResult(dataResult, () => dataResult.Id, value => FormModel.ImageId = value, value => FormModel.ImageResult = value)"
+                                OnSelectDisplayStateChanged="(state) => showImageDataResultOptions = state"
+                                Context="Context">
+            <FilterInputs>
+                <div>
+                    <label for="alt">Alt</label>
 
-            <div>
-                <button @onclick="() => imagesPagedServiceResult = null" class="warning">Close</button>
+                    <InputText @bind-Value="Context.Alt" id="alt" />
+                </div>
+            </FilterInputs>
 
-                <PagedList OnPageChanged="(model) => FetchImages(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, imagesPagedServiceResult.Filter?.ToRequest() ?? new ImageFilterRequest {})"
-                           PagedServiceResult="imagesPagedServiceResult" Context="ImageResult">
-
-                    <ItemTemplate>
-                        <SelectImageItem Model="ImageResult"
-                                         OnSelected="(selectedImage) => SelectImage(selectedImage)" />
-                    </ItemTemplate>
-                </PagedList>
-            </div>
-        </section>
+            <Template>
+                <ImageDataResultInfo ImageDataResult="Context" />
+            </Template>
+        </ImageDataResultOptions>
     }
 </div>
 
+
 @code {
-    [Parameter, EditorRequired]
-    public required EventCallback<ArtistFormModel> OnValidSubmit { get; set; }
-
-    [Parameter, EditorRequired]
-    public required ArtistFormModel ArtistFormModel { get; set; }
-
-    [Parameter, EditorRequired]
-    public required RenderFragment Buttons { get; set; }
-
-    private EditContext? artistEditContext { get; set; }
-
-    private PagedServiceResult<IList<PersonResult>, PersonFilterResult>? peoplePagedServiceResult { get; set; }
-    private EditContext? personFilterContext { get; set; }
-
-    private PagedServiceResult<IList<ImageResult>, ImageFilterResult>? imagesPagedServiceResult { get; set; }
-
-    protected override void OnInitialized()
-    {
-        artistEditContext = new(ArtistFormModel);
-
-        //what is this for?
-        artistEditContext.ShouldUseFieldIdentifiers = true;
-
-        artistEditContext.OnFieldChanged += HandleFieldChanged;
-
-        personFilterContext = new(new PersonFilterFormModel());
-
-        base.OnInitialized();
-    }
-
-    private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
-    {
-        MemoryService.HasUnsavedData = true;
-    }
-
-    private async Task FetchPeople(PaginationRequest paginationRequest, PersonFilterRequest personFilterRequest)
-    {
-        imagesPagedServiceResult = null;
-
-        peoplePagedServiceResult = await PersonApiService.GetAll(paginationRequest, personFilterRequest);
-
-        personFilterContext = new(peoplePagedServiceResult.Filter.ToFormModel());
-
-    }
-
-    private async Task FetchImages(PaginationRequest paginationRequest, ImageFilterRequest imageFilterRequest)
-    {
-        peoplePagedServiceResult = null;
-
-        imagesPagedServiceResult = await ImageApiService.GetAll(paginationRequest, imageFilterRequest);
-    }
-
-    private void SelectPerson(PersonResult personResult)
-    {
-        if (artistEditContext is null || artistEditContext.Model is not ArtistFormModel formModel) return;
-
-        formModel.PersonId = personResult.Id;
-        formModel.PersonResult = personResult;
-
-        artistEditContext.NotifyFieldChanged(FieldIdentifier.Create(() => formModel.PersonId));
-
-        peoplePagedServiceResult = null;
-    }
-
-    private void SelectImage(ImageResult imageResult)
-    {
-        if (artistEditContext is null || artistEditContext.Model is not ArtistFormModel formModel) return;
-
-        formModel.ImageId = imageResult.Id;
-        formModel.ImageResult = imageResult;
-
-        artistEditContext.NotifyFieldChanged(FieldIdentifier.Create(() => formModel.ImageId));
-
-        imagesPagedServiceResult = null;
-    }
-
-    public void Dispose()
-    {
-        if (artistEditContext is not null)
-        {
-            artistEditContext.OnFieldChanged -= HandleFieldChanged;
-        }
-    }
+    private bool showPersonDataResultOptions = false;
+    private bool showImageDataResultOptions = false;
 }

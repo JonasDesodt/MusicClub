@@ -1,4 +1,4 @@
-﻿@inherits CreateEditForm<PersonFormModel>
+﻿@inherits CreateEditForm<LineupFormModel>
 
 <div class="@(showImageDataResultOptions ? "select-closed" : "select-open")">
     <EditForm EditContext="editContext" OnValidSubmit="() => OnValidSubmit.InvokeAsync(FormModel)">
@@ -8,15 +8,15 @@
 
         <div>
             <div>
-                <label for="firstname">Firstname</label>
+                <label for="title">Title</label>
 
-                <InputText @bind-Value="FormModel.Firstname" id="firstname" />
+                <InputText @bind-Value="FormModel.Title" id="title" />
             </div>
 
             <div>
-                <label for="lastname">Lastname</label>
+                <label for="doors">Doors</label>
 
-                <InputText @bind-Value="FormModel.Lastname" id="lastname" />
+                <InputDate @bind-Value="FormModel.Doors" id="doors" />
             </div>
 
             <ImageDataResultSelect DataResult="FormModel.ImageResult"

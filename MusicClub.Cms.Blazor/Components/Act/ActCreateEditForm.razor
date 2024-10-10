@@ -1,15 +1,7 @@
-﻿@using MusicClub.Cms.Blazor.Models.FormModels.Data
+﻿@inherits CreateEditForm<ActFormModel>
 
-@implements IDisposable
-
-@inject IImageApiService ImageApiService
-@inject ILineupService LineupApiService
-@inject MemoryService MemoryService
-@inject DataController DataController
-
-<div class="@(lineupsPagedServiceResult == null && imagesPagedServiceResult == null ? "select-closed" : "select-open")">
-
-    <EditForm EditContext="actEditContext" OnValidSubmit="() => OnValidSubmit.InvokeAsync(ActFormModel)">
+<div class="@(!showLineupDataResultOptions && !showImageDataResultOptions ? "select-closed" : "select-open")">
+    <EditForm EditContext="editContext" OnValidSubmit="() => OnValidSubmit.InvokeAsync(FormModel)">
         <DataAnnotationsValidator></DataAnnotationsValidator>
 
         <ValidationSummary></ValidationSummary>
@@ -18,46 +10,44 @@
             <div>
                 <label for="name">Name</label>
 
-                <InputText @bind-Value="ActFormModel.Name" id="name" />
+                <InputText @bind-Value="FormModel.Name" id="name" />
             </div>
 
             <div>
                 <label for="title">Title</label>
 
-                <InputText @bind-Value="ActFormModel.Title" id="title" />
+                <InputText @bind-Value="FormModel.Title" id="title" />
             </div>
 
             <div>
                 <label for="doors">Start</label>
 
-                <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="ActFormModel.Start" id="start" />
+                <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="FormModel.Start" id="start" />
             </div>
 
             <div>
                 <label for="duration">Duration</label>
 
-                <InputNumber @bind-Value="ActFormModel.Duration" id="duration" />
+                <InputNumber @bind-Value="FormModel.Duration" id="duration" />
             </div>
 
-            <LineupDataResultSelect DataResult="ActFormModel.LineupResult"
-                                   Context="LineupResult"
-                                   OnDataRequest="() => FetchLineups(MemoryService.GetDefaultPaginationRequest(), new LineupFilterRequest {})"
-                                   OnRemoveRequest="() => {ActFormModel.LineupId = null; ActFormModel.LineupResult = null; MemoryService.HasUnsavedData = true; }"
-                                   @bind-Value="ActFormModel.LineupId">
+            <LineupDataResultSelect DataResult="FormModel.LineupResult"
+                                    Context="ActResult"
+                                    OnDataRequest="() => showLineupDataResultOptions = true"
+                                    OnRemoveRequest="() => {FormModel.LineupId = null; FormModel.LineupResult = null; NotifyFormChanged();}"
+                                    @bind-Value="FormModel.LineupId">
                 <Info>
-                    <p>@LineupResult.Doors.ToShortDateString() @LineupResult.Title</p>
+                    <LineupDataResultInfo DataResult="FormModel.LineupResult" />
                 </Info>
             </LineupDataResultSelect>
 
-            <ImageDataResultSelect DataResult="ActFormModel.ImageResult"
-                                  Context="ImageResult"
-                                  OnDataRequest="() => FetchImages(MemoryService.GetDefaultPaginationRequest(), new ImageFilterRequest {})"
-                                  OnRemoveRequest="() => { ActFormModel.ImageId = null; ActFormModel.ImageResult = null; MemoryService.HasUnsavedData = true; }"
-                                  @bind-Value="ActFormModel.ImageId">
+            <ImageDataResultSelect DataResult="FormModel.ImageResult"
+                                   Context="ImageResult"
+                                   OnDataRequest="() => showImageDataResultOptions = true"
+                                   OnRemoveRequest="() => { FormModel.ImageId = null; FormModel.ImageResult = null; NotifyFormChanged(); }"
+                                   @bind-Value="FormModel.ImageId">
                 <Info>
-                    <p>@ImageResult.Alt</p>
-
-                    <img src="@($"https://localhost:7061/image/download/{ImageResult.Id}")" />
+                    <ImageDataResultInfo ImageDataResult="FormModel.ImageResult" />
                 </Info>
             </ImageDataResultSelect>
         </div>
@@ -67,136 +57,52 @@
         </div>
     </EditForm>
 
-    @if (lineupsPagedServiceResult is not null)
+    @if (showLineupDataResultOptions)
     {
-        <section>
-            <button @onclick="() => lineupsPagedServiceResult = null" class="warning">&#128939;</button>
+        <LineupDataResultOptions OnDataResultSelected="(dataResult) => editContext.SelectDataResult(dataResult, () => dataResult.Id, value => FormModel.LineupId = value, value => FormModel.LineupResult = value)"
+                                 OnSelectDisplayStateChanged="(state) => showLineupDataResultOptions = state"
+                                 Context="Context">
+            <FilterInputs>
+                <div>
+                    <label for="title">Title</label>
 
-            <h3>Select lineup</h3>
+                    <InputText @bind-Value="Context.Title" id="title" />
+                </div>
 
-            <div>
-                <LineupFilterForm EditContext="lineupFilterContext"
-                                  OnReset="() => FetchLineups(MemoryService.GetDefaultPaginationRequest(), new LineupFilterRequest())"
-                                  OnValidSubmit="() => FetchLineups(MemoryService.GetDefaultPaginationRequest(), ((LineupFilterFormModel?)lineupFilterContext?.Model)?.ToRequest() ?? new LineupFilterRequest())" />
+                <div>
+                    <label for="doors">Doors</label>
 
+                    <InputDate @bind-Value="Context.Doors" id="doors" />
+                </div>
+            </FilterInputs>
 
-                <PagedList OnPageChanged="(model) => FetchLineups(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, ((LineupFilterFormModel?)lineupFilterContext?.Model)?.ToRequest() ?? new LineupFilterRequest {})"
-                           PagedServiceResult="lineupsPagedServiceResult" Context="LineupResult">
-
-                    <ItemTemplate>
-                        <SelectLineupItem Model="LineupResult"
-                                          OnSelected="(selectedLineup) => SelectLineup(selectedLineup)" />
-                    </ItemTemplate>
-                </PagedList>
-            </div>
-        </section>
+            <Template>
+                <LineupDataResultInfo DataResult="Context" />
+            </Template>
+        </LineupDataResultOptions>
     }
 
-    @if (imagesPagedServiceResult is not null)
+    @if (showImageDataResultOptions)
     {
-        <section>
-            <h3>Select image</h3>
+        <ImageDataResultOptions OnDataResultSelected="(dataResult) => editContext.SelectDataResult(dataResult, () => dataResult.Id, value => FormModel.ImageId = value, value => FormModel.ImageResult = value)"
+                                OnSelectDisplayStateChanged="(state) => showImageDataResultOptions = state"
+                                Context="Context">
+            <FilterInputs>
+                <div>
+                    <label for="alt">Alt</label>
 
-            <div>
-                <button @onclick="() => imagesPagedServiceResult = null" class="warning">Close</button>
+                    <InputText @bind-Value="Context.Alt" id="alt" />
+                </div>
+            </FilterInputs>
 
-                <PagedList OnPageChanged="(model) => FetchImages(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, imagesPagedServiceResult.Filter.ToRequest())"
-                           PagedServiceResult="imagesPagedServiceResult" Context="ImageResult">
-
-                    <ItemTemplate>
-                        <SelectImageItem Model="ImageResult"
-                                         OnSelected="(selectedImage) => SelectImage(selectedImage)" />
-                    </ItemTemplate>
-                </PagedList>
-            </div>
-        </section>
+            <Template>
+                <ImageDataResultInfo ImageDataResult="Context" />
+            </Template>
+        </ImageDataResultOptions>
     }
 </div>
 
 @code {
-    [Parameter, EditorRequired]
-    public required EventCallback<ActFormModel> OnValidSubmit { get; set; }
-
-    [Parameter, EditorRequired]
-    public required ActFormModel ActFormModel { get; set; }
-
-    [Parameter, EditorRequired]
-    public required RenderFragment Buttons { get; set; }
-
-    private EditContext? actEditContext { get; set; }
-
-    private PagedServiceResult<IList<LineupResult>, LineupFilterResult>? lineupsPagedServiceResult { get; set; }
-    private EditContext? lineupFilterContext { get; set; }
-
-    private PagedServiceResult<IList<ImageResult>, ImageFilterResult>? imagesPagedServiceResult { get; set; }
-    private EditContext? imagesFilterContext { get; set; }
-
-
-    protected override void OnInitialized()
-    {
-        actEditContext = new(ActFormModel);
-
-        //what is this for?
-        actEditContext.ShouldUseFieldIdentifiers = true;
-
-        actEditContext.OnFieldChanged += HandleFieldChanged;
-
-        lineupFilterContext = new(new PersonFilterRequest());
-
-        base.OnInitialized();
-    }
-
-    private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
-    {
-        MemoryService.HasUnsavedData = true;
-    }
-
-    private async Task FetchLineups(PaginationRequest paginationRequest, LineupFilterRequest lineupFilterRequest)
-    {
-        imagesPagedServiceResult = null;
-
-        lineupsPagedServiceResult = await DataController.Fetch(async () => await LineupApiService.GetAll(paginationRequest, lineupFilterRequest));
-
-        lineupFilterContext = new(lineupsPagedServiceResult.Filter);
-
-    }
-
-    private async Task FetchImages(PaginationRequest paginationRequest, ImageFilterRequest imageFilterRequest)
-    {
-        lineupsPagedServiceResult = null;
-
-        imagesPagedServiceResult = await DataController.Fetch(async () => await ImageApiService.GetAll(paginationRequest, imageFilterRequest));
-    }
-
-    private void SelectLineup(LineupResult lineupResult)
-    {
-        if (actEditContext is null || actEditContext.Model is not ActFormModel formModel) return;
-
-        formModel.LineupId = lineupResult.Id;
-        formModel.LineupResult = lineupResult;
-
-        actEditContext.NotifyFieldChanged(FieldIdentifier.Create(() => formModel.LineupId));
-
-        lineupsPagedServiceResult = null;
-    }
-
-    private void SelectImage(ImageResult imageResult)
-    {
-        if (actEditContext is null || actEditContext.Model is not ActFormModel formModel) return;
-
-        formModel.ImageId = imageResult.Id;
-        formModel.ImageResult = imageResult;
-
-        actEditContext.NotifyFieldChanged(FieldIdentifier.Create(() => formModel.ImageId));
-
-        imagesPagedServiceResult = null;
-    }
-
-    public void Dispose()
-    {
-        if (actEditContext is not null)
-        {
-            actEditContext.OnFieldChanged -= HandleFieldChanged;
-        }
-    }
+    private bool showLineupDataResultOptions = false;
+    private bool showImageDataResultOptions = false;
 }

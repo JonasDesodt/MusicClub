@@ -1,5 +1,74 @@
-﻿<h3>Edit</h3>
+﻿@page "/lineup/edit/{id:int}"
+
+@layout LineupCrudLayout
+
+@using MusicClub.Cms.Blazor.Models.FormModels.Data
+
+@inject ILineupService LineupApiService
+@inject NavigationManager NavigationManager
+@inject DataController DataController
+@inject MemoryService MemoryService
+
+<h3>Edit lineup</h3>
+
+<LineupCreateEditForm FormModel="lineupFormModel" OnValidSubmit="() => Post()">
+    <Buttons>
+        <button type="submit">Submit</button>
+
+        <button type="button" @onclick="async () => {MemoryService.HasUnsavedData = false; await FetchLineup(Id);}" class="warning">Undo changes</button>
+
+        <NavLink href="@($"lineup/delete/{Id}")" class="button danger">Delete</NavLink>
+    </Buttons>
+</LineupCreateEditForm>
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
 
+    [CascadingParameter]
+    public bool IsOpen { get; set; }
+
+    private LineupFormModel? lineupFormModel { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var lineupServiceResult = (ServiceResult<LineupResult>?)DataController.Data;
+        if (lineupServiceResult?.Data is { } lineupResult)
+        {
+            lineupFormModel = lineupResult.ToFormModel();
+        }
+
+        base.OnInitialized();
+    }
+
+    private async Task FetchLineup(int id)
+    {
+        var lineupServiceResult = await DataController.Fetch(async () => await LineupApiService.Get(id));
+
+        if (lineupServiceResult?.Data is { } lineupResult)
+        {
+            lineupFormModel = lineupResult.ToFormModel();
+        }
+    }
+
+    private async Task Post()
+    {
+        if (IsOpen)
+        {
+            return;
+        }
+
+        if (lineupFormModel?.ToRequest() is not { } lineupRequest)
+        {
+            return;
+        }
+
+        var serviceResult = await DataController.Fetch(async () => await LineupApiService.Update(Id, lineupRequest));
+        if (serviceResult.Messages is null)
+        {
+            MemoryService.HasUnsavedData = false;
+
+            NavigationManager.NavigateTo("/lineup");
+        }
+    }
 }

@@ -1,4 +1,11 @@
-﻿<div class="filters">
+﻿@using MusicClub.Cms.Blazor.Helpers
+
+@typeparam TFilterRequest where TFilterRequest : class, new()
+@typeparam TFilterFormModel where TFilterFormModel : class, new()
+
+@inject IFilterFormModelHelpers<TFilterRequest, TFilterFormModel> FilterFormModelHelpers
+
+<div class="filters">
     @if (showFilters)
     {
         <button @onclick="() => showFilters = false">Filters &#11205;</button>
@@ -10,7 +17,7 @@
             <ValidationSummary></ValidationSummary>
 
             <div>
-                @Inputs
+                @Inputs((TFilterFormModel)EditContext.Model)
             </div>
 
             <div>
@@ -42,16 +49,13 @@
 
 @code {
     [Parameter, EditorRequired]
-    public required RenderFragment Inputs { get; set; }
+    public required RenderFragment<TFilterFormModel> Inputs { get; set; }
 
     [Parameter, EditorRequired]
     public EventCallback OnValidSubmit { get; set; }
 
     [Parameter, EditorRequired]
     public EventCallback OnReset { get; set; }
-
-    [Parameter, EditorRequired]
-    public required Func<Dictionary<string, Action<string?>>> GetTags { get; set; }
 
     [Parameter, EditorRequired]
     public required EditContext EditContext { get; set; }
@@ -74,9 +78,9 @@
 
         parameters.SetParameterProperties(this);
 
-        if (shouldGetTags)
+        if (shouldGetTags && (TFilterFormModel)EditContext.Model is { } filterFormModel)
         {
-            tags = GetTags();
+            tags = FilterFormModelHelpers.GetTags(filterFormModel);
         }
 
         return base.SetParametersAsync(ParameterView.Empty);

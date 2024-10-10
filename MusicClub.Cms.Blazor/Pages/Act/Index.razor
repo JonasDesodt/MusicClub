@@ -2,92 +2,117 @@
 
 @layout ActCrudLayout
 
-@implements IDisposable
+<div class="index-page @(showLineupDataResultOptions || showImageDataResultOptions ? "select-open" : "select-closed")">
+    <DataResultIndexPage TDataRequest="ActRequest"
+                         TDataResult="ActResult"
+                         TFilterRequest="ActFilterRequest"
+                         TFilterResult="ActFilterResult"
+                         TApiService="IActService"
+                         TFilterFormModel="ActFilterFormModel"
+                         OnSelectDisplayStateChanged="(state) => showLineupDataResultOptions = state"
+                         Context="Context">
+        <FilterInputs>
+            <div>
+                <label for="name">Name</label>
 
-@inject IActService ActApiService
-@inject NavigationManager NavigationManager
-@inject DataController DataControllerService
-@inject MemoryService MemoryService
+                <InputText @bind-Value="Context.Name" id="name" />
+            </div>
 
-<section class="index-page @(isSelectOpen ? "select-open" : "select-closed")">
-    <h3>Index</h3>
+            <div>
+                <label for="title">Title</label>
 
-    <NavLink class="button" href="act/create">Create</NavLink>
+                <InputText @bind-Value="Context.Title" id="title" />
+            </div>
 
-    <ActFilterForm EditContext="filterContext"
-                   OnSelectDisplayStateChanged="(state) => isSelectOpen = state"
-                   OnReset="() => FetchActs(MemoryService.GetDefaultPaginationRequest(), new ActFilterRequest())"
-                   OnValidSubmit="() => FetchActs(MemoryService.GetDefaultPaginationRequest(), ((ActFilterFormModel?)filterContext?.Model)?.ToRequest() ?? new ActFilterRequest())" />
+            <div>
+                <label for="doors">Start</label>
 
-    @if (ActsPagedServiceResult is not null)
-    {
+                <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="Context.Start" id="start" />
+            </div>
 
-        <PagedList OnPageChanged="@(async (request) => { await FetchActs(request, ActsPagedServiceResult.Filter.ToRequest());  })"
-                   PagedServiceResult="ActsPagedServiceResult" Context="ActResult">
-            <ItemTemplate>
-                <div>
-                    @if (ActResult.ImageResult is not null)
-                    {
-                        <img src="@($"https://localhost:7061/image/download/{ActResult.ImageResult?.Id}")" />
+            <div>
+                <label for="duration">Duration</label>
 
-                    }
-                    else
-                    {
-                        <p>no image</p>
-                    }
+                <InputNumber @bind-Value="Context.Duration" id="duration" />
+            </div>
 
-                    <div>
-                        @if (!string.IsNullOrWhiteSpace(ActResult.Name))
-                        {
-                            <h4>@ActResult.Name</h4>
-                        }
-                        else if (ActResult.Start is not null)
-                        {
-                            <h4>@ActResult.Start</h4>
-                        }
-                        else
-                        {
-                            <h4>@ActResult.Id</h4>
-                        }
+            <LineupDataResultSelect DataResult="Context.LineupResult"
+                                    Context="ActResult"
+                                    OnDataRequest="() => showLineupDataResultOptions = true"
+                                    OnRemoveRequest="() => {Context.LineupId = null; Context.LineupResult = null; }"
+                                    @bind-Value="Context.LineupId">
+                <Info>
+                    <LineupDataResultInfo DataResult="Context.LineupResult" />
+                </Info>
+            </LineupDataResultSelect>
 
-                        <NavLink href="@($"act/edit/{ActResult.Id}")" class="button">Edit</NavLink>
-                    </div>
-                </div>
-            </ItemTemplate>
-        </PagedList>
-    }
-</section>
+            <ImageDataResultSelect DataResult="Context.ImageResult"
+                                   Context="ImageResult"
+                                   OnDataRequest="() => showImageDataResultOptions = true"
+                                   OnRemoveRequest="() => { Context.ImageId = null; Context.ImageResult = null; }"
+                                   @bind-Value="Context.ImageId">
+                <Info>
+                    <ImageDataResultInfo ImageDataResult="Context.ImageResult" />
+                </Info>
+            </ImageDataResultSelect>
+        </FilterInputs>
+
+        <Template>
+            <ActDataResultInfo DataResult="Context" />
+
+            <NavLink href="@($"artist/edit/{Context.Id}")" class="button">Edit</NavLink>
+        </Template>
+
+        <DataResultOptions>
+            @if (showLineupDataResultOptions)
+            {
+                <LineupDataResultOptions OnSelectDisplayStateChanged="(state) => showLineupDataResultOptions = state"
+                                         Context="DataResultOptionsContext">
+                    <FilterInputs>
+                        <div>
+                            <label for="title">Title</label>
+
+                            <InputText @bind-Value="DataResultOptionsContext.Title" id="title" />
+                        </div>
+
+                        <div>
+                            <label for="doors">Doors</label>
+
+                            <InputDate @bind-Value="DataResultOptionsContext.Doors" id="doors" />
+                        </div>
+                    </FilterInputs>
+
+                    <Template>
+                        <LineupDataResultInfo DataResult="DataResultOptionsContext" />
+
+                        <button @onclick="() => { Context.SelectDataResult(DataResultOptionsContext, () => DataResultOptionsContext.Id, value => ((ActFilterFormModel)Context.Model).LineupId = value, value => ((ActFilterFormModel)Context.Model).LineupResult = value); showLineupDataResultOptions = false; }">Select</button>
+                    </Template>
+                </LineupDataResultOptions>
+            } 
+
+@*             @if (showImageDataResultOptions)
+            {
+                <ImageDataResultOptions OnDataResultSelected="(dataResult) => Context.SelectDataResult(dataResult, () => dataResult.Id, value => ((ActFilterFormModel)Context.Model).ImageId = value, value => ((ActFilterFormModel)Context.Model).ImageResult = value)"
+                                        OnSelectDisplayStateChanged="(state) => showImageDataResultOptions = state"
+                                        Context="DataResultOptionsContext">
+                    <FilterInputs>
+                        <div>
+                            <label for="alt">Alt</label>
+
+                            <InputText @bind-Value="DataResultOptionsContext.Alt" id="alt" />
+                        </div>
+                    </FilterInputs>
+
+                    <Template>
+                        <ImageDataResultInfo ImageDataResult="DataResultOptionsContext" />
+                    </Template>
+                </ImageDataResultOptions>
+            } *@
+        </DataResultOptions>
+    </DataResultIndexPage>
+</div>
 
 @code {
-    private PagedServiceResult<IList<ActResult>, ActFilterResult>? ActsPagedServiceResult;
-
-    private EditContext? filterContext { get; set; }
-
-    private bool isSelectOpen = false;
-
-    protected override void OnInitialized()
-    {
-        ActsPagedServiceResult = (PagedServiceResult<IList<ActResult>, ActFilterResult>?)DataControllerService.Data;
-
-        if (ActsPagedServiceResult is null) return;
-
-        filterContext = new(ActsPagedServiceResult.Filter.ToFormModel());
-
-        base.OnInitialized();
-    }
-
-    private async Task FetchActs(PaginationRequest paginationRequest, ActFilterRequest actFilterRequest)
-    {
-        ActsPagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<ActResult>, ActFilterResult>>(async () => await ActApiService.GetAll(paginationRequest, actFilterRequest));
-
-        MemoryService.Set(ActsPagedServiceResult.Filter);
-        MemoryService.Set(ActsPagedServiceResult.Pagination);
-
-        filterContext = new(ActsPagedServiceResult.Filter.ToFormModel());
-    }
-
-    public void Dispose()
-    {
-        DataControllerService.Data = null;
-    }
+    private bool showLineupDataResultOptions = false;
+    private bool showImageDataResultOptions = false;
 }

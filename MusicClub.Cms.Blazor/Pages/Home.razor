@@ -61,9 +61,9 @@ Welcome to your new app.
 
     protected override void OnInitialized()
     {
-        PerformancesPagedServiceResult = (PagedServiceResult<IList<PerformanceResult>, PerformanceFilterResult>?)DataControllerService.Data;
+        // PerformancesPagedServiceResult = (PagedServiceResult<IList<PerformanceResult>, PerformanceFilterResult>?)DataControllerService.Data;
 
-        if (PerformancesPagedServiceResult is null) return;
+        // if (PerformancesPagedServiceResult is null) return;
 
         base.OnInitialized();
     }

@@ -1,13 +1,13 @@
-﻿@if (ArtistDataResult.Alias is { Length: > 0 } alias)
+﻿@if (DataResult.Alias is { Length: > 0 } alias)
 {
-    <h4>@alias (@ArtistDataResult.PersonResult.Firstname @ArtistDataResult.PersonResult.Lastname)</h4>
+    <h4>@alias (@DataResult.PersonResult.Firstname @DataResult.PersonResult.Lastname)</h4>
 }
 else
 {
-    <h4>@ArtistDataResult.PersonResult.Firstname @ArtistDataResult.PersonResult.Lastname</h4>
+    <h4>@DataResult.PersonResult.Firstname @DataResult.PersonResult.Lastname</h4>
 }
 
 @code {
     [Parameter, EditorRequired]
-    public required ArtistResult ArtistDataResult { get; set; }
+    public required ArtistResult DataResult { get; set; }
 }

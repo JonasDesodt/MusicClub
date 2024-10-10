@@ -1,0 +1,77 @@
+﻿@using MusicClub.Cms.Blazor.Helpers
+@implements IDisposable
+
+@typeparam TDataRequest
+@typeparam TDataResult where TDataResult : class
+@typeparam TFilterRequest where TFilterRequest : class, new()
+@typeparam TFilterResult where TFilterResult : class, IConvertToRequest<TFilterRequest>
+@typeparam TApiService where TApiService : IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult>
+@typeparam TFilterFormModel where TFilterFormModel : class, new()
+
+@inject DataController DataController
+@inject IFilterResultHelpers<TFilterResult, TFilterFormModel> FilterResultHelper
+
+<DataResultIndex TDataRequest="TDataRequest"
+                 TDataResult="TDataResult"
+                 TFilterRequest="TFilterRequest"
+                 TFilterResult="TFilterResult"
+                 TApiService="TApiService"
+                 TFilterFormModel="TFilterFormModel"
+                 PagedServiceResult="pagedServiceResult"
+                 FilterEditContext="filterEditContext"
+                 OnSelectDisplayStateChanged="OnSelectDisplayStateChanged"
+                 Context="Context">
+    <Header>
+        <h3>Index</h3>
+
+        <NavLink class="button" href="@($"{typeof(TDataResult).ToString().Replace("Result", string.Empty).Split('.').Last().ToLower()}/create")">Create</NavLink>
+    </Header>
+
+    <FilterInputs>
+        @FilterInputs(Context)
+    </FilterInputs>
+
+    <Template>
+        @Template(Context)
+    </Template>
+</DataResultIndex>
+
+@if (DataResultOptions is not null && filterEditContext is not null)
+{
+    @DataResultOptions(filterEditContext)
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public EventCallback<bool> OnSelectDisplayStateChanged { get; set; }
+
+    [Parameter, EditorRequired]
+    public required RenderFragment<TFilterFormModel> FilterInputs { get; set; }
+
+    [Parameter, EditorRequired]
+    public required RenderFragment<TDataResult> Template { get; set; }
+
+    [Parameter]
+    public RenderFragment<EditContext>? DataResultOptions { get; set; }
+
+    private PagedServiceResult<IList<TDataResult>, TFilterResult>? pagedServiceResult;
+
+    private EditContext? filterEditContext;
+
+    protected override void OnInitialized()
+    {
+        pagedServiceResult = (PagedServiceResult<IList<TDataResult>, TFilterResult>?)DataController.Data;
+
+        if (pagedServiceResult is not null)
+        {
+            filterEditContext = new(FilterResultHelper.ToFormModel(pagedServiceResult.Filter));
+        }
+
+        base.OnInitialized();
+    }
+
+    public void Dispose()
+    {
+        DataController.Data = null;
+    }
+}
