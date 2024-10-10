@@ -18,7 +18,7 @@
                 <InputText @bind-Value="ArtistFormModel.Alias" id="alias" />
             </div>
 
-            <PersonDataResultInput DataResult="ArtistFormModel.PersonResult"
+            <PersonDataResultSelect DataResult="ArtistFormModel.PersonResult"
                                    Context="PersonResult"
                                    OnDataRequest="() =>  FetchPeople(MemoryService.GetDefaultPaginationRequest(), new PersonFilterRequest {})"
                                    OnRemoveRequest="() => {ArtistFormModel.PersonId = null; ArtistFormModel.PersonResult = null; MemoryService.HasUnsavedData = true; }"
@@ -26,9 +26,9 @@
                 <Info>
                     <p>@PersonResult.Firstname @PersonResult.Lastname</p>
                 </Info>
-            </PersonDataResultInput>
+            </PersonDataResultSelect>
 
-            <ImageDataResultInput DataResult="ArtistFormModel.ImageResult"
+            <ImageDataResultSelect DataResult="ArtistFormModel.ImageResult"
                                   Context="ImageResult"
                                   OnDataRequest="() => FetchImages(MemoryService.GetDefaultPaginationRequest(), new ImageFilterRequest {})"
                                   OnRemoveRequest="() => { ArtistFormModel.ImageId = null; ArtistFormModel.ImageResult = null; MemoryService.HasUnsavedData = true; }"
@@ -38,7 +38,7 @@
 
                     <img src="@($"https://localhost:7061/image/download/{ImageResult.Id}")" />
                 </Info>
-            </ImageDataResultInput>
+            </ImageDataResultSelect>
         </div>
 
         <div>

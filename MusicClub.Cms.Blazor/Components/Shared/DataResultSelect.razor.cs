@@ -4,7 +4,7 @@ using MusicClub.Cms.Blazor.Attributes;
 namespace MusicClub.Cms.Blazor.Components.Shared
 {
     [GenerateDataResultInputs("Act", "Artist", "Image", "Lineup", "Person")]
-    public abstract partial class DataResultInput<TDataResult, TFilterRequest> where TDataResult : class where TFilterRequest : new()
+    public abstract partial class DataResultSelect<TDataResult, TFilterRequest> where TDataResult : class where TFilterRequest : new()
 
         //public abstract partial class DataResultInput<TApiService, TDataRequest, TDataResult, TFilterRequest, TFilterResult> where TApiService : IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult> where TDataResult : class where TFilterRequest : new() 
     {

@@ -6,9 +6,9 @@
         {
             var tags = new Dictionary<string, Action<string?>>();
 
-            if (formModel.Name is { Length : > 0 } alias)
+            if (formModel.Name is { Length : > 0 } name)
             {
-                tags.Add("name: " + alias, (value) => formModel.Name = value);
+                tags.Add("name: " + name, (value) => formModel.Name = value);
             }
 
             if (formModel.ImageId is { } id && id > 0)

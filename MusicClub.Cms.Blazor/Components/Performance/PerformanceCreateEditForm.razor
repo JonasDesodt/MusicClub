@@ -1,15 +1,11 @@
-﻿@using MusicClub.Cms.Blazor.Models.FormModels.Data
-
-@implements IDisposable
+﻿@inherits CreateEditForm<PerformanceFormModel>
 
 @inject IActService ActApiService
 @inject IArtistService ArtistApiService
 @inject IImageApiService ImageApiService
-@inject MemoryService MemoryService
-@inject DataController DataController
 
-<div class="@(!showActSelect && !showArtistSelect && !showImageSelect ? "select-closed" : "select-open")">
-    <EditForm EditContext="performanceEditContext" OnValidSubmit="() => OnValidSubmit.InvokeAsync(PerformanceFormModel)">
+<div class="@(!showActDataResultOptions && !showArtistDataResultOptions && !showImageDataResultOptions ? "select-closed" : "select-open")">
+    <EditForm EditContext="editContext" OnValidSubmit="() => OnValidSubmit.InvokeAsync(FormModel)">
         <DataAnnotationsValidator></DataAnnotationsValidator>
 
         <ValidationSummary></ValidationSummary>
@@ -18,52 +14,38 @@
             <div>
                 <label for="instrument">Instrument</label>
 
-                <InputText @bind-Value="PerformanceFormModel.Instrument" id="instrument" />
+                <InputText @bind-Value="FormModel.Instrument" id="instrument" />
             </div>
 
-            <ArtistDataResultInput DataResult="PerformanceFormModel.ArtistResult"
-                                   Context="ArtistResult"
-                                   OnDataRequest="() => showArtistSelect = true"
-                                   OnRemoveRequest="() => {PerformanceFormModel.ArtistId = null; PerformanceFormModel.ArtistResult = null; MemoryService.HasUnsavedData = true; }"
-                                   @bind-Value="PerformanceFormModel.ArtistId">
+            <ArtistDataResultSelect DataResult="FormModel.ArtistResult"
+                                    Context="ArtistResult"
+                                    OnDataRequest="() => showArtistDataResultOptions = true"
+                                    OnRemoveRequest="() => {FormModel.ArtistId = null; FormModel.ArtistResult = null; NotifyFormChanged(); }"
+                                    @bind-Value="FormModel.ArtistId">
                 <Info>
-                    @if (ArtistResult.Alias is { Length: > 0 } alias)
-                    {
-                        <h4>@alias (@ArtistResult.PersonResult.Firstname @ArtistResult.PersonResult.Lastname)</h4>
-                    }
-                    else
-                    {
-                        <h4>@ArtistResult.PersonResult.Firstname @ArtistResult.PersonResult.Lastname</h4>
-                    }
+                    <ArtistDataResultInfo ArtistDataResult="FormModel.ArtistResult" />
                 </Info>
-            </ArtistDataResultInput>
+            </ArtistDataResultSelect>
 
-            <ActDataResultInput DataResult="PerformanceFormModel.ActResult"
-                                Context="ActResult"
-                                OnDataRequest="() => showActSelect = true"
-                                OnRemoveRequest="() => {PerformanceFormModel.ActId = null; PerformanceFormModel.ActResult = null; MemoryService.HasUnsavedData = true; }"
-                                @bind-Value="PerformanceFormModel.ActId">
+            <ActDataResultSelect DataResult="FormModel.ActResult"
+                                 Context="ActResult"
+                                 OnDataRequest="() => showActDataResultOptions = true"
+                                 OnRemoveRequest="() => {FormModel.ActId = null; FormModel.ActResult = null; NotifyFormChanged();}"
+                                 @bind-Value="FormModel.ActId">
                 <Info>
-                    <h4>@ActResult.Start?.ToLongDateString() @ActResult.Name</h4>
-
-                    @if (ActResult.Title is { Length: > 0 } title)
-                    {
-                        <p>@title</p>
-                    }
+                    <ActDataResultInfo ActDataResult="FormModel.ActResult" />
                 </Info>
-            </ActDataResultInput>
+            </ActDataResultSelect>
 
-            <ImageDataResultInput DataResult="PerformanceFormModel.ImageResult"
-                                  Context="ImageResult"
-                                  OnDataRequest="() => showImageSelect = true"
-                                  OnRemoveRequest="() => { PerformanceFormModel.ImageId = null; PerformanceFormModel.ImageResult = null; MemoryService.HasUnsavedData = true; }"
-                                  @bind-Value="PerformanceFormModel.ImageId">
+            <ImageDataResultSelect DataResult="FormModel.ImageResult"
+                                   Context="ImageResult"
+                                   OnDataRequest="() => showImageDataResultOptions = true"
+                                   OnRemoveRequest="() => { FormModel.ImageId = null; FormModel.ImageResult = null; NotifyFormChanged(); }"
+                                   @bind-Value="FormModel.ImageId">
                 <Info>
-                    <p>@ImageResult.Alt</p>
-
-                    <img src="@($"https://localhost:7061/image/download/{ImageResult.Id}")" />
+                    <ImageDataResultInfo ImageDataResult="FormModel.ImageResult" />
                 </Info>
-            </ImageDataResultInput>
+            </ImageDataResultSelect>
         </div>
 
         <div>
@@ -71,11 +53,10 @@
         </div>
     </EditForm>
 
-
-    @if (showActSelect)
+    @if (showActDataResultOptions)
     {
-        <ActDataResultOptions OnDataResultSelected="(actDataResult) => SelectAct(actDataResult)"
-                              OnSelectDisplayStateChanged="(state) => showActSelect = state"
+        <ActDataResultOptions OnDataResultSelected="(dataResult) => editContext.SelectDataResult(dataResult, () => dataResult.Id, value => FormModel.ActId = value, value => FormModel.ActResult = value)"
+                              OnSelectDisplayStateChanged="(state) => showActDataResultOptions = state"
                               Context="Context">
             <FilterInputs>
                 <div>
@@ -98,184 +79,66 @@
             </FilterInputs>
 
             <Template>
-                <h4>@Context.Name @Context.Title</h4>
+                <ActDataResultInfo ActDataResult="Context" />
             </Template>
         </ActDataResultOptions>
     }
 
-    @if (showArtistSelect)
+    @if (showArtistDataResultOptions)
     {
-        @*         <ArtistDataResultOptions OnDataResultSelected="(artistDataResult) => SelectArtist(artistDataResult)"
-    OnSelectDisplayStateChanged="(state) => showArtistSelect = state"
-    Context="ArtistDataResult">
-    <Template>
-    @if (ArtistDataResult.Alias is { Length: > 0 } alias)
-    {
-    <h4>@alias (@ArtistDataResult.PersonResult?.Firstname @ArtistDataResult.PersonResult?.Lastname)</h4>
-    }
-    else
-    {
-    <h4>@ArtistDataResult.PersonResult?.Firstname @ArtistDataResult.PersonResult?.Lastname</h4>
-    }
-    </Template>
-    </ArtistDataResultOptions> *@
-    }
+        <ArtistDataResultOptions OnDataResultSelected="(dataResult) => editContext.SelectDataResult(dataResult, () => dataResult.Id, value => FormModel.ArtistId = value, value => FormModel.ArtistResult = value)"
+                                 OnSelectDisplayStateChanged="(state) => showArtistDataResultOptions = state"
+                                 Context="Context">
+            <FilterInputs>
+                <div>
+                    <label for="alias">Alias</label>
 
+                    <InputText @bind-Value="Context.Alias" id="alias" />
+                </div>
 
-    @*     @if (actsPagedServiceResult is not null)
-    {
-    <section>
-    <button @onclick="() => actsPagedServiceResult = null" class="warning">&#128939;</button>
+                <div>
+                    <label for="firstName">Firstname</label>
 
-    <h3>Select act</h3>
+                    <InputText @bind-Value="Context.Firstname" id="firstName" />
+                </div>
 
-    <div>
-    <ActFilterForm EditContext="actFilterContext"
-    OnReset="() => FetchActs(MemoryService.GetDefaultPaginationRequest(), new ActFilterRequest())"
-    OnValidSubmit="() => FetchActs(MemoryService.GetDefaultPaginationRequest(), ((ActFilterFormModel?)actFilterContext?.Model)?.ToRequest() ?? new ActFilterRequest())" />
+                <div>
+                    <label for="lastName">Lastname</label>
 
+                    <InputText @bind-Value="Context.Lastname" id="lastName" />
+                </div>
+            </FilterInputs>
 
-    <PagedList OnPageChanged="(model) => FetchActs(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, ((ActFilterFormModel?)actFilterContext?.Model)?.ToRequest() ?? new ActFilterRequest {})"
-    PagedServiceResult="actsPagedServiceResult" Context="ActResult">
-
-    <ItemTemplate>
-    <SelectActItem Model="ActResult"
-    OnSelected="(selectedAct) => SelectAct(selectedAct)" />
-    </ItemTemplate>
-    </PagedList>
-    </div>
-    </section>
+            <Template>
+                <ArtistDataResultInfo ArtistDataResult="Context" />
+            </Template>
+        </ArtistDataResultOptions>
     }
 
-    @if (artistsPagedServiceResult is not null)
+    @if (showImageDataResultOptions)
     {
+        <ImageDataResultOptions OnDataResultSelected="(dataResult) => editContext.SelectDataResult(dataResult, () => dataResult.Id, value => FormModel.ImageId = value, value => FormModel.ImageResult = value)"
+                                OnSelectDisplayStateChanged="(state) => showImageDataResultOptions = state"
+                                Context="Context">
+            <FilterInputs>
+                <div>
+                    <label for="alt">Alt</label>
 
+                    <InputText @bind-Value="Context.Alt" id="alt" />
+                </div>
+            </FilterInputs>
 
-
-
-    <section>
-    <button @onclick="() => artistsPagedServiceResult = null" class="warning">&#128939;</button>
-
-    <h3>Select artist</h3>
-
-    <div>
-    <ArtistFilterForm EditContext="artistFilterContext"
-    OnReset="() => FetchArtists(MemoryService.GetDefaultPaginationRequest(), new ArtistFilterRequest())"
-    OnValidSubmit="() => FetchArtists(MemoryService.GetDefaultPaginationRequest(), ((ArtistFilterFormModel?)artistFilterContext?.Model)?.ToRequest() ?? new ArtistFilterRequest())" />
-
-
-    <PagedList OnPageChanged="(model) => FetchArtists(new PaginationRequest { Page = model.Page, PageSize = model.PageSize }, ((ArtistFilterFormModel?)artistFilterContext?.Model)?.ToRequest() ?? new ArtistFilterRequest {})"
-    PagedServiceResult="artistsPagedServiceResult" Context="ArtistResult">
-
-    <ItemTemplate>
-    <SelectArtistItem Model="ArtistResult"
-    OnSelected="(selectedArtist) => SelectArtist(selectedArtist)" />
-    </ItemTemplate>
-    </PagedList>
-    </div>
-    </section>
-    } *@
-
-
-    @if (showImageSelect)
-    {
-        <ImageSelect EditContext="performanceEditContext"
-                     OnSelectDisplayStateChanged="(state) => showImageSelect = state" />
+            <Template>
+                <ImageDataResultInfo ImageDataResult="Context" />
+            </Template>
+        </ImageDataResultOptions>
     }
 </div>
 
 
-@code {
-    [Parameter, EditorRequired]
-    public required EventCallback<PerformanceFormModel> OnValidSubmit { get; set; }
 
-    [Parameter, EditorRequired]
-    public required PerformanceFormModel PerformanceFormModel { get; set; }
-
-    [Parameter, EditorRequired]
-    public required RenderFragment Buttons { get; set; }
-
-    private EditContext? performanceEditContext { get; set; }
-
-    // private PagedServiceResult<IList<ActResult>, ActFilterResult>? actsPagedServiceResult { get; set; }
-    // private EditContext? actFilterContext { get; set; }
-
-    // private PagedServiceResult<IList<ArtistResult>, ArtistFilterResult>? artistsPagedServiceResult { get; set; }
-    // private EditContext? artistFilterContext { get; set; }
-
-    private bool showImageSelect = false;
-    private bool showArtistSelect = false;
-    private bool showActSelect = false;
-
-
-
-    protected override void OnInitialized()
-    {
-        performanceEditContext = new(PerformanceFormModel);
-
-        //what is this for?
-        performanceEditContext.ShouldUseFieldIdentifiers = true;
-
-        performanceEditContext.OnFieldChanged += HandleFieldChanged;
-
-        // artistFilterContext = new(new ArtistFilterRequest());
-
-        base.OnInitialized();
-    }
-
-    private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
-    {
-        MemoryService.HasUnsavedData = true;
-    }
-
-    // private async Task FetchActs(PaginationRequest paginationRequest, ActFilterRequest actFilterRequest)
-    // {
-    //     // imagesPagedServiceResult = null;
-    //     artistsPagedServiceResult = null;
-
-    //     actsPagedServiceResult = await DataController.Fetch(async () => await ActApiService.GetAll(paginationRequest, actFilterRequest));
-
-    //     actFilterContext = new(actsPagedServiceResult.Filter.ToFormModel());
-
-    // }
-
-    // private async Task FetchArtists(PaginationRequest paginationRequest, ArtistFilterRequest artistFilterRequest)
-    // {
-    //     // imagesPagedServiceResult = null;
-    //     actsPagedServiceResult = null;
-
-    //     artistsPagedServiceResult = await DataController.Fetch(async () => await ArtistApiService.GetAll(paginationRequest, artistFilterRequest));
-
-    //     artistFilterContext = new(artistsPagedServiceResult.Filter.ToFormModel());
-
-    // }
-
-    private void SelectAct(ActResult actResult)
-    {
-        if (performanceEditContext is null || performanceEditContext.Model is not PerformanceFormModel formModel) return;
-
-        formModel.ActId = actResult.Id;
-        formModel.ActResult = actResult;
-
-        performanceEditContext.NotifyFieldChanged(FieldIdentifier.Create(() => formModel.ActId));
-    }
-
-
-    private void SelectArtist(ArtistResult artistResult)
-    {
-        if (performanceEditContext is null || performanceEditContext.Model is not PerformanceFormModel formModel) return;
-
-        formModel.ArtistId = artistResult.Id;
-        formModel.ArtistResult = artistResult;
-
-        performanceEditContext.NotifyFieldChanged(FieldIdentifier.Create(() => formModel.ArtistId));
-    }
-
-    public void Dispose()
-    {
-        if (performanceEditContext is not null)
-        {
-            performanceEditContext.OnFieldChanged -= HandleFieldChanged;
-        }
-    }
+@code{
+    private bool showImageDataResultOptions = false;
+    private bool showArtistDataResultOptions = false;
+    private bool showActDataResultOptions = false;
 }

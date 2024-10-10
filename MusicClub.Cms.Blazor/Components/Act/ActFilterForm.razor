@@ -27,7 +27,7 @@
                 <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="((ActFilterFormModel)EditContext.Model).Start" id="start" />
             </div>
 
-            <ImageDataResultInput DataResult="((ActFilterFormModel)EditContext.Model).ImageResult"
+            <ImageDataResultSelect DataResult="((ActFilterFormModel)EditContext.Model).ImageResult"
                                   Context="ImageResult"
                                   OnDataRequest="() => FetchImages(MemoryService.GetDefaultPaginationRequest(), new ImageFilterRequest())"
                                   OnRemoveRequest="() => { ((ActFilterFormModel)EditContext.Model).ImageId = null; ((ActFilterFormModel)EditContext.Model).ImageResult = null; MemoryService.HasUnsavedData = true; }"
@@ -37,7 +37,7 @@
 
                     <img src="@($"https://localhost:7061/image/download/{ImageResult.Id}")" />
                 </Info>
-            </ImageDataResultInput>
+            </ImageDataResultSelect>
 
         </Inputs>
     </Filters>

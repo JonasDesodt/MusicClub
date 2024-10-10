@@ -1,0 +1,49 @@
+﻿@typeparam TFormModel where TFormModel : notnull
+
+@implements IDisposable
+
+@inject MemoryService MemoryService
+@inject DataController DataController
+
+@code {
+    [Parameter, EditorRequired]
+    public required EventCallback<TFormModel> OnValidSubmit { get; set; }
+
+    [Parameter, EditorRequired]
+    public required TFormModel FormModel { get; set; }
+
+    [Parameter, EditorRequired]
+    public required RenderFragment Buttons { get; set; }
+
+    protected EditContext? editContext { get; set; }
+
+    protected override void OnInitialized()
+    {
+        editContext = new(FormModel);
+
+        //what is this for?
+        editContext.ShouldUseFieldIdentifiers = true;
+
+        editContext.OnFieldChanged += HandleFieldChanged;
+
+        base.OnInitialized();
+    }
+
+    protected void NotifyFormChanged()
+    {
+        MemoryService.HasUnsavedData = true;
+    }
+
+    private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        MemoryService.HasUnsavedData = true;
+    }
+
+    public void Dispose()
+    {
+        if (editContext is not null)
+        {
+            editContext.OnFieldChanged -= HandleFieldChanged;
+        }
+    }
+}

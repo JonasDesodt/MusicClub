@@ -1,0 +1,8 @@
+﻿<p>@ImageDataResult.Alt</p>
+
+<img src="@($"https://localhost:7061/image/download/{ImageDataResult.Id}")" />
+
+@code {
+    [Parameter, EditorRequired]
+    public required ImageResult ImageDataResult { get; set; }
+}

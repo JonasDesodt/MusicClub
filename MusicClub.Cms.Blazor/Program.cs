@@ -34,6 +34,7 @@ builder.Services.AddScoped<IFilterResultHelpers<PerformanceFilterResult, Perform
 builder.Services.AddScoped<IFilterResultHelpers<PersonFilterResult, PersonFilterFormModel>, PersonFilterResultHelpers>();
 
 builder.Services.AddScoped<IFilterFormModelHelpers<ActFilterRequest, ActFilterFormModel>, ActFilterFormModelHelpers>();
+builder.Services.AddScoped<IFilterFormModelHelpers<ArtistFilterRequest, ArtistFilterFormModel>, ArtistFilterFormModelHelpers>();
 
 builder.Services.AddScoped<DataController>();
 

@@ -1,0 +1,11 @@
+﻿<h4>@ActDataResult.Start?.ToLongDateString() @ActDataResult.Name</h4>
+
+@if (ActDataResult.Title is { Length: > 0 } title)
+{
+    <p>@title</p>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public required ActResult ActDataResult { get; set; } 
+}

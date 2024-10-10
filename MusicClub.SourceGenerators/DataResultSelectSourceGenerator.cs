@@ -4,7 +4,7 @@ using System.Text;
 namespace MusicClub.SourceGenerators
 {
     [Generator]
-    public class DataResultInputSourceGenerator : ISourceGenerator
+    public class DataResultSelectSourceGenerator : ISourceGenerator
     {
         public void Initialize(GeneratorInitializationContext context)
         {

@@ -25,7 +25,7 @@
                 <InputText @bind-Value="PersonFormModel.Lastname" id="lastname" />
             </div>
 
-            <ImageDataResultInput DataResult="PersonFormModel.ImageResult"
+            <ImageDataResultSelect DataResult="PersonFormModel.ImageResult"
                                   Context="ImageResult"                                  
                                   OnDataRequest="() => FetchImages(MemoryService.GetDefaultPaginationRequest(), new ImageFilterRequest {})"
                                   OnRemoveRequest="() => { PersonFormModel.ImageId = null; PersonFormModel.ImageResult = null; MemoryService.HasUnsavedData = true; }"
@@ -35,7 +35,7 @@
 
                     <img src="@($"https://localhost:7061/image/download/{ImageResult.Id}")" />
                 </Info>
-            </ImageDataResultInput>
+            </ImageDataResultSelect>
         </div>
 
         <div>

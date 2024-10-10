@@ -21,4 +21,17 @@ namespace MusicClub.Cms.Blazor.Helpers
             return ActFilterFormModelExtensions.ToRequest(model);
         }
     }
+
+    public class ArtistFilterFormModelHelpers : IFilterFormModelHelpers<ArtistFilterRequest, ArtistFilterFormModel>
+    {
+        public Dictionary<string, Action<string?>>? GetTags(ArtistFilterFormModel model)
+        {
+            return ArtistFilterFormModelExtensions.GetTags(model);
+        }
+
+        public ArtistFilterRequest? ToRequest(ArtistFilterFormModel model)
+        {
+            return ArtistFilterFormModelExtensions.ToRequest(model);
+        }
+    }
 }

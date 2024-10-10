@@ -12,7 +12,7 @@
             <InputText @bind-Value="((PerformanceFilterFormModel)EditContext.Model).Instrument" id="instrument" />
         </div>
 
-        <ImageDataResultInput DataResult="((PerformanceFilterFormModel)EditContext.Model).ImageResult"
+        <ImageDataResultSelect DataResult="((PerformanceFilterFormModel)EditContext.Model).ImageResult"
                               Context="ImageResult"
                               OnDataRequest="async () => await FetchImages(MemoryService.GetDefaultPaginationRequest(), new ImageFilterRequest())"
                               OnRemoveRequest="() => { ((PerformanceFilterFormModel)EditContext.Model).ImageId = null; ((PerformanceFilterFormModel)EditContext.Model).ImageResult = null; MemoryService.HasUnsavedData = true; }"
@@ -22,7 +22,7 @@
 
                 <img src="@($"https://localhost:7061/image/download/{ImageResult.Id}")" />
             </Info>
-        </ImageDataResultInput>
+        </ImageDataResultSelect>
     </Inputs>
 </Filters>
 
