@@ -1,9 +1,12 @@
 ﻿using MusicClub.Cms.Blazor.Controllers;
+using MusicClub.Cms.Blazor.Helpers;
+using MusicClub.Cms.Blazor.Services;
 using MusicClub.Dto.Transfer;
 
 namespace MusicClub.Cms.Blazor.Components.Shared
 {
-    public class DataResultIndexPageChild<TDataRequest, TDataResult, TFilterRequest, TFilterResult, TApiService, TFilterFormModel> : DataResultIndex<TDataRequest, TDataResult, TFilterRequest, TFilterResult, TApiService, TFilterFormModel>, IDisposable
+    public class DataResultIndexPageChild<TDataRequest, TDataResult, TFilterRequest, TFilterResult, TApiService, TFilterFormModel>
+        : DataResultIndex<TDataRequest, TDataResult, TFilterRequest, TFilterResult, TApiService, TFilterFormModel>, IDisposable
         where TDataResult : class
         where TFilterRequest : class, new()
         where TFilterResult : class, IConvertToRequest<TFilterRequest>
@@ -21,6 +24,39 @@ namespace MusicClub.Cms.Blazor.Components.Shared
             }
 
             base.OnInitialized();
+        }
+
+        protected override async Task HandleOnReset()
+        {
+            await base.HandleOnReset();
+
+            if(PagedServiceResult is not null)
+            {
+                MemoryService.Set(PagedServiceResult.Filter);
+                MemoryService.Set(PagedServiceResult.Pagination);
+            }
+        }
+
+        protected override async Task HandleOnValidSubmit()
+        {
+            await base.HandleOnValidSubmit();
+
+            if (PagedServiceResult is not null)
+            {
+                MemoryService.Set(PagedServiceResult.Filter);
+                MemoryService.Set(PagedServiceResult.Pagination);
+            }
+        }
+
+        protected override async Task HandleOnPageChanged(PaginationRequest paginationRequest)
+        {
+            await base.HandleOnPageChanged(paginationRequest);
+
+            if (PagedServiceResult is not null)
+            {
+                MemoryService.Set(PagedServiceResult.Filter);
+                MemoryService.Set(PagedServiceResult.Pagination);
+            }
         }
 
         public void Dispose() => DataController.Data = null;

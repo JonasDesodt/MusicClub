@@ -1,5 +1,5 @@
 ﻿namespace MusicClub.Cms.Blazor.Components.Lineup
 {
-    public class LineupDataResultOptions : DataResultOptionsTest<LineupRequest, LineupResult, LineupFilterRequest, LineupFilterResult, ILineupService, Models.FormModels.Filters.LineupFilterFormModel> { }
+    public class LineupDataResultOptions : DataResultChildOptions<LineupRequest, LineupResult, LineupFilterRequest, LineupFilterResult, ILineupService, Models.FormModels.Filters.LineupFilterFormModel> { }
 
 }

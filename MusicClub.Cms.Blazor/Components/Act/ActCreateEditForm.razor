@@ -59,7 +59,7 @@
 
     @if (showLineupDataResultOptions)
     {
-        <LineupDataResultOptions OnDataResultSelected="(dataResult) => editContext.SelectDataResult(dataResult, () => dataResult.Id, value => FormModel.LineupId = value, value => FormModel.LineupResult = value)"
+@*         <LineupDataResultOptions OnDataResultSelected="(dataResult) => editContext.SelectDataResult(dataResult, () => dataResult.Id, value => FormModel.LineupId = value, value => FormModel.LineupResult = value)"
                                  OnSelectDisplayStateChanged="(state) => showLineupDataResultOptions = state"
                                  Context="Context">
             <FilterInputs>
@@ -79,12 +79,12 @@
             <Template>
                 <LineupDataResultInfo DataResult="Context" />
             </Template>
-        </LineupDataResultOptions>
+        </LineupDataResultOptions> *@
     }
 
     @if (showImageDataResultOptions)
     {
-        <ImageDataResultOptions OnDataResultSelected="(dataResult) => editContext.SelectDataResult(dataResult, () => dataResult.Id, value => FormModel.ImageId = value, value => FormModel.ImageResult = value)"
+@*         <ImageDataResultOptions OnDataResultSelected="(dataResult) => editContext.SelectDataResult(dataResult, () => dataResult.Id, value => FormModel.ImageId = value, value => FormModel.ImageResult = value)"
                                 OnSelectDisplayStateChanged="(state) => showImageDataResultOptions = state"
                                 Context="Context">
             <FilterInputs>
@@ -98,7 +98,7 @@
             <Template>
                 <ImageDataResultInfo ImageDataResult="Context" />
             </Template>
-        </ImageDataResultOptions>
+        </ImageDataResultOptions> *@
     }
 </div>
 

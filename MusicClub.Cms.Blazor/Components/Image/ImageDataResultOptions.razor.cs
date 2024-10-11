@@ -2,5 +2,5 @@
 
 namespace MusicClub.Cms.Blazor.Components.Image
 {
-    public class ImageDataResultOptions : DataResultOptions<ImageApiRequest, ImageResult, ImageFilterRequest, ImageFilterResult, IImageApiService, ImageFilterFormModel> { }
+    public class ImageDataResultOptions : DataResultChildOptions<ImageApiRequest, ImageResult, ImageFilterRequest, ImageFilterResult, IImageApiService, ImageFilterFormModel> { }
 }

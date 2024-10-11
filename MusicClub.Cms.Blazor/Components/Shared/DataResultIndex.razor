@@ -9,7 +9,7 @@
 
 @* @inject TApiService ApiService
 @inject DataController DataController *@
-@inject MemoryService MemoryService
+@* @inject MemoryService MemoryService *@
 
 @* @inject IFilterResultHelpers<TFilterResult, TFilterFormModel> FilterResultHelper *@
 @inject IFilterFormModelHelpers<TFilterRequest, TFilterFormModel> FilterFormModelHelpers
@@ -59,8 +59,11 @@
     [Inject]
     protected IFilterResultHelpers<TFilterResult, TFilterFormModel> FilterResultHelper { get; set; } = default!;
 
-    [Parameter, EditorRequired]
-    public EventCallback<bool> OnSelectDisplayStateChanged { get; set; }
+    [Inject]
+    protected MemoryService MemoryService { get; set; } = default!;
+
+    // [Parameter, EditorRequired]
+    // public EventCallback<bool> OnSelectDisplayStateChanged { get; set; }
 
     [Parameter, EditorRequired]
     public required RenderFragment Header { get; set; }
@@ -102,23 +105,23 @@
         var pagedServiceResult = await ApiService.GetAll(paginationRequest, filterRequest);
         // await OnPagedServiceResultChanged.InvokeAsync(pagedServiceResult);
 
-        if (pagedServiceResult.Messages?.HasMessage is not true)
-        {
-            await OnSelectDisplayStateChanged.InvokeAsync(true);
+        // if (pagedServiceResult.Messages?.HasMessage is not true)
+        // {
+        //     await OnSelectDisplayStateChanged.InvokeAsync(true);
 
-        }
+        // }
 
         FilterEditContext = new EditContext(FilterResultHelper.ToFormModel(pagedServiceResult.Filter));
 
         return pagedServiceResult;
     }
 
-    private async Task HandleOnReset()
+    protected virtual async Task HandleOnReset()
     {
-        CurrentPagedServiceResult = await DataController.Fetch<PagedServiceResult<IList<TDataResult>, TFilterResult>>(async () => await FetchAll(MemoryService.GetDefaultPaginationRequest(), new TFilterRequest { }));
+        PagedServiceResult = await DataController.Fetch<PagedServiceResult<IList<TDataResult>, TFilterResult>>(async () => await FetchAll(MemoryService.GetDefaultPaginationRequest(), new TFilterRequest { }));
     }
 
-    private async Task HandleOnValidSubmit()
+    protected virtual async Task HandleOnValidSubmit()
     {
         if (FilterEditContext is null)
         {
@@ -130,16 +133,13 @@
             return;
         }
 
-        CurrentPagedServiceResult = await DataController.Fetch<PagedServiceResult<IList<TDataResult>, TFilterResult>>(async () => await FetchAll(MemoryService.GetDefaultPaginationRequest(), filterRequest));
+        PagedServiceResult = await DataController.Fetch<PagedServiceResult<IList<TDataResult>, TFilterResult>>(async () => await FetchAll(MemoryService.GetDefaultPaginationRequest(), filterRequest));
     }
 
-    private async Task HandleOnPageChanged(PaginationRequest paginationRequest)
+    protected virtual async Task HandleOnPageChanged(PaginationRequest paginationRequest)
     {
-        if (CurrentPagedServiceResult is null) return;
+        if (PagedServiceResult is null) return;
 
-        CurrentPagedServiceResult = await DataController.Fetch<PagedServiceResult<IList<TDataResult>, TFilterResult>>(async () => await FetchAll(new PaginationRequest { Page = paginationRequest.Page, PageSize = paginationRequest.PageSize }, CurrentPagedServiceResult.Filter.ToRequest()));
+        PagedServiceResult = await DataController.Fetch<PagedServiceResult<IList<TDataResult>, TFilterResult>>(async () => await FetchAll(new PaginationRequest { Page = paginationRequest.Page, PageSize = paginationRequest.PageSize }, PagedServiceResult.Filter.ToRequest()));
     }
-
-
-
 }

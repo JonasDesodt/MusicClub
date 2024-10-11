@@ -3,7 +3,7 @@
 @layout ActCrudLayout
 
 <div class="index-page @(showLineupDataResultOptions || showImageDataResultOptions ? "select-open" : "select-closed")">
-    <ActDataResultIndexPage OnSelectDisplayStateChanged="(state) => {}" Context="Context">
+    <ActDataResultIndexPage Context="Context">
         <Header>
             <h3>Index</h3>
 
@@ -65,8 +65,13 @@
         <DataResultOptions>
             @if (showLineupDataResultOptions)
             {
-                <LineupDataResultOptions OnSelectDisplayStateChanged="(state) => showLineupDataResultOptions = state"
-                                         Context="DataResultOptionsContext">
+                <LineupDataResultOptions Context="DataResultOptionsContext">
+                    <Header>
+                        <button @onclick="() => showLineupDataResultOptions = false" class="warning">&#128939;</button>
+
+                        <h3>Select Lineup</h3>
+                    </Header>
+
                     <FilterInputs>
                         <div>
                             <label for="title">Title</label>
