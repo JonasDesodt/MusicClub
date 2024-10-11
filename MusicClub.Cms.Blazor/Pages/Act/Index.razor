@@ -3,14 +3,13 @@
 @layout ActCrudLayout
 
 <div class="index-page @(showLineupDataResultOptions || showImageDataResultOptions ? "select-open" : "select-closed")">
-    <DataResultIndexPage TDataRequest="ActRequest"
-                         TDataResult="ActResult"
-                         TFilterRequest="ActFilterRequest"
-                         TFilterResult="ActFilterResult"
-                         TApiService="IActService"
-                         TFilterFormModel="ActFilterFormModel"
-                         OnSelectDisplayStateChanged="(state) => showLineupDataResultOptions = state"
-                         Context="Context">
+    <ActDataResultIndexPage OnSelectDisplayStateChanged="(state) => {}" Context="Context">
+        <Header>
+            <h3>Index</h3>
+
+            <NavLink class="button" href="@($"act/create")">Create</NavLink>
+        </Header>
+
         <FilterInputs>
             <div>
                 <label for="name">Name</label>
@@ -60,7 +59,7 @@
         <Template>
             <ActDataResultInfo DataResult="Context" />
 
-            <NavLink href="@($"artist/edit/{Context.Id}")" class="button">Edit</NavLink>
+            <NavLink href="@($"act/edit/{Context.Id}")" class="button">Edit</NavLink>
         </Template>
 
         <DataResultOptions>
@@ -88,28 +87,28 @@
                         <button @onclick="() => { Context.SelectDataResult(DataResultOptionsContext, () => DataResultOptionsContext.Id, value => ((ActFilterFormModel)Context.Model).LineupId = value, value => ((ActFilterFormModel)Context.Model).LineupResult = value); showLineupDataResultOptions = false; }">Select</button>
                     </Template>
                 </LineupDataResultOptions>
-            } 
+            }
 
-@*             @if (showImageDataResultOptions)
+            @*             @if (showImageDataResultOptions)
             {
-                <ImageDataResultOptions OnDataResultSelected="(dataResult) => Context.SelectDataResult(dataResult, () => dataResult.Id, value => ((ActFilterFormModel)Context.Model).ImageId = value, value => ((ActFilterFormModel)Context.Model).ImageResult = value)"
-                                        OnSelectDisplayStateChanged="(state) => showImageDataResultOptions = state"
-                                        Context="DataResultOptionsContext">
-                    <FilterInputs>
-                        <div>
-                            <label for="alt">Alt</label>
+            <ImageDataResultOptions OnDataResultSelected="(dataResult) => Context.SelectDataResult(dataResult, () => dataResult.Id, value => ((ActFilterFormModel)Context.Model).ImageId = value, value => ((ActFilterFormModel)Context.Model).ImageResult = value)"
+            OnSelectDisplayStateChanged="(state) => showImageDataResultOptions = state"
+            Context="DataResultOptionsContext">
+            <FilterInputs>
+            <div>
+            <label for="alt">Alt</label>
 
-                            <InputText @bind-Value="DataResultOptionsContext.Alt" id="alt" />
-                        </div>
-                    </FilterInputs>
+            <InputText @bind-Value="DataResultOptionsContext.Alt" id="alt" />
+            </div>
+            </FilterInputs>
 
-                    <Template>
-                        <ImageDataResultInfo ImageDataResult="DataResultOptionsContext" />
-                    </Template>
-                </ImageDataResultOptions>
+            <Template>
+            <ImageDataResultInfo ImageDataResult="DataResultOptionsContext" />
+            </Template>
+            </ImageDataResultOptions>
             } *@
         </DataResultOptions>
-    </DataResultIndexPage>
+    </ActDataResultIndexPage>
 </div>
 
 @code {

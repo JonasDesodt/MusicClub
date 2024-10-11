@@ -7,7 +7,7 @@ namespace MusicClub.Cms.Blazor.Helpers
 {
     public abstract class DataControllerBase(NavigationManager navigationManager, MemoryService memoryService)
     {
-        public object? Data { get; set; }
+        public object? Data { get; set; } //todo: make private & add method that gets and deletes the data
 
         public event EventHandler<bool>? OnFetchStateChanged;
 

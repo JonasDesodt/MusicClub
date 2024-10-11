@@ -2,7 +2,7 @@
 
 namespace MusicClub.Cms.Blazor.Helpers
 {
-    internal interface IFilterResultHelpers<TFilterResult, TFormModel>
+    public interface IFilterResultHelpers<TFilterResult, TFormModel>
     {
         TFormModel ToFormModel(TFilterResult result);
     }

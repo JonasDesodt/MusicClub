@@ -1,18 +1,25 @@
-﻿@typeparam TDataRequest
+﻿@using MusicClub.Cms.Blazor.Helpers
+@typeparam TDataRequest
 @typeparam TDataResult where TDataResult : class
 @typeparam TFilterRequest where TFilterRequest : class, new()
 @typeparam TFilterResult where TFilterResult : class, IConvertToRequest<TFilterRequest>
 @typeparam TApiService where TApiService : IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult>
 @typeparam TFilterFormModel where TFilterFormModel : class, new()
 
+@inject DataController DataController
+@inject TApiService ApiService
+@inject IFilterResultHelpers<TFilterResult, TFilterFormModel> FilterResultHelper
+
 <DataResultIndex TDataRequest="TDataRequest"
-       TDataResult="TDataResult"
-       TFilterRequest="TFilterRequest"
-       TFilterResult="TFilterResult"
-       TApiService="TApiService"
-       TFilterFormModel="TFilterFormModel" 
-       OnSelectDisplayStateChanged="OnSelectDisplayStateChanged"
-       Context="Context">
+                 TDataResult="TDataResult"
+                 TFilterRequest="TFilterRequest"
+                 TFilterResult="TFilterResult"
+                 TApiService="TApiService"
+                 TFilterFormModel="TFilterFormModel"
+                 OnSelectDisplayStateChanged="OnSelectDisplayStateChanged"
+                 @bind-PagedServiceResult="pagedServiceResult"
+                 FilterEditContext="filterEditContext"
+                 Context="Context">
     <Header>
         <button @onclick="() => OnSelectDisplayStateChanged.InvokeAsync(false)" class="warning">&#128939;</button>
 
@@ -25,7 +32,7 @@
 
     <Template>
         @Template(Context)
-  </Template>
+    </Template>
 </DataResultIndex>
 
 
@@ -39,4 +46,23 @@
 
     [Parameter, EditorRequired]
     public required RenderFragment<TDataResult> Template { get; set; }
+
+    private PagedServiceResult<IList<TDataResult>, TFilterResult>? pagedServiceResult;
+    
+    private EditContext? filterEditContext;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var paginationRequest = MemoryService.GetDefaultPaginationRequest();
+
+        var filterRequest = new TFilterRequest();
+
+        pagedServiceResult = await DataController.Fetch<PagedServiceResult<IList<TDataResult>, TFilterResult>>(async () => await ApiService.GetAll(paginationRequest, filterRequest));
+        if (pagedServiceResult is not null)
+        {
+            filterEditContext = new(FilterResultHelper.ToFormModel(pagedServiceResult.Filter));
+        }
+
+        await base.OnInitializedAsync();
+    }
 }

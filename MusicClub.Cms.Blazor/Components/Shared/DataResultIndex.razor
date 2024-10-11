@@ -7,11 +7,11 @@
 @typeparam TApiService where TApiService : IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult>
 @typeparam TFilterFormModel where TFilterFormModel : class, new()
 
-@inject TApiService ApiService
-@inject DataController DataController
+@* @inject TApiService ApiService
+@inject DataController DataController *@
 @inject MemoryService MemoryService
 
-@inject IFilterResultHelpers<TFilterResult, TFilterFormModel> FilterResultHelper
+@* @inject IFilterResultHelpers<TFilterResult, TFilterFormModel> FilterResultHelper *@
 @inject IFilterFormModelHelpers<TFilterRequest, TFilterFormModel> FilterFormModelHelpers
 
 
@@ -42,9 +42,23 @@
             </ItemTemplate>
         </PagedList>
     </div>
+
+    @if (DataResultOptions is not null && FilterEditContext is not null)
+    {
+        @DataResultOptions(FilterEditContext)
+    }
 </section>
 
 @code {
+    [Inject]
+    protected TApiService ApiService { get; set; } = default!;
+
+    [Inject]
+    protected DataController DataController { get; set; } = default!;
+
+    [Inject]
+    protected IFilterResultHelpers<TFilterResult, TFilterFormModel> FilterResultHelper { get; set; } = default!;
+
     [Parameter, EditorRequired]
     public EventCallback<bool> OnSelectDisplayStateChanged { get; set; }
 
@@ -58,43 +72,40 @@
     public required RenderFragment<TDataResult> Template { get; set; }
 
     [Parameter]
+    public RenderFragment<EditContext>? DataResultOptions { get; set; }
+
+    [Parameter]
     public PagedServiceResult<IList<TDataResult>, TFilterResult>? PagedServiceResult { get; set; }
+    [Parameter]
+    public EventCallback<PagedServiceResult<IList<TDataResult>, TFilterResult>?> PagedServiceResultChanged { get; set; }
+    private PagedServiceResult<IList<TDataResult>, TFilterResult>? CurrentPagedServiceResult
+    {
+        get => PagedServiceResult;
+        set
+        {
+            if (PagedServiceResult != value)
+            {
+                PagedServiceResult = value;
+
+                // FilterEditContext = new EditContext(FilterResultHelper.ToFormModel(PagedServiceResult?.Filter) ?? new TFilterFormModel { });
+
+                PagedServiceResultChanged.InvokeAsync(value); // Notify parent of change
+            }
+        }
+    }
 
     [Parameter]
     public EditContext? FilterEditContext { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        if (PagedServiceResult?.Data is null)
-        {
-            var paginationResult = MemoryService.Get<PaginationResult>();
-            var paginationRequest = MemoryService.GetDefaultPaginationRequest();
-            if (paginationResult is not null)
-            {
-                paginationRequest.Page = paginationResult.Page;
-                paginationRequest.PageSize = paginationResult.PageSize;
-            }
-
-            var filterResult = MemoryService.Get<TFilterResult>();
-            var filterRequest = new TFilterRequest();
-            if(filterResult is not null)
-            {
-                filterRequest = filterResult.ToRequest();
-            }
-
-            PagedServiceResult = await DataController.Fetch<PagedServiceResult<IList<TDataResult>, TFilterResult>>(async () => await FetchAll(paginationRequest, filterRequest));
-        }
-
-        await base.OnInitializedAsync();
-    }
-
     private async Task<PagedServiceResult<IList<TDataResult>, TFilterResult>> FetchAll(PaginationRequest paginationRequest, TFilterRequest filterRequest)
     {
         var pagedServiceResult = await ApiService.GetAll(paginationRequest, filterRequest);
+        // await OnPagedServiceResultChanged.InvokeAsync(pagedServiceResult);
 
         if (pagedServiceResult.Messages?.HasMessage is not true)
         {
             await OnSelectDisplayStateChanged.InvokeAsync(true);
+
         }
 
         FilterEditContext = new EditContext(FilterResultHelper.ToFormModel(pagedServiceResult.Filter));
@@ -104,18 +115,31 @@
 
     private async Task HandleOnReset()
     {
-        PagedServiceResult = await DataController.Fetch<PagedServiceResult<IList<TDataResult>, TFilterResult>>(async () => await FetchAll(MemoryService.GetDefaultPaginationRequest(), new TFilterRequest { }));
+        CurrentPagedServiceResult = await DataController.Fetch<PagedServiceResult<IList<TDataResult>, TFilterResult>>(async () => await FetchAll(MemoryService.GetDefaultPaginationRequest(), new TFilterRequest { }));
     }
 
     private async Task HandleOnValidSubmit()
     {
-        PagedServiceResult = await FetchAll(MemoryService.GetDefaultPaginationRequest(), FilterFormModelHelpers.ToRequest(((TFilterFormModel?)FilterEditContext?.Model)) ?? new TFilterRequest { });
+        if (FilterEditContext is null)
+        {
+            return;
+        }
+
+        if (FilterFormModelHelpers.ToRequest((TFilterFormModel)FilterEditContext.Model) is not { } filterRequest)
+        {
+            return;
+        }
+
+        CurrentPagedServiceResult = await DataController.Fetch<PagedServiceResult<IList<TDataResult>, TFilterResult>>(async () => await FetchAll(MemoryService.GetDefaultPaginationRequest(), filterRequest));
     }
 
     private async Task HandleOnPageChanged(PaginationRequest paginationRequest)
     {
-        if (PagedServiceResult is null) return;
+        if (CurrentPagedServiceResult is null) return;
 
-        PagedServiceResult = await FetchAll(new PaginationRequest { Page = paginationRequest.Page, PageSize = paginationRequest.PageSize }, PagedServiceResult.Filter.ToRequest());
+        CurrentPagedServiceResult = await DataController.Fetch<PagedServiceResult<IList<TDataResult>, TFilterResult>>(async () => await FetchAll(new PaginationRequest { Page = paginationRequest.Page, PageSize = paginationRequest.PageSize }, CurrentPagedServiceResult.Filter.ToRequest()));
     }
+
+
+
 }
