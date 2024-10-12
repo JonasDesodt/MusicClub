@@ -75,30 +75,30 @@ else if (isInitCompleted is false)
         await JsFunctions.AddHandleOnScroll();
 
         NavigationManager.RegisterLocationChangingHandler(async args =>
-    {
-        await DataControllerService.CancelCurrentFetch();
-
-        if (MemoryService.HasUnsavedData)
-        {
-            MemoryService.NavigationRequest = args.TargetLocation;
-
-            args.PreventNavigation();
-
-            MemoryService.RequestConfirmation();
-
-            return;
-        }
-
-        if (!await DataControllerService.HandleLocationChanged(args.TargetLocation))
         {
             await DataControllerService.CancelCurrentFetch();
 
-            args.PreventNavigation();
+            if (MemoryService.HasUnsavedData)
+            {
+                MemoryService.NavigationRequest = args.TargetLocation;
 
-            hasFetchError = true;
-            StateHasChanged();
-        }
-    });
+                args.PreventNavigation();
+
+                MemoryService.RequestConfirmation();
+
+                return;
+            }
+
+            if (!await DataControllerService.HandleLocationChanged(args.TargetLocation))
+            {
+                await DataControllerService.CancelCurrentFetch();
+
+                args.PreventNavigation();
+
+                hasFetchError = true;
+                StateHasChanged();
+            }
+        });
 
         DataControllerService.OnFetchStateChanged += FetchStateChanged;
 

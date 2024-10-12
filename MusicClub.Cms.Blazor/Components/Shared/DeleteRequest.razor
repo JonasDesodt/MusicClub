@@ -13,11 +13,13 @@
 @inject MemoryService MemoryService
 @inject NavigationManager NavigationManager
 @inject TDataResultHelpers DataResultHelpers
+@inject DataController DataController
 
 @if (!HasCritialDependencies)
 {
     <h4>Are you want to delete the following @Model.ToLower()?</h4>
-} else
+}
+else
 {
     <h4>The @Model.ToLower() cannot be deleted. There are critical dependencies.</h4>
 }
@@ -52,36 +54,28 @@
     [Parameter, EditorRequired]
     public required string Model { get; set; }
 
-    // [Parameter, EditorRequired]
-    // public required IList<Func<int>> CriticalDependencies { get; set; }
-
     public required bool HasCritialDependencies { get; set; }
 
     public TDataResult? dataResult { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await Fetch(Id);
+        var serviceResult = (ServiceResult<TDataResult>?)DataController.Data;
+        DataController.Data = null;
 
-        await base.OnInitializedAsync();
-    }
-
-    private async Task Fetch(int id)
-    {
-        var serviceResult = await ApiService.Get(id);
-
-        dataResult = serviceResult.Data;
-
+        dataResult = serviceResult?.Data;
         if (dataResult is not null)
         {
             HasCritialDependencies = DataResultHelpers.HasCriticalDependencies(dataResult);
         }
+
+        base.OnInitialized();
     }
 
     private async Task DeleteDataResult(int id)
     {
-        var serviceResult = await ApiService.Delete(Id);
-        if (serviceResult.Messages is null)
+        var serviceResult = await DataController.Fetch<ServiceResult<TDataResult>?>(async () => await ApiService.Delete(Id));
+        if (serviceResult?.Messages is null)
         {
             MemoryService.HasUnsavedData = false;
 

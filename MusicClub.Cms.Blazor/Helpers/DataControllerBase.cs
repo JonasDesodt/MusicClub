@@ -99,7 +99,7 @@ namespace MusicClub.Cms.Blazor.Helpers
             return false;
         }
 
-        protected async Task<bool> HandleEditRouteMatchFound<TDataRequest, TDataResult, TFilterRequest, TFilterResult>(IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult> apiService, string route) where TFilterResult : class?, IConvertToRequest<TFilterRequest> where TFilterRequest : new()
+        protected async Task<bool> HandleDeleteEditRouteMatchFound<TDataRequest, TDataResult, TFilterRequest, TFilterResult>(IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult> apiService, string route) where TFilterResult : class?, IConvertToRequest<TFilterRequest> where TFilterRequest : new()
         {
             Data = await Fetch<ServiceResult<TDataResult>>(async () => await apiService.Get(int.Parse(route.Split('/').Last())));
 

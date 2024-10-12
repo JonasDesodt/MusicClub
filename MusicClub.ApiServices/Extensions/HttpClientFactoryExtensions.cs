@@ -1,4 +1,5 @@
-﻿using MusicClub.Dto.Abstractions;
+﻿using MusicClub.ApiServices.Helpers;
+using MusicClub.Dto.Abstractions;
 using MusicClub.Dto.Enums;
 using MusicClub.Dto.Extensions;
 using MusicClub.Dto.Filters.Extensions;
@@ -64,9 +65,16 @@ namespace MusicClub.ApiServices.Extensions
         {
             var httpClient = httpClientFactory.CreateClient(client);
 
-            var httpResponseMessage = await httpClient.GetAsync(endpoint + paginationRequest.ToQueryString() + filterRequest.ToQueryString());
+            //var httpResponseMessage = await httpClient.GetAsync(endpoint + paginationRequest.ToQueryString() + filterRequest.ToQueryString());
 
-            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<PagedServiceResult<IList<TDataResult>, TFilterResult>>() is not { } pagedServiceResult)
+            var httpResponseMessage = await TryCatchHttpRequestHelpers.HandleHttpRequestExceptions(async () => await httpClient.GetAsync(endpoint + paginationRequest.ToQueryString() + filterRequest.ToQueryString()));
+
+            //TODO: verify async implementation, also in HandleHttpRequestExceptions!!
+
+            //var httpResponseMessage = TryCatchHttpRequestHelpers.HandleHttpRequestExceptions(() => httpClient.GetAsync(endpoint + paginationRequest.ToQueryString() + filterRequest.ToQueryString()));
+
+
+            if (httpResponseMessage is null || !httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<PagedServiceResult<IList<TDataResult>, TFilterResult>>() is not { } pagedServiceResult)
             {
                 return new PagedServiceResult<IList<TDataResult>, TFilterResult>
                 {
