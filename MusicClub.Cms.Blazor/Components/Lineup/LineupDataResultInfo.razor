@@ -1,6 +1,3 @@
-﻿<p>@DataResult.Doors.ToShortDateString() @DataResult.Title</p>
+﻿@inherits DataResultInfoBase<LineupResult>
 
-@code {
-    [Parameter, EditorRequired]
-    public required LineupResult DataResult { get; set; }
-}
+<p>@DataResult.Doors.ToShortDateString() @DataResult.Title</p>

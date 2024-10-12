@@ -2,89 +2,65 @@
 
 @layout ArtistCrudLayout
 
-@implements IDisposable
+<IndexPageContainer IsSelectOpen="showImageDataResultOptions">
+    <Content>
+        <ArtistDataResultIndexPage Context="Context">
+            <Header>
+                <IndexPageHeader Model="Artist" />
+            </Header>
 
-@inject IArtistService ArtistApiService
-@inject NavigationManager NavigationManager
-@inject DataController DataControllerService
-@inject MemoryService MemoryService
+            <FilterInputs>
+                <ArtistFilterFormModelInputs FilterFormModel="Context" />
 
-<section class="index-page">
-    <h3>Index</h3>
+                <ImageDataResultSelect DataResult="Context.ImageResult"
+                                       Context="ImageResult"
+                                       OnDataRequest="() => showImageDataResultOptions = true"
+                                       OnRemoveRequest="() => { Context.ImageId = null; Context.ImageResult = null; }"
+                                       @bind-Value="Context.ImageId">
+                    <Info>
+                        <ImageDataResultInfo DataResult="Context.ImageResult" />
+                    </Info>
+                </ImageDataResultSelect>
+            </FilterInputs>
 
-    <NavLink class="button" href="artist/create">Create</NavLink>
+            <Template>
+                <IndexPageTemplate Model="Artist" Id="Context.Id">
+                    <Info>
+                        <ArtistDataResultInfo DataResult="Context" />
+                    </Info>
+                </IndexPageTemplate>
+            </Template>
 
-    <ArtistFilterForm EditContext="filterContext"
-                      OnReset="() => FetchArtists(MemoryService.GetDefaultPaginationRequest(), new ArtistFilterRequest())"
-                      OnValidSubmit="() => FetchArtists(MemoryService.GetDefaultPaginationRequest(), ((ArtistFilterFormModel?)filterContext?.Model)?.ToRequest() ?? new ArtistFilterRequest())" />
-    @if (ArtistsPagedServiceResult is not null)
-    {
+            <DataResultOptions>
 
-        <PagedList OnPageChanged="@(async (request) => { await FetchArtists(request, ArtistsPagedServiceResult.Filter.ToRequest());  })"
-                   PagedServiceResult="ArtistsPagedServiceResult" Context="ArtistResult">
-            <ItemTemplate>
-                <div>
-                    @if (ArtistResult.ImageResult is not null)
-                    {
-                        <img src="@($"https://localhost:7061/image/download/{ArtistResult.ImageResult?.Id}")" />
+                @if (showImageDataResultOptions)
+                {
+                    <ImageDataResultOptions Context="DataResultOptionsContext">
+                        <Header>
+                            <OptionsHeader Model="Image" OnCloseRequested="() => showImageDataResultOptions = false" />
+                        </Header>
 
-                    }
-                    else
-                    {
-                        <p>no image</p>
-                    }
+                        <FilterInputs>
+                            <ImageFilterFormModelInputs FilterFormModel="DataResultOptionsContext" />
+                        </FilterInputs>
 
-                    <div>
-                        @if (!string.IsNullOrWhiteSpace(ArtistResult.Alias))
-                        {
-                            <h4>@ArtistResult.Alias</h4>
-
-                            @if (ArtistResult.PersonResult is not null)
-                            {
-                                <p>(@ArtistResult.PersonResult.Firstname @ArtistResult.PersonResult?.Lastname)</p>
-                            }
-                        }
-                        else if (ArtistResult.PersonResult is not null)
-                        {
-                            <h4>@ArtistResult.PersonResult.Firstname @ArtistResult.PersonResult.Lastname</h4>
-                        }
-
-                        <NavLink href="@($"artist/edit/{ArtistResult.Id}")" class="button">Edit</NavLink>
-                    </div>
-                </div>
-            </ItemTemplate>
-        </PagedList>
-    }
-</section>
+                        <Template>
+                            <OptionsTemplate TDataResult="ImageResult"
+                                             TDataResultInfo="ImageDataResultInfo"
+                                             EditContext="Context"
+                                             DataResult="DataResultOptionsContext"
+                                             GetDataResultId="() => DataResultOptionsContext.Id"
+                                             SetDataResultId="value => ((ArtistFilterFormModel)Context.Model).ImageId = value"
+                                             SetDataResult="value => ((ArtistFilterFormModel)Context.Model).ImageResult = value"
+                                             OnDataResultSelected="() => showImageDataResultOptions = false" />
+                        </Template>
+                    </ImageDataResultOptions>
+                }
+            </DataResultOptions>
+        </ArtistDataResultIndexPage>
+    </Content>
+</IndexPageContainer>
 
 @code {
-    private PagedServiceResult<IList<ArtistResult>, ArtistFilterResult>? ArtistsPagedServiceResult;
-
-    private EditContext? filterContext { get; set; }
-
-    protected override void OnInitialized()
-    {
-        ArtistsPagedServiceResult = (PagedServiceResult<IList<ArtistResult>, ArtistFilterResult>?)DataControllerService.Data;
-
-        if (ArtistsPagedServiceResult is null) return;
-
-        filterContext = new(ArtistsPagedServiceResult.Filter.ToFormModel());
-
-        base.OnInitialized();
-    }
-
-    private async Task FetchArtists(PaginationRequest paginationRequest, ArtistFilterRequest artistFilterRequest)
-    {
-        ArtistsPagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<ArtistResult>, ArtistFilterResult>>(async () => await ArtistApiService.GetAll(paginationRequest, artistFilterRequest));
-
-        MemoryService.Set(ArtistsPagedServiceResult.Filter);
-        MemoryService.Set(ArtistsPagedServiceResult.Pagination);
-
-        filterContext = new(ArtistsPagedServiceResult.Filter.ToFormModel());
-    }
-
-    public void Dispose()
-    {
-        DataControllerService.Data = null;
-    }
+    private bool showImageDataResultOptions = false;
 }

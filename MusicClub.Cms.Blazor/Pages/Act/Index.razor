@@ -2,119 +2,108 @@
 
 @layout ActCrudLayout
 
-<div class="index-page @(showLineupDataResultOptions || showImageDataResultOptions ? "select-open" : "select-closed")">
-    <ActDataResultIndexPage Context="Context">
-        <Header>
-            <h3>Index</h3>
 
-            <NavLink class="button" href="@($"act/create")">Create</NavLink>
-        </Header>
+<IndexPageContainer IsSelectOpen="showLineupDataResultOptions || showImageDataResultOptions">
+    <Content>
+        <ActDataResultIndexPage Context="Context">
+            <Header>
+                <IndexPageHeader Model="Act" />
+            </Header>
 
-        <FilterInputs>
-            <div>
-                <label for="name">Name</label>
-
-                <InputText @bind-Value="Context.Name" id="name" />
-            </div>
-
-            <div>
-                <label for="title">Title</label>
-
-                <InputText @bind-Value="Context.Title" id="title" />
-            </div>
-
-            <div>
-                <label for="doors">Start</label>
-
-                <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="Context.Start" id="start" />
-            </div>
-
-            <div>
-                <label for="duration">Duration</label>
-
-                <InputNumber @bind-Value="Context.Duration" id="duration" />
-            </div>
-
-            <LineupDataResultSelect DataResult="Context.LineupResult"
-                                    Context="ActResult"
-                                    OnDataRequest="() => showLineupDataResultOptions = true"
-                                    OnRemoveRequest="() => {Context.LineupId = null; Context.LineupResult = null; }"
-                                    @bind-Value="Context.LineupId">
-                <Info>
-                    <LineupDataResultInfo DataResult="Context.LineupResult" />
-                </Info>
-            </LineupDataResultSelect>
-
-            <ImageDataResultSelect DataResult="Context.ImageResult"
-                                   Context="ImageResult"
-                                   OnDataRequest="() => showImageDataResultOptions = true"
-                                   OnRemoveRequest="() => { Context.ImageId = null; Context.ImageResult = null; }"
-                                   @bind-Value="Context.ImageId">
-                <Info>
-                    <ImageDataResultInfo ImageDataResult="Context.ImageResult" />
-                </Info>
-            </ImageDataResultSelect>
-        </FilterInputs>
-
-        <Template>
-            <ActDataResultInfo DataResult="Context" />
-
-            <NavLink href="@($"act/edit/{Context.Id}")" class="button">Edit</NavLink>
-        </Template>
-
-        <DataResultOptions>
-            @if (showLineupDataResultOptions)
-            {
-                <LineupDataResultOptions Context="DataResultOptionsContext">
-                    <Header>
-                        <button @onclick="() => showLineupDataResultOptions = false" class="warning">&#128939;</button>
-
-                        <h3>Select Lineup</h3>
-                    </Header>
-
-                    <FilterInputs>
-                        <div>
-                            <label for="title">Title</label>
-
-                            <InputText @bind-Value="DataResultOptionsContext.Title" id="title" />
-                        </div>
-
-                        <div>
-                            <label for="doors">Doors</label>
-
-                            <InputDate @bind-Value="DataResultOptionsContext.Doors" id="doors" />
-                        </div>
-                    </FilterInputs>
-
-                    <Template>
-                        <LineupDataResultInfo DataResult="DataResultOptionsContext" />
-
-                        <button @onclick="() => { Context.SelectDataResult(DataResultOptionsContext, () => DataResultOptionsContext.Id, value => ((ActFilterFormModel)Context.Model).LineupId = value, value => ((ActFilterFormModel)Context.Model).LineupResult = value); showLineupDataResultOptions = false; }">Select</button>
-                    </Template>
-                </LineupDataResultOptions>
-            }
-
-            @*             @if (showImageDataResultOptions)
-            {
-            <ImageDataResultOptions OnDataResultSelected="(dataResult) => Context.SelectDataResult(dataResult, () => dataResult.Id, value => ((ActFilterFormModel)Context.Model).ImageId = value, value => ((ActFilterFormModel)Context.Model).ImageResult = value)"
-            OnSelectDisplayStateChanged="(state) => showImageDataResultOptions = state"
-            Context="DataResultOptionsContext">
             <FilterInputs>
-            <div>
-            <label for="alt">Alt</label>
+                <ActFilterFormModelInputs FilterFormModel="Context" />
 
-            <InputText @bind-Value="DataResultOptionsContext.Alt" id="alt" />
-            </div>
+                <LineupDataResultSelect DataResult="Context.LineupResult"
+                                        Context="ActResult"
+                                        OnDataRequest="() => showLineupDataResultOptions = true"
+                                        OnRemoveRequest="() => {Context.LineupId = null; Context.LineupResult = null; }"
+                                        @bind-Value="Context.LineupId">
+                    <Info>
+                        <LineupDataResultInfo DataResult="Context.LineupResult" />
+                    </Info>
+                </LineupDataResultSelect>
+
+                <ImageDataResultSelect DataResult="Context.ImageResult"
+                                       Context="ImageResult"
+                                       OnDataRequest="() => showImageDataResultOptions = true"
+                                       OnRemoveRequest="() => { Context.ImageId = null; Context.ImageResult = null; }"
+                                       @bind-Value="Context.ImageId">
+                    <Info>
+                        <ImageDataResultInfo DataResult="Context.ImageResult" />
+                    </Info>
+                </ImageDataResultSelect>
             </FilterInputs>
 
             <Template>
-            <ImageDataResultInfo ImageDataResult="DataResultOptionsContext" />
+                <IndexPageTemplate Model="Act" Id="Context.Id">
+                    <Info>
+                        <ActDataResultInfo DataResult="Context" />
+                    </Info>
+                </IndexPageTemplate>
             </Template>
-            </ImageDataResultOptions>
-            } *@
-        </DataResultOptions>
-    </ActDataResultIndexPage>
-</div>
+
+            <DataResultOptions>
+                @if (showLineupDataResultOptions)
+                {
+                    <LineupDataResultOptions Context="DataResultOptionsContext">
+                        <Header>
+                            <OptionsHeader Model="Lineup" OnCloseRequested="() => showLineupDataResultOptions = false" />
+                        </Header>
+
+                        <FilterInputs>
+                            <div>
+                                <label for="title">Title</label>
+
+                                <InputText @bind-Value="DataResultOptionsContext.Title" id="title" />
+                            </div>
+
+                            <div>
+                                <label for="doors">Doors</label>
+
+                                <InputDate @bind-Value="DataResultOptionsContext.Doors" id="doors" />
+                            </div>
+                        </FilterInputs>
+
+                        <Template>
+                            <OptionsTemplate TDataResult="LineupResult"
+                                             TDataResultInfo="LineupDataResultInfo"
+                                             EditContext="Context"
+                                             DataResult="DataResultOptionsContext"
+                                             GetDataResultId="() => DataResultOptionsContext.Id"
+                                             SetDataResultId="value => ((ActFilterFormModel)Context.Model).LineupId = value"
+                                             SetDataResult="value => ((ActFilterFormModel)Context.Model).LineupResult = value"
+                                             OnDataResultSelected="() => showLineupDataResultOptions = false" />
+                        </Template>
+                    </LineupDataResultOptions>
+                }
+
+                @if (showImageDataResultOptions)
+                {
+                    <ImageDataResultOptions Context="DataResultOptionsContext">
+                        <Header>
+                            <OptionsHeader Model="Image" OnCloseRequested="() => showImageDataResultOptions = false" />
+                        </Header>
+
+                        <FilterInputs>
+                            <ImageFilterFormModelInputs FilterFormModel="DataResultOptionsContext" />
+                        </FilterInputs>
+
+                        <Template>
+                            <OptionsTemplate TDataResult="ImageResult"
+                                             TDataResultInfo="ImageDataResultInfo"
+                                             EditContext="Context"
+                                             DataResult="DataResultOptionsContext"
+                                             GetDataResultId="() => DataResultOptionsContext.Id"
+                                             SetDataResultId="value => ((ActFilterFormModel)Context.Model).ImageId = value"
+                                             SetDataResult="value => ((ActFilterFormModel)Context.Model).ImageResult = value"
+                                             OnDataResultSelected="() => showImageDataResultOptions = false" />
+                        </Template>
+                    </ImageDataResultOptions>
+                }
+            </DataResultOptions>
+        </ActDataResultIndexPage>
+    </Content>
+</IndexPageContainer>
 
 @code {
     private bool showLineupDataResultOptions = false;

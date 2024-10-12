@@ -11,6 +11,7 @@ namespace MusicClub.Cms.Blazor.Models.FormModels.Filters
 
     [GenerateFilterFormModelExtensions("Person")]
     internal abstract class PersonFilterFormModelExtensionsBlueprint : PersonFilterRequest;
+    public partial class PersonFilterFormModel { }
 
     [GenerateFilterResultExtensions("Person")]
     internal abstract class PersonFilterResultExtensionsBlueprint : PersonFilterResult;

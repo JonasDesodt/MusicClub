@@ -7,13 +7,7 @@
 @typeparam TApiService where TApiService : IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult>
 @typeparam TFilterFormModel where TFilterFormModel : class, new()
 
-@* @inject TApiService ApiService
-@inject DataController DataController *@
-@* @inject MemoryService MemoryService *@
-
-@* @inject IFilterResultHelpers<TFilterResult, TFilterFormModel> FilterResultHelper *@
 @inject IFilterFormModelHelpers<TFilterRequest, TFilterFormModel> FilterFormModelHelpers
-
 
 <section>
     @Header

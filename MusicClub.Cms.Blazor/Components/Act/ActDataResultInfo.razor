@@ -1,4 +1,6 @@
-﻿@if (DataResult is not null)
+﻿@inherits DataResultInfoBase<ActResult>
+
+@if (DataResult is not null)
 {
     @if (DataResult is { } dataResult)
     {
@@ -13,10 +15,4 @@
     {
         <h4>No act</h4>
     }
-}
-
-
-@code {
-    [Parameter, EditorRequired]
-    public required ActResult? DataResult { get; set; }
 }

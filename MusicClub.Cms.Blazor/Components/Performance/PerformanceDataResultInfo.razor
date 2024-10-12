@@ -1,0 +1,35 @@
+﻿@inherits DataResultInfoBase<PerformanceResult>
+
+@if (DataResult is not null)
+{
+    @if (DataResult.ImageResult?.Alt is { Length : > 0 } alt)
+    {
+        <img src="@($"https://localhost:7061/image/download/{DataResult.ImageResult.Id}")" alt="@alt"/>
+    } else
+    {
+        <div class="image"></div>
+    }
+
+    <h4>
+        @if (DataResult.ArtistResult.Alias is { Length: > 0 } alias)
+        {
+            <span>Name: @alias (@DataResult.ArtistResult.PersonResult.Firstname @DataResult.ArtistResult.PersonResult.Lastname)</span>
+        }
+        else
+        {
+            <span>@DataResult.ArtistResult.PersonResult.Firstname @DataResult.ArtistResult.PersonResult.Lastname</span>
+        }
+
+
+        <span>Act: @DataResult.ActResult.Name</span>
+
+        @if (DataResult.BandnameResult?.Name is { Length: > 0 } bandname)
+        {
+            <span>Band: @bandname</span>
+        }
+    </h4>
+}
+else
+{
+    <h4>No performance</h4>
+}

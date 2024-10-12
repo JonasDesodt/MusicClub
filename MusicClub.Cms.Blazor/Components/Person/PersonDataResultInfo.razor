@@ -1,6 +1,3 @@
-﻿<h4>@DataResult.Firstname @DataResult.Lastname</h4>
+﻿@inherits DataResultInfoBase<PersonResult>
 
-@code {
-    [Parameter, EditorRequired]
-    public required PersonResult DataResult { get; set; }
-}
+<h4>@DataResult.Firstname @DataResult.Lastname</h4>

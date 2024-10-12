@@ -1,0 +1,6 @@
+﻿@typeparam TDataResult where TDataResult : class
+
+@code {
+    [Parameter, EditorRequired]
+    public required TDataResult DataResult { get; set; }
+}

@@ -1,0 +1,10 @@
+﻿<div>
+    <label for="alt">Alt</label>
+
+    <InputText @bind-Value="FilterFormModel.Alt" id="alt" />
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public required ImageFilterFormModel FilterFormModel { get; set; }
+}

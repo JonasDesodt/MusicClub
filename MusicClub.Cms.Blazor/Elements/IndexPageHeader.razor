@@ -1,0 +1,8 @@
+﻿<h3>Index</h3>
+
+<NavLink class="button" href="@($"{Model}/create")">Create</NavLink>
+
+@code {
+    [Parameter, EditorRequired]
+    public required string Model { get; set; }
+}

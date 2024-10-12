@@ -1,0 +1,16 @@
+﻿<div>
+    <label for="title">Title</label>
+
+    <InputText @bind-Value="FilterFormModel.Title" id="title" />
+</div>
+
+<div>
+    <label for="doors">Doors</label>
+
+    <InputDate @bind-Value="FilterFormModel.Doors" id="doors" />
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public required LineupFilterFormModel FilterFormModel { get; set; }
+}

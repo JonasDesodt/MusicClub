@@ -1,0 +1,28 @@
+﻿<div>
+    <label for="name">Name</label>
+
+    <InputText @bind-Value="FilterFormModel.Name" id="name" />
+</div>
+
+<div>
+    <label for="title">Title</label>
+
+    <InputText @bind-Value="FilterFormModel.Title" id="title" />
+</div>
+
+<div>
+    <label for="doors">Start</label>
+
+    <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="FilterFormModel.Start" id="start" />
+</div>
+
+<div>
+    <label for="duration">Duration</label>
+
+    <InputNumber @bind-Value="FilterFormModel.Duration" id="duration" />
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public required ActFilterFormModel FilterFormModel { get; set; }
+}

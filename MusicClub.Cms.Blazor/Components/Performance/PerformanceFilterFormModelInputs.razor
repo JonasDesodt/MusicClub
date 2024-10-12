@@ -1,0 +1,10 @@
+﻿<div>
+    <label for="instrument">Instrument</label>
+
+    <InputText @bind-Value="FilterFormModel.Instrument" id="instrument" />
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public required PerformanceFilterFormModel FilterFormModel { get; set; }
+}

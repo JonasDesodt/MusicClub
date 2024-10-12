@@ -1,8 +1,15 @@
-﻿<p>@ImageDataResult.Alt</p>
+﻿@inherits DataResultInfoBase<ImageResult>
 
-<img src="@($"https://localhost:7061/image/download/{ImageDataResult.Id}")" />
+<p>@DataResult.Alt</p>
 
-@code {
-    [Parameter, EditorRequired]
-    public required ImageResult ImageDataResult { get; set; }
-}
+<img src="@($"https://localhost:7061/image/download/{DataResult.Id}")" />
+
+@* <div>
+    <img src="@($"https://localhost:7061/image/download/{ImageResult.Id}?updated={ImageResult.Updated.ToString()}")" />
+
+    <div>
+        <h4>@ImageResult.Alt</h4>
+
+        <NavLink href="@($"image/edit/{ImageResult.Id}")" class="button">Edit</NavLink>
+    </div>
+</div> *@

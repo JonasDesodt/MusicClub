@@ -1,0 +1,11 @@
+﻿<button @onclick="OnCloseRequested" class="warning">&#128939;</button>
+
+<h3>Select @Model</h3>
+
+@code {
+    [Parameter, EditorRequired]
+    public required string Model { get; set; }
+
+    [Parameter, EditorRequired]
+    public required EventCallback OnCloseRequested { get; set; }
+}

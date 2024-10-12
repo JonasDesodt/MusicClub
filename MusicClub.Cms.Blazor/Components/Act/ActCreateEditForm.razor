@@ -47,7 +47,7 @@
                                    OnRemoveRequest="() => { FormModel.ImageId = null; FormModel.ImageResult = null; NotifyFormChanged(); }"
                                    @bind-Value="FormModel.ImageId">
                 <Info>
-                    <ImageDataResultInfo ImageDataResult="FormModel.ImageResult" />
+                    <ImageDataResultInfo DataResult="FormModel.ImageResult" />
                 </Info>
             </ImageDataResultSelect>
         </div>
@@ -59,9 +59,13 @@
 
     @if (showLineupDataResultOptions)
     {
-@*         <LineupDataResultOptions OnDataResultSelected="(dataResult) => editContext.SelectDataResult(dataResult, () => dataResult.Id, value => FormModel.LineupId = value, value => FormModel.LineupResult = value)"
-                                 OnSelectDisplayStateChanged="(state) => showLineupDataResultOptions = state"
-                                 Context="Context">
+        <LineupDataResultOptions Context="Context">
+            <Header>
+                <button @onclick="() => showLineupDataResultOptions = false" class="warning">&#128939;</button>
+
+                <h3>Select Lineup</h3>
+            </Header>
+
             <FilterInputs>
                 <div>
                     <label for="title">Title</label>
@@ -78,15 +82,21 @@
 
             <Template>
                 <LineupDataResultInfo DataResult="Context" />
+
+                <button @onclick="() => { editContext.SelectDataResult(Context, () => Context.Id, value => FormModel.LineupId = value, value => FormModel.LineupResult = value); showLineupDataResultOptions = false; }">Select</button>
             </Template>
-        </LineupDataResultOptions> *@
+        </LineupDataResultOptions>
     }
 
-    @if (showImageDataResultOptions)
+    @if (showImageDataResultOptions && editContext is not null)
     {
-@*         <ImageDataResultOptions OnDataResultSelected="(dataResult) => editContext.SelectDataResult(dataResult, () => dataResult.Id, value => FormModel.ImageId = value, value => FormModel.ImageResult = value)"
-                                OnSelectDisplayStateChanged="(state) => showImageDataResultOptions = state"
-                                Context="Context">
+        <ImageDataResultOptions Context="Context">
+            <Header>
+                <button @onclick="() => showImageDataResultOptions = false" class="warning">&#128939;</button>
+
+                <h3>Select Image</h3>
+            </Header>
+
             <FilterInputs>
                 <div>
                     <label for="alt">Alt</label>
@@ -96,9 +106,11 @@
             </FilterInputs>
 
             <Template>
-                <ImageDataResultInfo ImageDataResult="Context" />
+                <ImageDataResultInfo DataResult="Context" />
+
+                <button @onclick="() => { editContext.SelectDataResult(Context, () => Context.Id, value => FormModel.ImageId = value, value => FormModel.ImageResult = value); showImageDataResultOptions = false; }">Select</button>
             </Template>
-        </ImageDataResultOptions> *@
+        </ImageDataResultOptions>
     }
 </div>
 

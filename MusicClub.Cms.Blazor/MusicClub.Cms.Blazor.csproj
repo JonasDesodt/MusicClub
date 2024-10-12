@@ -14,11 +14,13 @@
 	  <Content Remove="Components\Act\ActFilterForm.razor" />
 	  <Content Remove="Components\Artist\ArtistFilterForm.razor" />
 	  <Content Remove="Components\Image\ImageFilterForm.razor" />
+	  <Content Remove="Components\Image\ImageSelect.razor" />
 	  <Content Remove="Components\Lineup\LineupFilterForm.razor" />
 	  <Content Remove="Components\Performance\PerformanceFilterForm.razor" />
 	  <Content Remove="Components\Person\PersonFilterForm.razor" />
 	  <Content Remove="Components\Shared\DataResultIndexPage.razor" />
 	  <Content Remove="Components\Shared\DataResultOptions.razor" />
+	  <Content Remove="Components\Shared\DataResultOptionsTest.razor" />
 	</ItemGroup>
 
 	<ItemGroup>

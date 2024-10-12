@@ -1,0 +1,22 @@
+﻿<div>
+    <label for="alias">Alias</label>
+
+    <InputText @bind-Value="FilterFormModel.Alias" id="alias" />
+</div>
+
+<div>
+    <label for="firstname">Firstname</label>
+
+    <InputText @bind-Value="FilterFormModel.Firstname" id="firstname" />
+</div>
+
+<div>
+    <label for="lastname">Lastname</label>
+
+    <InputText @bind-Value="FilterFormModel.Lastname" id="lastname" />
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public required ArtistFilterFormModel FilterFormModel { get; set; }
+}

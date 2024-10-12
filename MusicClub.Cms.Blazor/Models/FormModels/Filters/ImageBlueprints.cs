@@ -9,6 +9,7 @@ namespace MusicClub.Cms.Blazor.Models.FormModels.Filters
 
     [GenerateFilterFormModelExtensions("Image")]
     internal abstract class ImageFilterFormModelExtensionsBlueprint : ImageFilterRequest;
+    public partial class ImageFilterFormModel { }
 
     [GenerateFilterResultExtensions("Image")]
     internal abstract class ImageFilterResultExtensionsBlueprint : ImageFilterResult;

@@ -1,0 +1,14 @@
+﻿@Info
+
+<NavLink href="@($"{Model.ToLower()}/edit/{Id}")" class="button">Edit</NavLink>
+
+@code {
+    [Parameter, EditorRequired]
+    public required RenderFragment Info { get; set; }
+
+    [Parameter, EditorRequired]
+    public required string Model { get; set; }
+
+    [Parameter, EditorRequired]
+    public required int Id { get; set; }
+}

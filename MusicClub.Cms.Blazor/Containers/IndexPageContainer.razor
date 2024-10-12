@@ -1,0 +1,11 @@
+﻿<div class="index-page @(IsSelectOpen ? "select-open" : "select-closed")">
+    @Content
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public required RenderFragment Content { get; set; }
+
+    [Parameter, EditorRequired]
+    public required bool IsSelectOpen { get; set; }
+}

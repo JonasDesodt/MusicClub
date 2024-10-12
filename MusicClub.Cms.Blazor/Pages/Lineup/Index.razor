@@ -1,5 +1,67 @@
-﻿<h3>Index</h3>
+﻿@page "/lineup"
+
+@layout LineupCrudLayout
+
+<IndexPageContainer IsSelectOpen="showImageDataResultOptions">
+    <Content>
+        <LineupDataResultIndexPage Context="Context">
+            <Header>
+                <IndexPageHeader Model="Lineup" />
+            </Header>
+
+            <FilterInputs>
+                <LineupFilterFormModelInputs FilterFormModel="Context" />
+
+                <ImageDataResultSelect DataResult="Context.ImageResult"
+                                       Context="ImageResult"
+                                       OnDataRequest="() => showImageDataResultOptions = true"
+                                       OnRemoveRequest="() => { Context.ImageId = null; Context.ImageResult = null; }"
+                                       @bind-Value="Context.ImageId">
+                    <Info>
+                        <ImageDataResultInfo DataResult="Context.ImageResult" />
+                    </Info>
+                </ImageDataResultSelect>
+            </FilterInputs>
+
+            <Template>
+                <IndexPageTemplate Model="Lineup" Id="Context.Id">
+                    <Info>
+                        <LineupDataResultInfo DataResult="Context" />
+                    </Info>
+                </IndexPageTemplate>
+            </Template>
+
+            <DataResultOptions>
+
+                @if (showImageDataResultOptions)
+                {
+                    <ImageDataResultOptions Context="DataResultOptionsContext">
+                        <Header>
+                            <OptionsHeader Model="Image" OnCloseRequested="() => showImageDataResultOptions = false" />
+                        </Header>
+
+                        <FilterInputs>
+                            <ImageFilterFormModelInputs FilterFormModel="DataResultOptionsContext" />
+                        </FilterInputs>
+
+                        <Template>
+                            <OptionsTemplate TDataResult="ImageResult"
+                                             TDataResultInfo="ImageDataResultInfo"
+                                             EditContext="Context"
+                                             DataResult="DataResultOptionsContext"
+                                             GetDataResultId="() => DataResultOptionsContext.Id"
+                                             SetDataResultId="value => ((LineupFilterFormModel)Context.Model).ImageId = value"
+                                             SetDataResult="value => ((LineupFilterFormModel)Context.Model).ImageResult = value"
+                                             OnDataResultSelected="() => showImageDataResultOptions = false" />
+                        </Template>
+                    </ImageDataResultOptions>
+                }
+            </DataResultOptions>
+        </LineupDataResultIndexPage>
+    </Content>
+</IndexPageContainer>
+
 
 @code {
-
+    private bool showImageDataResultOptions = false;
 }

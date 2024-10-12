@@ -2,137 +2,140 @@
 
 @layout PerformanceCrudLayout
 
-@implements IDisposable
+<IndexPageContainer IsSelectOpen="showActDataResultOptions || showArtistDataResultOptions || showImageDataResultOptions">
+    <Content>
+        <PerformanceDataResultIndexPage Context="Context">
+            <Header>
+                <IndexPageHeader Model="Performance" />
+            </Header>
 
-@inject IPerformanceService PerformanceApiService
-@inject NavigationManager NavigationManager
-@inject DataController DataControllerService
-@inject MemoryService MemoryService
+            <FilterInputs>
+                <PerformanceFilterFormModelInputs FilterFormModel="Context" />
 
-@if (filterEditContext is { Model : not null, Model : PerformanceFilterFormModel } editContext)
-{
-    <section class="index-page @(showImageDataResultOptions ? "select-open" : "select-closed")">
-        <h3>Index</h3>
+                <ArtistDataResultSelect DataResult="Context.ArtistResult"
+                                        Context="ArtistResult"
+                                        OnDataRequest="() => showArtistDataResultOptions = true"
+                                        OnRemoveRequest="() => {Context.ArtistId = null; Context.ArtistResult = null;  }"
+                                        @bind-Value="Context.ArtistId">
+                    <Info>
+                        <p>@Context.ArtistId</p>
 
-        <NavLink class="button" href="performance/create">Create</NavLink>
+                        <ArtistDataResultInfo DataResult="Context.ArtistResult" />
+                    </Info>
+                </ArtistDataResultSelect>
 
-        <Filters TFilterRequest="PerformanceFilterRequest"
-                 TFilterFormModel="PerformanceFilterFormModel"
-                 EditContext="editContext"
-                 OnReset="() => FetchPerformances(MemoryService.GetDefaultPaginationRequest(), new PerformanceFilterRequest())"
-                 OnValidSubmit="() => FetchPerformances(MemoryService.GetDefaultPaginationRequest(), ((PerformanceFilterFormModel)editContext.Model).ToRequest() ?? new PerformanceFilterRequest())"
-                 Context="FilterFormModel">
-            <Inputs>
-                <div>
-                    <label for="instrument">Instrument</label>
+                <ActDataResultSelect DataResult="Context.ActResult"
+                                     Context="ActResult"
+                                     OnDataRequest="() => showActDataResultOptions = true"
+                                     OnRemoveRequest="() => { Context.ActId = null; Context.ActResult = null; }"
+                                     @bind-Value="Context.ActId">
+                    <Info>
+                        <p>@Context.ActId</p>
 
-                    <InputText @bind-Value="FilterFormModel.Instrument" id="instrument" />
-                </div>
+                        <ActDataResultInfo DataResult="Context.ActResult" />
+                    </Info>
+                </ActDataResultSelect>
 
-                <ImageDataResultSelect DataResult="FilterFormModel.ImageResult"
+                <ImageDataResultSelect DataResult="Context.ImageResult"
                                        Context="ImageResult"
                                        OnDataRequest="() => showImageDataResultOptions = true"
-                                       OnRemoveRequest="() => { FilterFormModel.ImageId = null; FilterFormModel.ImageResult = null; MemoryService.HasUnsavedData = true; }"
-                                       @bind-Value="FilterFormModel.ImageId">
+                                       OnRemoveRequest="() => { Context.ImageId = null; Context.ImageResult = null; }"
+                                       @bind-Value="Context.ImageId">
                     <Info>
-                        <ImageDataResultInfo ImageDataResult="FilterFormModel.ImageResult" />
+                        <p>@Context.ImageId</p>
+
+                        <ImageDataResultInfo DataResult="Context.ImageResult" />
                     </Info>
                 </ImageDataResultSelect>
-            </Inputs>
-        </Filters>
+            </FilterInputs>
 
-        @if (PerformancesPagedServiceResult is not null)
-        {
+            <Template>
+                <IndexPageTemplate Model="Performance" Id="Context.Id">
+                    <Info>
+                        <PerformanceDataResultInfo DataResult="Context" />
+                    </Info>
+                </IndexPageTemplate>
+            </Template>
 
-            <PagedList OnPageChanged="@(async (request) => { await FetchPerformances(request, PerformancesPagedServiceResult.Filter.ToRequest());  })"
-                       PagedServiceResult="PerformancesPagedServiceResult" Context="PerformanceResult">
-                <ItemTemplate>
-                    <div>
-                        @if (PerformanceResult.ImageResult is not null)
-                        {
-                            <img src="@($"https://localhost:7061/image/download/{PerformanceResult.ImageResult?.Id}")" />
+            <DataResultOptions>
+                @if (showActDataResultOptions)
+                {
+                    <ActDataResultOptions Context="DataResultOptionsContext">
+                        <Header>
+                            <OptionsHeader Model="Act" OnCloseRequested="() => showActDataResultOptions = false" />
+                        </Header>
 
-                        }
-                        else
-                        {
-                            <p>no image</p>
-                        }
+                        <FilterInputs>
+                            <ActFilterFormModelInputs FilterFormModel="DataResultOptionsContext" />
+                        </FilterInputs>
 
-                        <div>
-                            @if (!string.IsNullOrWhiteSpace(PerformanceResult.ArtistResult.Alias))
-                            {
-                                <h4>@PerformanceResult.ArtistResult.Alias (@PerformanceResult.ArtistResult.PersonResult?.Firstname @PerformanceResult.ArtistResult.PersonResult?.Lastname)</h4>
+                        <Template>
+                            <OptionsTemplate TDataResult="ActResult"
+                                             TDataResultInfo="ActDataResultInfo"
+                                             EditContext="Context"
+                                             DataResult="DataResultOptionsContext"
+                                             GetDataResultId="() => DataResultOptionsContext.Id"
+                                             SetDataResultId="value => ((PerformanceFilterFormModel)Context.Model).ActId = value"
+                                             SetDataResult="value => ((PerformanceFilterFormModel)Context.Model).ActResult = value"
+                                             OnDataResultSelected="() => showActDataResultOptions = false" />
+                        </Template>
+                    </ActDataResultOptions>
+                }
 
-                            }
-                            else
-                            {
-                                <h4>@PerformanceResult.ArtistResult.PersonResult?.Firstname @PerformanceResult.ArtistResult.PersonResult?.Lastname</h4>
-                            }
+                @if (showArtistDataResultOptions)
+                {
+                    <ArtistDataResultOptions Context="DataResultOptionsContext">
+                        <Header>
+                            <OptionsHeader Model="Artist" OnCloseRequested="() => showArtistDataResultOptions = false" />
+                        </Header>
 
-                            <ul>
-                                <li>Lineup: @PerformanceResult.ActResult.LineupResult.Doors.ToLongDateString() @PerformanceResult.ActResult.LineupResult.Title</li>
-                                <li>Act: @PerformanceResult.ActResult.Start?.ToLongDateString() @PerformanceResult.ActResult.Name</li>
-                            </ul>
+                        <FilterInputs>
+                            <ArtistFilterFormModelInputs FilterFormModel="DataResultOptionsContext" />
+                        </FilterInputs>
 
-                            <NavLink href="@($"performance/edit/{PerformanceResult.Id}")" class="button">Edit</NavLink>
-                        </div>
-                    </div>
-                </ItemTemplate>
-            </PagedList>
-        }
+                        <Template>
+                            <OptionsTemplate TDataResult="ArtistResult"
+                                             TDataResultInfo="ArtistDataResultInfo"
+                                             EditContext="Context"
+                                             DataResult="DataResultOptionsContext"
+                                             GetDataResultId="() => DataResultOptionsContext.Id"
+                                             SetDataResultId="value => ((PerformanceFilterFormModel)Context.Model).ArtistId = value"
+                                             SetDataResult="value => ((PerformanceFilterFormModel)Context.Model).ArtistResult = value"
+                                             OnDataResultSelected="() => showArtistDataResultOptions = false" />
+                        </Template>
+                    </ArtistDataResultOptions>
+                }
 
-        @if (showImageDataResultOptions)
-        {
-            <ImageDataResultOptions OnDataResultSelected="(dataResult) => filterEditContext.SelectDataResult(dataResult, () => dataResult.Id, value => ((PerformanceFilterFormModel)editContext.Model).ImageId = value, value => ((PerformanceFilterFormModel)editContext.Model).ImageResult = value)"
-                                    OnSelectDisplayStateChanged="(state) => showImageDataResultOptions = state"
-                                    Context="Context">
-                <FilterInputs>
-                    <div>
-                        <label for="alt">Alt</label>
+                @if (showImageDataResultOptions)
+                {
+                    <ImageDataResultOptions Context="DataResultOptionsContext">
+                        <Header>
+                            <OptionsHeader Model="Image" OnCloseRequested="() => showImageDataResultOptions = false" />
+                        </Header>
 
-                        <InputText @bind-Value="Context.Alt" id="alt" />
-                    </div>
-                </FilterInputs>
+                        <FilterInputs>
+                            <ImageFilterFormModelInputs FilterFormModel="DataResultOptionsContext" />
+                        </FilterInputs>
 
-                <Template>
-                    <ImageDataResultInfo ImageDataResult="Context" />
-                </Template>
-            </ImageDataResultOptions>
-        }
-    </section>
-}
-
+                        <Template>
+                            <OptionsTemplate TDataResult="ImageResult"
+                                             TDataResultInfo="ImageDataResultInfo"
+                                             EditContext="Context"
+                                             DataResult="DataResultOptionsContext"
+                                             GetDataResultId="() => DataResultOptionsContext.Id"
+                                             SetDataResultId="value => ((PerformanceFilterFormModel)Context.Model).ImageId = value"
+                                             SetDataResult="value => ((PerformanceFilterFormModel)Context.Model).ImageResult = value"
+                                             OnDataResultSelected="() => showImageDataResultOptions = false" />
+                        </Template>
+                    </ImageDataResultOptions>
+                }
+            </DataResultOptions>
+        </PerformanceDataResultIndexPage>
+    </Content>
+</IndexPageContainer>
 
 @code {
-    private PagedServiceResult<IList<PerformanceResult>, PerformanceFilterResult>? PerformancesPagedServiceResult;
-
-    private EditContext? filterEditContext;
-
+    private bool showActDataResultOptions = false;
+    private bool showArtistDataResultOptions = false;
     private bool showImageDataResultOptions = false;
-
-    protected override void OnInitialized()
-    {
-        PerformancesPagedServiceResult = (PagedServiceResult<IList<PerformanceResult>, PerformanceFilterResult>?)DataControllerService.Data;
-
-        if (PerformancesPagedServiceResult is null) return;
-
-        filterEditContext = new(PerformancesPagedServiceResult.Filter.ToFormModel());
-
-        base.OnInitialized();
-    }
-
-    private async Task FetchPerformances(PaginationRequest paginationRequest, PerformanceFilterRequest performanceFilterRequest)
-    {
-        PerformancesPagedServiceResult = await DataControllerService.Fetch<PagedServiceResult<IList<PerformanceResult>, PerformanceFilterResult>>(async () => await PerformanceApiService.GetAll(paginationRequest, performanceFilterRequest));
-
-        MemoryService.Set(PerformancesPagedServiceResult.Filter);
-        MemoryService.Set(PerformancesPagedServiceResult.Pagination);
-
-        filterEditContext = new(PerformancesPagedServiceResult.Filter.ToFormModel());
-    }
-
-    public void Dispose()
-    {
-        DataControllerService.Data = null;
-    }
 }

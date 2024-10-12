@@ -1,0 +1,17 @@
+﻿<div>
+    <label for="firstname">Firstname</label>
+
+    <InputText @bind-Value="FilterFormModel.Firstname" id="firstname" />
+</div>
+
+<div>
+    <label for="lastname">Lastname</label>
+
+    <InputText @bind-Value="FilterFormModel.Lastname" id="lastname" />
+</div>
+
+
+@code {
+    [Parameter, EditorRequired]
+    public required PersonFilterFormModel FilterFormModel { get; set; }
+}
