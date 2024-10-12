@@ -1,99 +1,94 @@
 ﻿@page "/artist/delete/{id:int}"
+@using MusicClub.Cms.Blazor.Helpers
 
 @layout ArtistCrudLayout
 
-@inject IArtistService ArtistApiService
-@inject MemoryService MemoryService
-@inject NavigationManager NavigationManager
+<DeleteRequest TDataRequest="ArtistRequest"
+               TDataResult="ArtistResult"
+               TFilterRequest="ArtistFilterRequest"
+               TFilterResult="ArtistFilterResult"
+               TApiService="IArtistService"
+               TDataResultHelpers="IDataResultHelpers<ArtistResult>"
+               Id="Id"
+               Model="Artist"
+               Context="Context">
+    <Info>
+        <ul>
+            <li>
+                <p class="label">Id</p>
+                <p class="input">@Context.Id</p>
+            </li>
 
-<h3>Delete</h3>
+            <li>
+                <p class="label">Alias</p>
+                <p class="input">@Context.Alias</p>
+            </li>
 
-@if (artistResult is not null && artistResult.PerformancesCount == 0)
-{
-    <p>Are you want to delete the following artist?</p>
+            <li>
+                <p class="label">Created</p>
+                <p class="input">@Context.Created.ToLongTimeString()</p>
+            </li>
 
-    <ul>
-        <li>
-            <p class="label">Id</p>
-            <p class="input">
-                @artistResult.Id
-            </p>
-        </li>
+            <li>
+                <p class="label">Updated</p>
+                <p class="input">@Context.Updated.ToLongTimeString()</p>
+            </li>
 
-        <li>
-            <p class="label">Alias</p>
-            <p class="input">@artistResult.Alias</p>
-        </li>
+            <li class="@(showPersonImg ? "show-img" : "hide-img")">
+                <p class="label">Person</p>
+                <p class="input">@Context.PersonResult?.Firstname @Context.PersonResult?.Lastname</p>
 
-        <li>
-            <p class="label">Person</p>
-            <p class="input">@artistResult.PersonResult?.Firstname @artistResult.PersonResult?.Lastname</p>
-        </li>
+                @if (Context.PersonResult?.ImageResult is not null)
+                {
 
-        <li>
-            <p class="label">Performances</p>
-            <p class="input">0</p>
-        </li>
+                    if (showPersonImg)
+                    {
+                        <button @onclick="() => showPersonImg = false">Hide image</button>
+                    }
+                    else
+                    {
+                        <button @onclick="() => showPersonImg = true">Show image</button>
+                    }
 
-        <li>
-            <p class="label">Image</p>
-            <p class="input">
-                @artistResult.ImageResult?.Alt
-                <img src="@($"https://localhost:7061/image/download/{artistResult.ImageResult?.Id}")" />
-            </p>+
-        </li>
-    </ul>
+                    <img src="@($"https://localhost:7061/image/download/{Context.PersonResult.ImageResult?.Id}?updated={Context.PersonResult.ImageResult?.Updated}")" />
+                }
+            </li>
 
-    <div>
-        <NavLink href="@($"artist/edit/{Id}")" class="button">No</NavLink>
+            <li class="@(showImageImg ? "show-img" : "hide-img")">
+                <p class="label">Image</p>
+                <p class="input">@(Context.ImageResult?.Alt ?? "/")</p>
 
-        <button class="danger" @onclick="() => DeleteArtist(Id)">Yes</button>
-    </div>
-}
-else if (artistResult is not null)
-{
-    <p>This following cannot be deleted. The artist has one or more performances.</p>
+                @if (Context.ImageResult is not null)
+                {
+                    @if (showImageImg)
+                    {
+                        <button @onclick="() => showImageImg = false">Hide image</button>
+                    }
+                    else
+                    {
+                        <button @onclick="() => showImageImg = true">Show image</button>
+                    }
 
-    <ul>
-        <li>Id: @artistResult.Id</li>
-        <li>Alias: @artistResult.Alias</li>
-        <li>Person: @artistResult.PersonResult?.Firstname @artistResult.PersonResult?.Lastname</li>
-        <li>Performances: @artistResult.PerformancesCount</li>
-    </ul>
+                    <img src="@($"https://localhost:7061/image/download/{Context.ImageResult.Id}?updated={Context.ImageResult.Updated}")" />
+                }
+            </li>
 
-    <div>
-        <NavLink href="@($"artist/edit/{Id}")" class="button">Return</NavLink>
-    </div>
-}
+            <li>
+                <p class="label">Dependencies</p>
+                @*                 @if(Context.HasCriticalDependencies()) *@
+                <ul>
+                    <li>Performances: @Context.PerformancesCount</li>
+                </ul>
+            </li>
+        </ul>
+    </Info>
+</DeleteRequest>
 
 @code {
     [Parameter]
     public int Id { get; set; }
 
-    public ArtistResult? artistResult { get; set; }
+    private bool showPersonImg;
+    private bool showImageImg;
 
-    protected override async Task OnInitializedAsync()
-    {
-        await FetchArtist(Id);
-
-        await base.OnInitializedAsync();
-    }
-
-    private async Task FetchArtist(int id)
-    {
-        var artistServiceResult = await ArtistApiService.Get(id);
-
-        artistResult = artistServiceResult.Data;
-    }
-
-    private async Task DeleteArtist(int id)
-    {
-        var serviceResult = await ArtistApiService.Delete(Id);
-        if (serviceResult.Messages is null)
-        {
-            MemoryService.HasUnsavedData = false;
-
-            NavigationManager.NavigateTo("/artist");
-        }
-    }
 }

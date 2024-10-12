@@ -1,5 +1,156 @@
-﻿<h3>Delete</h3>
+﻿@page "/performance/delete/{id:int}"
+@using MusicClub.Cms.Blazor.Helpers
+
+@layout PerformanceCrudLayout
+
+<DeleteRequest TDataRequest="PerformanceRequest"
+               TDataResult="PerformanceResult"
+               TFilterRequest="PerformanceFilterRequest"
+               TFilterResult="PerformanceFilterResult"
+               TApiService="IPerformanceService"
+               TDataResultHelpers="IDataResultHelpers<PerformanceResult>"
+               Id="Id"
+               Model="Performance"
+               Context="Context">
+    <Info>
+        <ul>
+            <li>
+                <p class="label">Id</p>
+                <p class="input">@Context.Id</p>
+            </li>
+
+            <li>
+                <p class="label">Instrument</p>
+                <p class="input">@Context.Instrument</p>
+            </li>
+
+            <li>
+                <p class="label">Created</p>
+
+                <p class="input">@Context.Created.ToLongTimeString()</p>
+            </li>
+
+            <li>
+                <p class="label">Updated</p>
+
+                <p class="input">@Context.Updated.ToLongTimeString()</p>
+            </li>
+
+            @if(Context.ActResult is { } actResult)
+            {
+                <li class="@(showActImg ? "show-img" : "hide-img")">
+                    <p class="label">Act</p>
+
+                    <p class="input">@actResult.Name</p>    
+
+                    @if(actResult.Title is { Length : > 0 } title)
+                    {
+                        <p>@title</p>
+                    }
+
+                    @if (actResult.ImageResult is { } imageResult)
+                    {
+
+                        if (showArtistImg)
+                        {
+                            <button @onclick="() => showArtistImg = false">Hide image</button>
+                        }
+                        else
+                        {
+                            <button @onclick="() => showArtistImg = true">Show image</button>
+                        }
+
+                        <img src="@($"https://localhost:7061/image/download/{imageResult.Id}?updated={imageResult.Updated}")" />
+                    }
+                </li>
+            }
+
+
+            @if(Context.ArtistResult is { } artistResult)
+            {
+                <li class="@(showArtistImg ? "show-img" : "hide-img")">
+                    <p class="label">Artist</p>
+
+                    @if (artistResult.Alias is { Length: > 0 } alias)
+                    {
+                        <p class="input">@artistResult.Alias (@artistResult.PersonResult.Firstname @artistResult.PersonResult.Lastname)</p>
+
+                    }
+                    else
+                    {
+                        <p class="input">@artistResult.PersonResult.Firstname @artistResult.PersonResult.Lastname</p>
+                    }
+
+                    @if (artistResult.ImageResult is { } imageResult)
+                    {
+
+                        if (showArtistImg)
+                        {
+                            <button @onclick="() => showArtistImg = false">Hide image</button>
+                        }
+                        else
+                        {
+                            <button @onclick="() => showArtistImg = true">Show image</button>
+                        }
+
+                        <img src="@($"https://localhost:7061/image/download/{imageResult.Id}?updated={imageResult.Updated}")" />
+                    }
+                </li>
+            }
+
+
+            @if(Context.BandnameResult is { } bandnameResult)
+            {
+                <li class="@(showBandnameImg ? "show-img" : "hide-img")">
+                    <p class="label">Bandname</p>
+
+                    <p class="input">@bandnameResult.Name</p>
+
+                    @if (bandnameResult.ImageResult is { } imageResult)
+                    {
+
+                        if (showArtistImg)
+                        {
+                            <button @onclick="() => showBandnameImg = false">Hide image</button>
+                        }
+                        else
+                        {
+                            <button @onclick="() => showBandnameImg = true">Show image</button>
+                        }
+
+                        <img src="@($"https://localhost:7061/image/download/{imageResult.Id}?updated={imageResult.Updated}")" />
+                    }
+                </li>
+            }
+
+            <li class="@(showImageImg ? "show-img" : "hide-img")">
+                <p class="label">Image</p>
+                <p class="input">@(Context.ImageResult?.Alt ?? "/")</p>
+
+                @if (Context.ImageResult is not null)
+                {
+                    @if (showImageImg)
+                    {
+                        <button @onclick="() => showImageImg = false">Hide image</button>
+                    }
+                    else
+                    {
+                        <button @onclick="() => showImageImg = true">Show image</button>
+                    }
+
+                    <img src="@($"https://localhost:7061/image/download/{Context.ImageResult.Id}?updated={Context.ImageResult.Updated}")" />
+                }
+            </li>
+        </ul>
+    </Info>
+</DeleteRequest>
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
 
+    private bool showImageImg;
+    private bool showActImg;
+    private bool showArtistImg;
+    private bool showBandnameImg;
 }

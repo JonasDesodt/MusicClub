@@ -1,91 +1,51 @@
 ﻿@page "/image/delete/{id:int}"
+@using MusicClub.Cms.Blazor.Helpers
 
-@layout ImageCrudLayout
+@layout ArtistCrudLayout
 
-@inject IImageApiService ImageApiService
-@inject MemoryService MemoryService
-@inject NavigationManager NavigationManager
+<DeleteRequest TDataRequest="ImageApiRequest"
+               TDataResult="ImageResult"
+               TFilterRequest="ImageFilterRequest"
+               TFilterResult="ImageFilterResult"
+               TApiService="IImageApiService"
+               TDataResultHelpers="IDataResultHelpers<ImageResult>"
+               Id="Id"
+               Model="Image"
+               Context="Context">
+    <Info>
+        <ul>
+            <li>
+                <p class="label">Id</p>
+                <p class="input">@Context.Id</p>
+            </li>
 
-<h3>Delete</h3>
+            <li>
+                <p class="label">Alt</p>
+                <p class="input">@Context.Alt</p>
+            </li>
 
-@if (imageResult is not null)
-{
-    <p>Are you want to delete the following image?</p>
+            <li>
+                <p class="label">Created</p>
+                <p class="input">@Context.Created.ToLongTimeString()</p>
+            </li>
 
-    <ul>
-        <li>
-            <p class="label">Id</p>
-            <p class="input">
-                @imageResult.Id
-            </p>
-        </li>
+            <li>
+                <p class="label">Updated</p>
+                <p class="input">@Context.Updated.ToLongTimeString()</p>
+            </li>
 
-        <li>
-            <p class="label">Alt</p>
-            <p class="input">@imageResult.Alt</p>
-        </li>
+            <li>
+                <p class="label">Image</p>
 
-        <li>
-            <p class="label">Performances</p>
-            <p class="input">0</p>
-        </li>
-
-        <li>
-            <p class="label">Image</p>
-            <p class="input">
-                <img src="@($"https://localhost:7061/image/download/{imageResult.Id}?updated={imageResult.Updated}")" />
-            </p>
-        </li>
-
-        <li>
-            <p class="label">Dependencies</p>
-
-            <ul>
-                <li>Performances: @imageResult.PerformancesCount</li>
-                <li>Artists: @imageResult.ArtistsCount</li>
-                <li>People: @imageResult.PeopleCount</li>
-                <li>Acts: @imageResult.ActsCount</li>
-                <lI>Lineups: @imageResult.LineupsCount</lI>
-            </ul>
-        </li>
-    </ul>
-
-    <div>
-        <NavLink href="@($"image/edit/{Id}")" class="button">No</NavLink>
-
-        <button class="danger" @onclick="() => DeleteImage(Id)">Yes</button>
-    </div>
-}
+                <img src="@($"https://localhost:7061/image/download/{Context.Id}?updated={Context.Updated}")" />
+            </li>   
+        </ul>
+    </Info>
+</DeleteRequest>
 
 
 @code {
     [Parameter]
     public int Id { get; set; }
 
-    public ImageResult? imageResult { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await FetchImage(Id);
-
-        await base.OnInitializedAsync();
-    }
-
-    private async Task FetchImage(int id)
-    {
-        var imageServiceResult = await ImageApiService.Get(id);
-
-        imageResult = imageServiceResult.Data;
-    }
-
-    private async Task DeleteImage(int id)
-    {
-        var serviceResult = await ImageApiService.Delete(Id);
-        if (serviceResult.Messages is null)
-        {
-            MemoryService.HasUnsavedData = false;
-
-            NavigationManager.NavigateTo("/image");
-        }
-    }
 }

@@ -63,6 +63,7 @@ namespace MusicClub.DbServices
             return (await dbContext.People.FindAsync(id) is not null).Wrap();
         }
 
+        //todo: hide people who are only applicationusers?
         public async Task<ServiceResult<PersonResult>> Get(int id)
         {
             return (await dbContext.People
@@ -72,6 +73,7 @@ namespace MusicClub.DbServices
                 .Wrap(new ServiceMessages().AddNotFound(nameof(Person), id));
         }
 
+        //todo: hide people who are only applicationusers?
         public async Task<PagedServiceResult<IList<PersonResult>, PersonFilterResult>> GetAll(PaginationRequest paginationRequest, PersonFilterRequest filterRequest)
         {
             var totalCount = await dbContext.People

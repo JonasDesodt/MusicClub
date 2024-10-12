@@ -1,5 +1,78 @@
-﻿<h3>Edit</h3>
+﻿@page "/performance/edit/{id:int}"
+
+@layout PerformanceCrudLayout
+
+@using MusicClub.Cms.Blazor.Models.FormModels.Data
+
+@inject IPerformanceService PerformanceApiService
+@inject NavigationManager NavigationManager
+@inject DataController DataController
+@inject MemoryService MemoryService
+
+<h3>Edit</h3>
+
+<PerformanceCreateEditForm FormModel="performanceFormModel" OnValidSubmit="() => Post()">
+    <Buttons>
+        <button type="submit">Submit</button>
+
+        <button type="button" @onclick="async () => {MemoryService.HasUnsavedData = false; await FetchPerformance(Id);}" class="warning">Undo changes</button>
+
+        <NavLink href="@($"performance/delete/{Id}")" class="button danger">Delete</NavLink>
+    </Buttons>
+</PerformanceCreateEditForm>
+
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
 
+    [CascadingParameter]
+    public bool IsOpen { get; set; }
+
+    private PerformanceFormModel? performanceFormModel { get; set; }
+
+    private PagedServiceResult<IList<PersonResult>, PersonFilterResult>? peoplePagedServiceResult { get; set; }
+    private PagedServiceResult<IList<ImageResult>, ImageFilterResult>? imagesPagedServiceResult { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var performanceServiceResult = (ServiceResult<PerformanceResult>?)DataController.Data;
+        if (performanceServiceResult?.Data is { } performanceResult)
+        {
+            performanceFormModel = performanceResult.ToFormModel();
+        }
+
+        base.OnInitialized();
+    }
+
+    private async Task FetchPerformance(int id)
+    {
+        var performanceServiceResult = await DataController.Fetch(async () => await PerformanceApiService.Get(id));
+
+        if (performanceServiceResult?.Data is { } performanceResult)
+        {
+            performanceFormModel = performanceResult.ToFormModel();
+        }
+    }
+
+    private async Task Post()
+    {
+        if (IsOpen)
+        {
+            return;
+        }
+
+        if (performanceFormModel?.ToRequest() is not { } performanceRequest)
+        {
+            return;
+        }
+
+        var serviceResult = await DataController.Fetch(async () => await PerformanceApiService.Update(Id, performanceRequest));
+        if (serviceResult.Messages is null)
+        {
+            MemoryService.HasUnsavedData = false;
+
+            NavigationManager.NavigateTo("/performance");
+        }
+    }
 }

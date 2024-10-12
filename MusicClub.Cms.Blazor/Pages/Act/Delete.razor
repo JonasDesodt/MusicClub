@@ -41,6 +41,16 @@
                 <p class="input">@(Context.Duration.ToString() ?? "/") minutes</p>
             </li>
 
+            <li>
+                <p class="label">Created</p>
+                <p class="input">@Context.Created.ToLongTimeString()</p>
+            </li>
+
+            <li>
+                <p class="label">Updated</p>
+                <p class="input">@Context.Updated.ToLongTimeString()</p>
+            </li>
+
             <li class="@(showLineupImg ? "show-img" : "hide-img")">
                 <p class="label">Lineup</p>
                 <p class="input">@Context.LineupResult.Doors.ToShortDateString() @Context.LineupResult.Title</p>
@@ -91,9 +101,6 @@
         </ul>
     </Info>
 </DeleteRequest>
-
-<h3>Delete</h3>
-
 
 @code {
     [Parameter]

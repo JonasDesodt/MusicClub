@@ -65,9 +65,7 @@ namespace MusicClub.ApiServices.Extensions
         {
             var httpClient = httpClientFactory.CreateClient(client);
 
-            //var httpResponseMessage = await httpClient.GetAsync(endpoint + paginationRequest.ToQueryString() + filterRequest.ToQueryString());
-
-            var httpResponseMessage = await TryCatchHttpRequestHelpers.HandleHttpRequestExceptions(async () => await httpClient.GetAsync(endpoint + paginationRequest.ToQueryString() + filterRequest.ToQueryString()));
+            var httpResponseMessage = await TryCatchHelpers.HandleHttpRequestExceptions(async () => await httpClient.GetAsync(endpoint + paginationRequest.ToQueryString() + filterRequest.ToQueryString()));
 
             //TODO: verify async implementation, also in HandleHttpRequestExceptions!!
 

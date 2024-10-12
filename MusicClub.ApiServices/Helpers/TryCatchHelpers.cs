@@ -1,6 +1,6 @@
 ﻿namespace MusicClub.ApiServices.Helpers
 {
-    internal static class TryCatchHttpRequestHelpers
+    internal static class TryCatchHelpers
     {
         public static async Task<HttpResponseMessage?> HandleHttpRequestExceptions(Func<Task<HttpResponseMessage>> httpRequest)
         {
@@ -12,13 +12,11 @@
             }
             catch (Exception ex)
             {
-                switch (ex)
-                {   
+                return ex switch
+                {
                     //TODO: logs exceptions, rethrow if not expected
-                    
-                    default:
-                        return null;
-                }
+                    _ => null,
+                };
             }
 
             return httpResponseMessage;

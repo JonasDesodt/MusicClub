@@ -1,99 +1,79 @@
 ﻿@page "/person/delete/{id:int}"
+@using MusicClub.Cms.Blazor.Helpers
 
 @layout PersonCrudLayout
 
-@inject IPersonService PersonApiService
-@inject MemoryService MemoryService
-@inject NavigationManager NavigationManager
+<DeleteRequest TDataRequest="PersonRequest"
+               TDataResult="PersonResult"
+               TFilterRequest="PersonFilterRequest"
+               TFilterResult="PersonFilterResult"
+               TApiService="IPersonService"
+               TDataResultHelpers="IDataResultHelpers<PersonResult>"
+               Id="Id"
+               Model="Person"
+               Context="Context">
+    <Info>
+        <ul>
+            <li>
+                <p class="label">Id</p>
+                <p class="input">@Context.Id</p>
+            </li>
 
-<h3>Delete</h3>
+            <li>
+                <p class="label">Firstname</p>
+                <p class="input">@Context.Firstname</p>
+            </li>
 
-@if (personResult is not null && personResult.ArtistsCount == 0)
-{
-    <p>Are you want to delete the following person?</p>
+            <li>
+                <p class="label">Lastname</p>
+                <p class="input">@Context.Lastname</p>
+            </li>
 
-    <ul>
-        <li>
-            <p class="label">Id</p>
-            <p class="input">
-                @personResult.Id
-            </p>
-        </li>
+            <li>
+                <p class="label">Created</p>
+                <p class="input">@Context.Created.ToLongTimeString()</p>
+            </li>
 
-        <li>
-            <p class="label">Firstname</p>
-            <p class="input">@personResult.Firstname</p>
-        </li>
+            <li>
+                <p class="label">Updated</p>
+                <p class="input">@Context.Updated.ToLongTimeString()</p>
+            </li>
 
-        <li>
-            <p class="label">Lastname</p>
-            <p class="input">@personResult.Lastname</p>
-        </li>
+            <li class="@(showImageImg ? "show-img" : "hide-img")">
+                <p class="label">Image</p>
+                <p class="input">@(Context.ImageResult?.Alt ?? "/")</p>
 
-        <li>
-            <p class="label">Artists</p>
-            <p class="input">0</p>
-        </li>
+                @if (Context.ImageResult is not null)
+                {
+                    @if (showImageImg)
+                    {
+                        <button @onclick="() => showImageImg = false">Hide image</button>
+                    }
+                    else
+                    {
+                        <button @onclick="() => showImageImg = true">Show image</button>
+                    }
 
-        <li>
-            <p class="label">Image</p>
-            <p class="input">
-                @personResult.ImageResult?.Alt
-                <img src="@($"https://localhost:7061/image/download/{personResult.ImageResult?.Id}")" />
-            </p>
-        </li>
-    </ul>
+                    <img src="@($"https://localhost:7061/image/download/{Context.ImageResult.Id}?updated={Context.ImageResult.Updated}")" />
+                }
+            </li>
 
-    <div>
-        <NavLink href="@($"person/edit/{Id}")" class="button">No</NavLink>
+            <li>
+                <p class="label">Dependencies</p>
 
-        <button class="danger" @onclick="() => DeletePerson(Id)">Yes</button>
-    </div>
-}
-else if (personResult is not null)
-{
-    <p>This following person cannot be deleted. The person has one or more artists.</p>
-
-    <ul>
-        <li>Id: @personResult.Id</li>
-        <li>Firstname: @personResult.Firstname</li>
-        <li>Lastname: @personResult.Lastname</li>
-        <li>Artists: @personResult.ArtistsCount</li>
-    </ul>
-
-    <div>
-        <NavLink href="@($"person/edit/{Id}")" class="button">Return</NavLink>
-    </div>
-}
+                <ul>
+                    <li>Artists: @Context.ArtistsCount</li>
+                    <li>Workers: @Context.WorkersCount</li>
+                 @*    <li>ApplicationUsers: @Context.ApplicationUsersCount</li> *@ 
+                </ul>
+            </li>
+        </ul>
+    </Info>
+</DeleteRequest>
 
 @code {
     [Parameter]
     public int Id { get; set; }
 
-    public PersonResult? personResult { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await FetchPerson(Id);
-
-        await base.OnInitializedAsync();
-    }
-
-    private async Task FetchPerson(int id)
-    {
-        var personServiceResult = await PersonApiService.Get(id);
-
-        personResult = personServiceResult.Data;
-    }
-
-    private async Task DeletePerson(int id)
-    {
-        var serviceResult = await PersonApiService.Delete(Id);
-        if (serviceResult.Messages is null)
-        {
-            MemoryService.HasUnsavedData = false;
-
-            NavigationManager.NavigateTo("/person");
-        }
-    }
+    private bool showImageImg;
 }
