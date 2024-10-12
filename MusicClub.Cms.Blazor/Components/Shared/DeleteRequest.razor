@@ -1,0 +1,63 @@
+﻿@typeparam TDataRequest 
+@typeparam TDataResult where TDataResult : class
+@typeparam TFilterRequest where TFilterRequest : class, new()
+@typeparam TFilterResult where TFilterResult : class, IConvertToRequest<TFilterRequest>
+      
+@typeparam TApiService where TApiService : IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult>
+
+@inject TApiService ApiService
+@inject MemoryService MemoryService
+@inject NavigationManager NavigationManager
+
+<p>Are you want to delete the following @Model.ToLower()?</p>
+
+@if(dataResult is not null)
+{
+    @Info(dataResult)
+}
+
+<div>
+    <NavLink href="@($"{Model.ToLower()}/edit/{Id}")" class="button">No</NavLink>
+
+    <button class="danger" @onclick="() => DeleteDataResult(Id)">Yes</button>
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    [Parameter, EditorRequired]
+    public required RenderFragment<TDataResult> Info { get; set; }
+
+    [Parameter, EditorRequired]
+    public required string Model { get; set; }
+
+    public TDataResult? dataResult { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Fetch(Id);
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task Fetch(int id)
+    {
+        var serviceResult = await ApiService.Get(id);
+
+        dataResult = serviceResult.Data;
+    }
+
+    private async Task DeleteDataResult(int id)
+    {
+        var serviceResult = await ApiService.Delete(Id);
+        if (serviceResult.Messages is null)
+        {
+            MemoryService.HasUnsavedData = false;
+
+            MemoryService.Clear<PaginationResult>();
+
+            NavigationManager.NavigateTo("/act");
+        }
+    }
+}

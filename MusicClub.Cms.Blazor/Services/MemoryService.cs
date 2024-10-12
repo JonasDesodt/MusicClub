@@ -47,5 +47,10 @@ namespace MusicClub.Cms.Blazor.Services
         }
 
         public void Clear()  => _memory.Clear();
+
+        public bool Clear<TType>() where TType : class
+        {
+            return _memory.Remove(typeof(TType));
+        }
     }
 }
