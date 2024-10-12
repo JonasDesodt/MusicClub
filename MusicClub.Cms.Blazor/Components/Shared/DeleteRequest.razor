@@ -1,25 +1,45 @@
-﻿@typeparam TDataRequest 
+﻿@using MusicClub.Cms.Blazor.Helpers
+@using MusicClub.Dto.Enums
+
+@typeparam TDataRequest
 @typeparam TDataResult where TDataResult : class
 @typeparam TFilterRequest where TFilterRequest : class, new()
 @typeparam TFilterResult where TFilterResult : class, IConvertToRequest<TFilterRequest>
-      
+@typeparam TDataResultHelpers where TDataResultHelpers : IDataResultHelpers<TDataResult>
+
 @typeparam TApiService where TApiService : IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult>
 
 @inject TApiService ApiService
 @inject MemoryService MemoryService
 @inject NavigationManager NavigationManager
+@inject TDataResultHelpers DataResultHelpers
 
-<p>Are you want to delete the following @Model.ToLower()?</p>
+@if (!HasCritialDependencies)
+{
+    <h4>Are you want to delete the following @Model.ToLower()?</h4>
+} else
+{
+    <h4>The @Model.ToLower() cannot be deleted. There are critical dependencies.</h4>
+}
 
-@if(dataResult is not null)
+@if (dataResult is not null)
 {
     @Info(dataResult)
 }
 
 <div>
-    <NavLink href="@($"{Model.ToLower()}/edit/{Id}")" class="button">No</NavLink>
 
-    <button class="danger" @onclick="() => DeleteDataResult(Id)">Yes</button>
+    @if (!HasCritialDependencies)
+    {
+        <NavLink href="@($"{Model.ToLower()}/edit/{Id}")" class="button">No</NavLink>
+
+        <button class="danger" @onclick="() => DeleteDataResult(Id)">Yes</button>
+    }
+    else
+    {
+        <NavLink href="@($"{Model.ToLower()}/edit/{Id}")" class="button">Return</NavLink>
+    }
+
 </div>
 
 @code {
@@ -31,6 +51,11 @@
 
     [Parameter, EditorRequired]
     public required string Model { get; set; }
+
+    // [Parameter, EditorRequired]
+    // public required IList<Func<int>> CriticalDependencies { get; set; }
+
+    public required bool HasCritialDependencies { get; set; }
 
     public TDataResult? dataResult { get; set; }
 
@@ -46,6 +71,11 @@
         var serviceResult = await ApiService.Get(id);
 
         dataResult = serviceResult.Data;
+
+        if (dataResult is not null)
+        {
+            HasCritialDependencies = DataResultHelpers.HasCriticalDependencies(dataResult);
+        }
     }
 
     private async Task DeleteDataResult(int id)

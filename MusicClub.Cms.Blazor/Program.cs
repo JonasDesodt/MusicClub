@@ -39,6 +39,13 @@ builder.Services.AddScoped<IFilterFormModelHelpers<LineupFilterRequest, LineupFi
 builder.Services.AddScoped<IFilterFormModelHelpers<PerformanceFilterRequest, PerformanceFilterFormModel>, PerformanceFilterFormModelHelpers>();
 builder.Services.AddScoped<IFilterFormModelHelpers<PersonFilterRequest, PersonFilterFormModel>, PersonFilterFormModelHelpers>();
 
+builder.Services.AddScoped<IDataResultHelpers<ActResult>, ActDataResultHelpers>();
+builder.Services.AddScoped<IDataResultHelpers<ArtistResult>, ArtistDataResultHelpers>();
+builder.Services.AddScoped<IDataResultHelpers<ImageResult>, ImageDataResultHelpers>();
+builder.Services.AddScoped<IDataResultHelpers<LineupResult>, LineupDataResultHelpers>();
+builder.Services.AddScoped<IDataResultHelpers<PerformanceResult>, PerformanceDataResultHelpers>();
+builder.Services.AddScoped<IDataResultHelpers<PersonResult>, PersonDataResultHelpers>();
+
 builder.Services.AddScoped<DataController>();
 
 builder.Services.AddScoped<MemoryService>();

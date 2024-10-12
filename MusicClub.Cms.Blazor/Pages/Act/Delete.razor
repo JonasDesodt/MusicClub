@@ -1,15 +1,17 @@
 ﻿@page "/act/delete/{id:int}"
+@using MusicClub.Cms.Blazor.Helpers
 
 @layout ActCrudLayout
 
 <DeleteRequest TDataRequest="ActRequest"
-            TDataResult="ActResult"
-            TFilterRequest="ActFilterRequest"
-            TFilterResult="ActFilterResult"
-            TApiService="IActService"
-            Id="Id"
-            Model="Act"
-            Context="Context">
+               TDataResult="ActResult"
+               TFilterRequest="ActFilterRequest"
+               TFilterResult="ActFilterResult"
+               TApiService="IActService"
+               TDataResultHelpers="IDataResultHelpers<ActResult>"
+               Id="Id"
+               Model="Act"
+               Context="Context">
     <Info>
         <ul>
             <li>
