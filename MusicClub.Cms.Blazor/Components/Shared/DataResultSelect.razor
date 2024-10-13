@@ -4,33 +4,29 @@
 <div>
     <label for="@($"{Model}Id")">@Model</label>
 
-   <div>
+    <div>
         @if (DataResult is { } result)
         {
             @Info(result)
         }
         else
         {
-            if(Model == "Image")
+            <p>none</p>
+        }
+
+        <div class="buttons flex-end">
+            @if (DataResult is not null)
             {
-                <p class="image">no Image</p>
-            } else
-            {
-                <p>no @Model</p>
+                <button type="button" @onclick="() => OnDataRequest.InvokeAsync()">Change</button>
+
+                <button type="button" @onclick="() => OnRemoveRequest.InvokeAsync()" class="warning">Remove</button>
             }
-        }
+            else
+            {
+                <button type="button" @onclick="() => OnDataRequest.InvokeAsync()">Add</button>
+            }
+        </div>
 
-        @if (DataResult is not null)
-        {
-            <button type="button" @onclick="() => OnDataRequest.InvokeAsync()">Change</button>
-
-            <button type="button" @onclick="() => OnRemoveRequest.InvokeAsync()" class="warning">Remove</button>
-        }
-        else
-        {
-            <button type="button" @onclick="() => OnDataRequest.InvokeAsync()">Add</button>
-        }
-      
-        <InputNumber @bind-Value="CurrentValue" id="@($"{Model}Id")" hidden />    
+        <InputNumber @bind-Value="CurrentValue" id="@($"{Model}Id")" hidden />
     </div>
 </div>

@@ -1,3 +1,9 @@
 ﻿@inherits DataResultInfoBase<LineupResult>
 
-<p>@DataResult.Doors.ToShortDateString() @DataResult.Title</p>
+@if(DataResult is { } dataResult)
+{
+    <p>@dataResult.Doors.ToShortDateString() @dataResult.Title</p>
+
+    <Image ImageResult="dataResult.ImageResult" />
+}
+

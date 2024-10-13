@@ -13,11 +13,9 @@
 
 <LineupCreateEditForm FormModel="lineupFormModel" OnValidSubmit="() => Post()">
     <Buttons>
-        <button type="submit">Submit</button>
-
-        <button type="button" @onclick="async () => {MemoryService.HasUnsavedData = false; await FetchLineup(Id);}" class="warning">Undo changes</button>
-
-        <NavLink href="@($"lineup/delete/{Id}")" class="button danger">Delete</NavLink>
+        <EditButtons Id="Id"
+                     Model="Lineup"
+                     OnUndoChangesRequest="async () => {MemoryService.HasUnsavedData = false; await FetchLineup(Id);}" />
     </Buttons>
 </LineupCreateEditForm>
 

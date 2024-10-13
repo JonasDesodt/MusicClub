@@ -13,11 +13,9 @@
 
 <ActCreateEditForm FormModel="actFormModel" OnValidSubmit="() => Post()">
     <Buttons>
-        <button type="submit">Submit</button>
-
-        <button type="button" @onclick="async () => {MemoryService.HasUnsavedData = false; await FetchAct(Id);}" class="warning">Undo changes</button>
-
-        <NavLink href="@($"act/delete/{Id}")" class="button danger">Delete</NavLink>
+        <EditButtons Id="Id"
+                     Model="Act"
+                     OnUndoChangesRequest="async () => {MemoryService.HasUnsavedData = false; await FetchAct(Id);}" />
     </Buttons>
 </ActCreateEditForm>
 

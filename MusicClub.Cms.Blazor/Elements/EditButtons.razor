@@ -1,0 +1,16 @@
+﻿<button type="submit">Submit</button>
+
+<button type="button" @onclick="OnUndoChangesRequest" class="warning">Undo changes</button>
+
+<NavLink href="@($"{Model.ToLower()}/delete/{Id}")" class="button danger">Delete</NavLink>
+
+@code {
+    [Parameter, EditorRequired]
+    public required string Model { get; set; }
+
+    [Parameter, EditorRequired]
+    public required int Id { get; set; }
+
+    [Parameter, EditorRequired]
+    public required EventCallback OnUndoChangesRequest { get; set; }
+}

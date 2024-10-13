@@ -2,47 +2,49 @@
 
 @inject MemoryService MemoryService
 
-<div>
-    <EditForm EditContext="imageEditContext" OnValidSubmit="() => OnValidSubmit.InvokeAsync(ImageFormModel)">
-        <DataAnnotationsValidator></DataAnnotationsValidator>
+<CreateEditContainer IsSelectOpen="false">
+    <Content>
+        <EditForm EditContext="imageEditContext" OnValidSubmit="() => OnValidSubmit.InvokeAsync(ImageFormModel)" @onreset="() => MemoryService.HasUnsavedData = false ">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
 
-        <ValidationSummary></ValidationSummary>
-
-        <div>
-            <div>
-                <label for="alt">Alt</label>
-
-                <InputText @bind-Value="ImageFormModel.Alt" id="alt" />
-            </div>
+            <ValidationSummary></ValidationSummary>
 
             <div>
-                <label for="file">File</label>
+                <div>
+                    <label for="alt">Alt</label>
 
-                <InputFile @key="InputFileId" OnChange="HandleFileSelection" id="file" />
+                    <InputText @bind-Value="ImageFormModel.Alt" id="alt" />
+                </div>
 
-                @if (!string.IsNullOrWhiteSpace(imagePreview))
+                <div>
+                    <label for="file">File</label>
+
+                    <InputFile @key="InputFileId" OnChange="HandleFileSelection" id="file" />
+
+                    @if (!string.IsNullOrWhiteSpace(imagePreview))
+                    {
+                        <img src="@imagePreview" alt="Image Preview" />
+                    }
+                    else
+                    {
+                        <p class="dummy-image">no image</p>
+                    }
+
+                    <button type="button" @onclick="OnClearInputFile">Clear</button>
+                </div>
+
+                @if (Info is not null)
                 {
-                    <img src="@imagePreview" alt="Image Preview" />
+                    @Info
                 }
-                else
-                {
-                    <p class="dummy-image">no image</p>
-                }
-
-                <button type="button" @onclick="OnClearInputFile">Clear</button>
             </div>
 
-            @if (Info is not null)
-            {
-                @Info
-            }
-        </div>
-
-        <div>
-            @Buttons
-        </div>
-    </EditForm>
-</div>
+            <div class="buttons flex-end">
+                @Buttons
+            </div>
+        </EditForm>
+    </Content>
+</CreateEditContainer>
 
 @code {
     [Parameter, EditorRequired]

@@ -1,0 +1,11 @@
+﻿img, p {
+    aspect-ratio: 3/2;
+    max-width: 100%;
+}
+
+p {
+    align-items: center;
+    background: rgb(240,240,240);
+    display: flex;
+    justify-content: center;
+}

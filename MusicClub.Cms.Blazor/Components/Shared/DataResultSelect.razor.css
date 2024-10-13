@@ -1,4 +1,4 @@
-﻿::deep img, p.image {
+﻿/*::deep img, p.image {
     min-width: 10em;
     max-width: 10em;
     aspect-ratio: 3/2;
@@ -7,4 +7,4 @@
 p.image {
     border: 1px solid rgb(200,200,200);
     padding: 1em;
-}
+}*/

@@ -9,10 +9,10 @@
 
 @inject IFilterFormModelHelpers<TFilterRequest, TFilterFormModel> FilterFormModelHelpers
 
-<section>
+<section class="data-result-index">
     @Header
 
-    <div>
+    <div class="section hideable">
         @if (FilterEditContext is not null)
         {
             <Filters EditContext="FilterEditContext"
@@ -30,9 +30,7 @@
         <PagedList OnPageChanged="(model) => HandleOnPageChanged(model)"
                    PagedServiceResult="PagedServiceResult" Context="DataResult">
             <ItemTemplate>
-                <div>
-                    @Template(DataResult)
-                </div>
+                @Template(DataResult)
             </ItemTemplate>
         </PagedList>
     </div>

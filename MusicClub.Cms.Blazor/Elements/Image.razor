@@ -1,0 +1,13 @@
+﻿@if (ImageResult is { Id: > 0 } imageResult)
+{
+    <img src="@($"https://localhost:7061/image/download/{imageResult.Id}")" />
+}
+else
+{
+    <p>no image</p>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public ImageResult? ImageResult { get; set; } = null;
+}

@@ -18,8 +18,6 @@
                                         OnRemoveRequest="() => {Context.ArtistId = null; Context.ArtistResult = null;  }"
                                         @bind-Value="Context.ArtistId">
                     <Info>
-                        <p>@Context.ArtistId</p>
-
                         <ArtistDataResultInfo DataResult="Context.ArtistResult" />
                     </Info>
                 </ArtistDataResultSelect>
@@ -30,8 +28,6 @@
                                      OnRemoveRequest="() => { Context.ActId = null; Context.ActResult = null; }"
                                      @bind-Value="Context.ActId">
                     <Info>
-                        <p>@Context.ActId</p>
-
                         <ActDataResultInfo DataResult="Context.ActResult" />
                     </Info>
                 </ActDataResultSelect>
@@ -42,8 +38,6 @@
                                        OnRemoveRequest="() => { Context.ImageId = null; Context.ImageResult = null; }"
                                        @bind-Value="Context.ImageId">
                     <Info>
-                        <p>@Context.ImageId</p>
-
                         <ImageDataResultInfo DataResult="Context.ImageResult" />
                     </Info>
                 </ImageDataResultSelect>

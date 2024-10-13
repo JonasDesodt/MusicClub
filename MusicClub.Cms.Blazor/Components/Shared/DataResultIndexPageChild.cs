@@ -5,7 +5,7 @@ using MusicClub.Dto.Transfer;
 namespace MusicClub.Cms.Blazor.Components.Shared
 {
     public class DataResultIndexPageChild<TDataRequest, TDataResult, TFilterRequest, TFilterResult, TApiService, TFilterFormModel>
-        : DataResultIndex<TDataRequest, TDataResult, TFilterRequest, TFilterResult, TApiService, TFilterFormModel>, IDisposable
+        : DataResultIndex<TDataRequest, TDataResult, TFilterRequest, TFilterResult, TApiService, TFilterFormModel>//, IDisposable
         where TDataResult : class
         where TFilterRequest : class, new()
         where TFilterResult : class, IConvertToRequest<TFilterRequest>
@@ -58,6 +58,6 @@ namespace MusicClub.Cms.Blazor.Components.Shared
             }
         }
 
-        public void Dispose() => DataController.Data = null;
+        //public void Dispose() => DataController.Data = null;
     }
 }

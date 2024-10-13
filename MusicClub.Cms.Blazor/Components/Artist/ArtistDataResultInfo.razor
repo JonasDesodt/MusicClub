@@ -1,10 +1,15 @@
 ﻿@inherits DataResultInfoBase<ArtistResult>
 
-@if (DataResult.Alias is { Length: > 0 } alias)
+@if (DataResult is { } dataResult)
 {
-    <h4>@alias (@DataResult.PersonResult.Firstname @DataResult.PersonResult.Lastname)</h4>
-}
-else
-{
-    <h4>@DataResult.PersonResult.Firstname @DataResult.PersonResult.Lastname</h4>
+    @if (DataResult.Alias is { Length: > 0 } alias)
+    {
+        <h4>@alias (@DataResult.PersonResult.Firstname @DataResult.PersonResult.Lastname)</h4>
+    }
+    else
+    {
+        <h4>@DataResult.PersonResult.Firstname @DataResult.PersonResult.Lastname</h4>
+    }
+
+    <Image ImageResult="dataResult.ImageResult" />
 }

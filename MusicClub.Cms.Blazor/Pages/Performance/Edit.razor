@@ -13,11 +13,9 @@
 
 <PerformanceCreateEditForm FormModel="performanceFormModel" OnValidSubmit="() => Post()">
     <Buttons>
-        <button type="submit">Submit</button>
-
-        <button type="button" @onclick="async () => {MemoryService.HasUnsavedData = false; await FetchPerformance(Id);}" class="warning">Undo changes</button>
-
-        <NavLink href="@($"performance/delete/{Id}")" class="button danger">Delete</NavLink>
+        <EditButtons Id="Id"
+                     Model="Performance"
+                     OnUndoChangesRequest="async () => {MemoryService.HasUnsavedData = false; await FetchPerformance(Id);}" />
     </Buttons>
 </PerformanceCreateEditForm>
 

@@ -5,7 +5,7 @@ namespace MusicClub.Cms.Blazor.Services
     public class MemoryService
     {
         public const int DefaultPage = 1;
-        public const int DefaultPageSize = 2;
+        public const int DefaultPageSize = 12;
 
 
         public static PaginationRequest GetDefaultPaginationRequest()

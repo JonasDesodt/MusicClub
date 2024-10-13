@@ -4,56 +4,26 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<NavLink href="artist">Artists</NavLink>
-<NavLink href="person">People</NavLink>
-<NavLink href="image">Images</NavLink>
-<NavLink href="act">Acts</NavLink>
-<NavLink href="performance">Performance</NavLink>
-
-
 @if (PerformancesPagedServiceResult?.Data is { } data)
 {
-    <ul>
-        @foreach (var performanceResult in data)
-        {
-            <li>
-                <div>
-                    @if (performanceResult.ImageResult is not null)
-                    {
-                        <img src="@($"https://localhost:7061/image/download/{performanceResult.ImageResult?.Id}")" />
+    <section>
+        <h3>Next performances</h3>
 
-                    }
-                    else
-                    {
-                        <p>no image</p>
-                    }
+        <ul class="data-list">
+            @foreach (var performanceResult in data)
+            {
+                <li>
+                    <IndexPageTemplate Model="Performance" Id="performanceResult.Id">
+                        <Info>
+                            <PerformanceDataResultInfo DataResult="performanceResult" />
+                        </Info>
+                    </IndexPageTemplate>
+                </li>
+            }
+        </ul>
 
-                    <div>
-                        @if (!string.IsNullOrWhiteSpace(performanceResult.ArtistResult.Alias))
-                        {
-                            <h4>@performanceResult.ArtistResult.Alias (@performanceResult.ArtistResult.PersonResult?.Firstname @performanceResult.ArtistResult.PersonResult?.Lastname)</h4>
-
-                        }
-                        else
-                        {
-                            <h4>@performanceResult.ArtistResult.PersonResult?.Firstname @performanceResult.ArtistResult.PersonResult?.Lastname</h4>
-                        }
-
-                        <ul>
-                            <li>Lineup: @performanceResult.ActResult.LineupResult.Doors.ToLongDateString() @performanceResult.ActResult.LineupResult.Title</li>
-                            <li>Act: @performanceResult.ActResult.Start?.ToLongDateString() @performanceResult.ActResult.Name</li>
-                        </ul>
-
-                        <NavLink href="@($"performance/edit/{performanceResult.Id}")" class="button">Edit</NavLink>
-                    </div>
-                </div>
-            </li>
-        }
-    </ul>
+        <NavLink href="performance" class="button flex-end">Show all</NavLink>
+    </section>
 }
 
 @code {
@@ -61,9 +31,9 @@ Welcome to your new app.
 
     protected override void OnInitialized()
     {
-        // PerformancesPagedServiceResult = (PagedServiceResult<IList<PerformanceResult>, PerformanceFilterResult>?)DataControllerService.Data;
+        PerformancesPagedServiceResult = (PagedServiceResult<IList<PerformanceResult>, PerformanceFilterResult>?)DataControllerService.Data;
 
-        // if (PerformancesPagedServiceResult is null) return;
+        if (PerformancesPagedServiceResult is null) return;
 
         base.OnInitialized();
     }

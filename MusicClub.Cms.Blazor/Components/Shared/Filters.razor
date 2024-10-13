@@ -5,10 +5,10 @@
 
 @inject IFilterFormModelHelpers<TFilterRequest, TFilterFormModel> FilterFormModelHelpers
 
-<div class="filters">
+<section>
     @if (showFilters)
     {
-        <button @onclick="() => showFilters = false">Filters &#11205;</button>
+        <h4><button @onclick="() => showFilters = false">Filters &#11205;</button></h4>
 
         <EditForm EditContext="EditContext"
                   OnValidSubmit="() => OnValidSubmit.InvokeAsync()">
@@ -20,7 +20,7 @@
                 @Inputs((TFilterFormModel)EditContext.Model)
             </div>
 
-            <div>
+            <div class="buttons flex-end">
                 <button type="button" @onclick="() => OnReset.InvokeAsync()">Clear</button>
 
                 <button type="submit">Filter</button>
@@ -29,10 +29,10 @@
     }
     else
     {
-        <button @onclick="() => showFilters = true">Filters &#11206;</button>
+        <h4><button @onclick="() => showFilters = true">Filters &#11206;</button></h4>
     }
 
-    @if (tags is not null)
+    @if (tags is not null && tags.Count > 0)
     {
         <ul class="tags">
             @foreach (var tag in tags)
@@ -45,7 +45,7 @@
             }
         </ul>
     }
-</div>
+</section>
 
 @code {
     [Parameter, EditorRequired]

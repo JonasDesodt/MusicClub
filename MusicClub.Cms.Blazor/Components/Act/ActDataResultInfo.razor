@@ -1,18 +1,13 @@
 ﻿@inherits DataResultInfoBase<ActResult>
 
-@if (DataResult is not null)
+@if (DataResult is { } dataResult)
 {
-    @if (DataResult is { } dataResult)
-    {
-        <h4>@dataResult.Start?.ToLongDateString() @DataResult.Name</h4>
+    <h4>@dataResult.Start?.ToLongDateString() @DataResult.Name</h4>
 
-        @if (dataResult.Title is { Length: > 0 } title)
-        {
-            <p>@title</p>
-        }
-    }
-    else
+    @if (dataResult.Title is { Length: > 0 } title)
     {
-        <h4>No act</h4>
+        <p>@title</p>
     }
+
+    <Image ImageResult="dataResult.ImageResult" />
 }

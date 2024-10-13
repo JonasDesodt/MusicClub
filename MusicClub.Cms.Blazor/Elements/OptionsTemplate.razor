@@ -3,7 +3,7 @@
 
 <DynamicComponent Type="typeof(TDataResultInfo)" Parameters="new Dictionary<string, object>{ {nameof(DataResultInfoBase<TDataResult>.DataResult), DataResult }}" />
 
-<button @onclick="async () => { EditContext.SelectDataResult(DataResult, GetDataResultId, SetDataResultId, SetDataResult); await OnDataResultSelected.InvokeAsync(); }">Select</button>
+<button class="flex-end" @onclick="async () => { EditContext.SelectDataResult(DataResult, GetDataResultId, SetDataResultId, SetDataResult); await OnDataResultSelected.InvokeAsync(); }">Select</button>
 
 @code {
     [Parameter, EditorRequired]

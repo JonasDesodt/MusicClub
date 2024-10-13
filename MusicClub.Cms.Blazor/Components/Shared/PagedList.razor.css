@@ -1,4 +1,4 @@
-﻿div {
+﻿/*div {
     display: flex;
     flex-direction: column;
     gap: 2em;
@@ -9,10 +9,11 @@
         display: flex;
         flex-direction: column;
         list-style-type: none;
-/*        gap: 2em;*/
+        gap: 2em;
     }
 
         div > ul > li {
             border-bottom: 1px solid rgb(200,200,200);
             padding: 1em 0;
         }
+*/

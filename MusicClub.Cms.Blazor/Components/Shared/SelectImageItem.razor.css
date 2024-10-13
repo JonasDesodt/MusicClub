@@ -1,4 +1,4 @@
-﻿div.select-image-item {
+﻿/*div.select-image-item {
     display: flex;
     flex-direction: column;
     gap: 1em;
@@ -35,4 +35,4 @@ div#image-modal {
 
 div#image-modal.is-open{
     display: flex;
-}
+}*/

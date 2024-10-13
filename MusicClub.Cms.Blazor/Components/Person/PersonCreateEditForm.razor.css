@@ -1,4 +1,4 @@
-﻿div.select-closed, div.select-open {
+﻿/*div.select-closed, div.select-open {
     display: flex;
     flex-direction: row;
     gap: 2em;
@@ -44,3 +44,4 @@ div.select-open > ::deep form, div.select-closed > ::deep form {
         width: 25%;
     }
 }
+*/

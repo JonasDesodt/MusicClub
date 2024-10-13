@@ -38,16 +38,36 @@
 
 @if (isInitCompleted is true)
 {
-    <NavLink href="/artist/create">Create</NavLink>
+    <div class="@(_isMenuOverlayOpen ? "menu-overlay-open" : "menu-overlay-closed")" id="app-content">
+        <header>
+            <div>
+                <h1><NavLink href="">Music Club</NavLink></h1>
 
-    <NavLink href="/"> Home</NavLink>
+                <button @onclick="ToggleOverlay">@(_isMenuOverlayOpen ? "Close" : "Open")</button>
+            </div>
 
-    <main>
-        <CascadingValue Value="isOpen">
-            @Body
-        </CascadingValue>
-    </main>
+            <nav>
+                <ul>
+                    <li><NavLink href="act">Act</NavLink></li>
+                    <li><NavLink href="artist">Artists</NavLink></li>
+                    <li><NavLink href="image">Images</NavLink></li>
+                    <li><NavLink href="lineup">Lineups</NavLink></li>
+                    <li><NavLink href="performance">Performances</NavLink></li>
+                    <li><NavLink href="person">People</NavLink></li>
+                </ul>
+            </nav>
+        </header>
 
+        <main>
+            <CascadingValue Value="isOpen">
+                @Body
+            </CascadingValue>
+        </main>
+
+        <footer>
+            <p>&copy 2024 @(DateTime.Now.Year > 2024 ? "- " + DateTime.Now.Year : string.Empty) Music Club</p>
+        </footer>
+    </div>
 }
 else if (isInitCompleted is false)
 {
@@ -97,7 +117,11 @@ else if (isInitCompleted is false)
 
                 hasFetchError = true;
                 StateHasChanged();
+
+                return; //this return needs more testing
             }
+
+            _isMenuOverlayOpen = false;
         });
 
         DataControllerService.OnFetchStateChanged += FetchStateChanged;
@@ -125,4 +149,9 @@ else if (isInitCompleted is false)
             NavigationManager.NavigateTo(MemoryService.NavigationRequest);
         }
     }
+
+
+    private bool _isMenuOverlayOpen = false;
+
+    private void ToggleOverlay() => _isMenuOverlayOpen = !_isMenuOverlayOpen;
 }

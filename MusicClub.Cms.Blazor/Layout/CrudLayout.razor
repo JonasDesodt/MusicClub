@@ -10,11 +10,11 @@
 <section class="layout">
     @if (NavigationManager.ToBaseRelativePath(NavigationManager.Uri) == Model.ToLower())
     {
-        <NavLink href="/" class="button">Home</NavLink>
+        <NavLink href="/" class="button flex-start">Home</NavLink>
     }
     else
     {
-        <NavLink href="@($"/{Model.ToLower()}")" class="button">Index</NavLink>
+        <NavLink href="@($"/{Model.ToLower()}")" class="button flex-start">Index</NavLink>
     }
 
     <h2>@Model</h2>

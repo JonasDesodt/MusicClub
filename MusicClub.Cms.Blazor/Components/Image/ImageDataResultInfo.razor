@@ -1,15 +1,8 @@
 ﻿@inherits DataResultInfoBase<ImageResult>
 
-<p>@DataResult.Alt</p>
+@if(DataResult is { } dataResult)
+{
+    <h4>@dataResult.Alt</h4>
 
-<img src="@($"https://localhost:7061/image/download/{DataResult.Id}")" />
-
-@* <div>
-    <img src="@($"https://localhost:7061/image/download/{ImageResult.Id}?updated={ImageResult.Updated.ToString()}")" />
-
-    <div>
-        <h4>@ImageResult.Alt</h4>
-
-        <NavLink href="@($"image/edit/{ImageResult.Id}")" class="button">Edit</NavLink>
-    </div>
-</div> *@
+    <Image ImageResult="dataResult" />
+}

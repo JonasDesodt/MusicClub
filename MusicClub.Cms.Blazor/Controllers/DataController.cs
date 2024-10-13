@@ -42,17 +42,17 @@ namespace MusicClub.Cms.Blazor.Controllers
 
         protected override async Task<bool> HandleCustomRoute(string route)
         {
-            //if (route == "/")
-            //{
-            //    Data = await Fetch(async () => await _performanceApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 5, }, new PerformanceFilterRequest { SortDirection = Dto.Enums.SortDirection.Ascending, SortProperty = "Start" }));
+            if (route == "/")
+            {
+                Data = await Fetch(async () => await _performanceApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 5, }, new PerformanceFilterRequest { SortDirection = Dto.Enums.SortDirection.Ascending, SortProperty = "Start" }));
 
-            //    if (Data is PagedServiceResult<IList<PerformanceResult>, PerformanceFilterResult> pagedServiceResult)
-            //    {
-            //        return pagedServiceResult.Messages?.HasMessage is not true;
-            //    }
+                if (Data is PagedServiceResult<IList<PerformanceResult>, PerformanceFilterResult> pagedServiceResult)
+                {
+                    return pagedServiceResult.Messages?.HasMessage is not true;
+                }
 
-            //    return false;
-            //}
+                return false;
+            }
 
             return await base.HandleCustomRoute(route);
         }

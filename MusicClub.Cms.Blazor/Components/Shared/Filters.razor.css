@@ -1,10 +1,47 @@
-﻿div.filters {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
+﻿h4 {
+    font-size: 1em;
 }
 
-div.filters > button {
+section {
+
+}
+/*div.filters {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}*/
+
+/*div.filters > button {
     align-self: flex-start;
 }
 
+*/
+
+ul.tags {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    flex-wrap: wrap;
+    list-style-type: none;
+}
+
+ul.tags > li {
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    font-size: .75em;
+}
+
+    ul.tags > li > span {
+        align-items: center;
+        background-color: rgb(150,150,150);
+        border-radius: 5px 0 0 5px;
+        display: flex;
+        color: rgb(250,250,250);
+        flex-direction: row;
+        padding: .5em;
+    }
+
+    ul.tags > li > button {
+        border-radius: 0 5px 5px 0;
+    }

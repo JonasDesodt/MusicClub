@@ -5,7 +5,7 @@
 
 @if (PagedServiceResult?.Data is { } results)
 {
-    <div class="paged-list">
+    <section class="paged-list">
         @if (PagedServiceResult.Pagination.TotalCount == 1)
         {
             <h4>@PagedServiceResult.Pagination.TotalCount result</h4>
@@ -15,7 +15,7 @@
             <h4>@PagedServiceResult.Pagination.TotalCount results</h4>
         }
 
-        <ul>
+        <ul class="data-list">
             @foreach (var result in results)
             {
                 <li>
@@ -26,7 +26,7 @@
 
         <Pagination Model="PagedServiceResult.Pagination"
                     OnPageChanged="async (request) => { await OnPageChanged.InvokeAsync(request); await JsFunctions.ScrollToTop(); }" />
-    </div>
+    </section>
 }
 
 @code {

@@ -39,6 +39,11 @@
         MemoryService.HasUnsavedData = true;
     }
 
+    protected void HandleOnReset()
+    {
+        MemoryService.HasUnsavedData = false;
+    }
+
     public void Dispose()
     {
         if (editContext is not null)

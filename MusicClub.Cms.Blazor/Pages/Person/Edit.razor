@@ -13,11 +13,9 @@
 
 <PersonCreateEditForm FormModel="personFormModel" OnValidSubmit="() => Post()">
     <Buttons>
-        <button type="submit">Submit</button>
-
-        <button type="button" @onclick="async () => {MemoryService.HasUnsavedData = false; await FetchPerson(Id);}" class="warning">Undo changes</button>
-
-        <NavLink href="@($"person/delete/{Id}")" class="button danger">Delete</NavLink>
+        <EditButtons Id="Id"
+                     Model="Person"
+                     OnUndoChangesRequest="async () => {MemoryService.HasUnsavedData = false; await FetchPerson(Id);}" />
     </Buttons>
 </PersonCreateEditForm>
 

@@ -1,4 +1,4 @@
-﻿ul > li > div {
+﻿/*ul > li > div {
     display: flex;
     flex-direction: column;
     gap: 1em;
@@ -47,3 +47,4 @@ section.select-open > ::deep div.paged-list {
             max-width: 10em;
         }
 }
+*/

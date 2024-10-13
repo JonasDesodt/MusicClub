@@ -1,154 +1,128 @@
 ﻿@inherits CreateEditForm<PerformanceFormModel>
 
-<div class="@(!showActDataResultOptions && !showArtistDataResultOptions && !showImageDataResultOptions ? "select-closed" : "select-open")">
-    <EditForm EditContext="editContext" OnValidSubmit="() => OnValidSubmit.InvokeAsync(FormModel)">
-        <DataAnnotationsValidator></DataAnnotationsValidator>
+<CreateEditContainer IsSelectOpen="showActDataResultOptions || showArtistDataResultOptions || showImageDataResultOptions">
+    <Content>
+        <EditForm EditContext="editContext" OnValidSubmit="() => OnValidSubmit.InvokeAsync(FormModel)" @onreset="HandleOnReset">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
 
-        <ValidationSummary></ValidationSummary>
+            <ValidationSummary></ValidationSummary>
 
-        <div>
             <div>
-                <label for="instrument">Instrument</label>
+                <div>
+                    <label for="instrument">Instrument</label>
 
-                <InputText @bind-Value="FormModel.Instrument" id="instrument" />
+                    <InputText @bind-Value="FormModel.Instrument" id="instrument" />
+                </div>
+
+                <ArtistDataResultSelect DataResult="FormModel.ArtistResult"
+                                        Context="ArtistResult"
+                                        OnDataRequest="() => showArtistDataResultOptions = true"
+                                        OnRemoveRequest="() => {FormModel.ArtistId = null; FormModel.ArtistResult = null; NotifyFormChanged(); }"
+                                        @bind-Value="FormModel.ArtistId">
+                    <Info>
+                        <ArtistDataResultInfo DataResult="FormModel.ArtistResult" />
+                    </Info>
+                </ArtistDataResultSelect>
+
+                <ActDataResultSelect DataResult="FormModel.ActResult"
+                                     Context="ActResult"
+                                     OnDataRequest="() => showActDataResultOptions = true"
+                                     OnRemoveRequest="() => { FormModel.ActId = null; FormModel.ActResult = null; NotifyFormChanged();}"
+                                     @bind-Value="FormModel.ActId">
+                    <Info>
+                        <ActDataResultInfo DataResult="FormModel.ActResult" />
+                    </Info>
+                </ActDataResultSelect>
+
+                <ImageDataResultSelect DataResult="FormModel.ImageResult"
+                                       Context="ImageResult"
+                                       OnDataRequest="() => showImageDataResultOptions = true"
+                                       OnRemoveRequest="() => { FormModel.ImageId = null; FormModel.ImageResult = null; NotifyFormChanged(); }"
+                                       @bind-Value="FormModel.ImageId">
+                    <Info>
+                        <ImageDataResultInfo DataResult="FormModel.ImageResult" />
+                    </Info>
+                </ImageDataResultSelect>
             </div>
 
-            <ArtistDataResultSelect DataResult="FormModel.ArtistResult"
-                                    Context="ArtistResult"
-                                    OnDataRequest="() => showArtistDataResultOptions = true"
-                                    OnRemoveRequest="() => {FormModel.ArtistId = null; FormModel.ArtistResult = null; NotifyFormChanged(); }"
-                                    @bind-Value="FormModel.ArtistId">
-                <Info>
-                    <ArtistDataResultInfo DataResult="FormModel.ArtistResult" />
-                </Info>
-            </ArtistDataResultSelect>
+            <div class="buttons flex-end">
+                @Buttons
+            </div>
+        </EditForm>
 
-            <ActDataResultSelect DataResult="FormModel.ActResult"
-                                 Context="ActResult"
-                                 OnDataRequest="() => showActDataResultOptions = true"
-                                 OnRemoveRequest="() => { FormModel.ActId = null; FormModel.ActResult = null; NotifyFormChanged();}"
-                                 @bind-Value="FormModel.ActId">
-                <Info>
-                    <ActDataResultInfo DataResult="FormModel.ActResult" />
-                </Info>
-            </ActDataResultSelect>
+        @if (showActDataResultOptions)
+        {
+            <ActDataResultOptions Context="Context">
+                <Header>
+                    <OptionsHeader Model="Act" OnCloseRequested="() => showActDataResultOptions = false" />
+                </Header>
 
-            <ImageDataResultSelect DataResult="FormModel.ImageResult"
-                                   Context="ImageResult"
-                                   OnDataRequest="() => showImageDataResultOptions = true"
-                                   OnRemoveRequest="() => { FormModel.ImageId = null; FormModel.ImageResult = null; NotifyFormChanged(); }"
-                                   @bind-Value="FormModel.ImageId">
-                <Info>
-                    <ImageDataResultInfo DataResult="FormModel.ImageResult" />
-                </Info>
-            </ImageDataResultSelect>
-        </div>
+                <FilterInputs>
+                    <ActFilterFormModelInputs FilterFormModel="Context" />
+                </FilterInputs>
 
-        <div>
-            @Buttons
-        </div>
-    </EditForm>
+                <Template>
+                    <OptionsTemplate TDataResult="ActResult"
+                                     TDataResultInfo="ActDataResultInfo"
+                                     DataResult="Context"
+                                     EditContext="editContext"
+                                     GetDataResultId="() => Context.Id"
+                                     SetDataResultId="value => FormModel.ActId = value"
+                                     SetDataResult="value => FormModel.ActResult = value"
+                                     OnDataResultSelected="() => showActDataResultOptions = false" />
+                </Template>
+            </ActDataResultOptions>
+        }
 
-    @if (showActDataResultOptions)
-    {
-        <ActDataResultOptions Context="Context">
-            <Header>
-                <button @onclick="() => showActDataResultOptions = false" class="warning">&#128939;</button>
+        @if (showArtistDataResultOptions)
+        {
+            <ArtistDataResultOptions Context="Context">
+                <Header>
+                    <OptionsHeader Model="Artist" OnCloseRequested="() => showArtistDataResultOptions = false" />
+                </Header>
 
-                <h3>Select Act</h3>
-            </Header>
+                <FilterInputs>
+                    <ArtistFilterFormModelInputs FilterFormModel="Context" />
+                </FilterInputs>
 
-            <FilterInputs>
-                <div>
-                    <label for="name">Name</label>
+                <Template>
+                    <OptionsTemplate TDataResult="ArtistResult"
+                                     TDataResultInfo="ArtistDataResultInfo"
+                                     DataResult="Context"
+                                     EditContext="editContext"
+                                     GetDataResultId="() => Context.Id"
+                                     SetDataResultId="value => FormModel.ArtistId = value"
+                                     SetDataResult="value => FormModel.ArtistResult = value"
+                                     OnDataResultSelected="() => showArtistDataResultOptions = false" />
+                </Template>
+            </ArtistDataResultOptions>
+        }
 
-                    <InputText @bind-Value="Context.Name" id="name" />
-                </div>
+        @if (showImageDataResultOptions)
+        {
+            <ImageDataResultOptions Context="Context">
+                <Header>
+                    <OptionsHeader Model="Image" OnCloseRequested="() => showImageDataResultOptions = false" />
+                </Header>
 
-                <div>
-                    <label for="duration">Duration</label>
+                <FilterInputs>
+                    <ImageFilterFormModelInputs FilterFormModel="Context" />
+                </FilterInputs>
 
-                    <InputNumber @bind-Value="Context.Duration" id="duration" />
-                </div>
-
-                <div>
-                    <label for="start">Start</label>
-
-                    <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="Context.Start" id="start" />
-                </div>
-            </FilterInputs>
-
-            <Template>
-                <ActDataResultInfo DataResult="Context" />
-
-                <button @onclick="() => { editContext.SelectDataResult(Context, () => Context.Id, value => FormModel.ActId = value, value => FormModel.ActResult = value); showActDataResultOptions = false; }">Select</button>
-            </Template>
-        </ActDataResultOptions>
-    }
-
-    @if (showArtistDataResultOptions)
-    {
-        <ArtistDataResultOptions Context="Context">
-            <Header>
-                <button @onclick="() => showArtistDataResultOptions = false" class="warning">&#128939;</button>
-
-                <h3>Select Artist</h3>
-            </Header>
-
-            <FilterInputs>
-                <div>
-                    <label for="alias">Alias</label>
-
-                    <InputText @bind-Value="Context.Alias" id="alias" />
-                </div>
-
-                <div>
-                    <label for="firstName">Firstname</label>
-
-                    <InputText @bind-Value="Context.Firstname" id="firstName" />
-                </div>
-
-                <div>
-                    <label for="lastName">Lastname</label>
-
-                    <InputText @bind-Value="Context.Lastname" id="lastName" />
-                </div>
-            </FilterInputs>
-
-            <Template>
-                <ArtistDataResultInfo DataResult="Context" />
-
-                <button @onclick="() => { editContext.SelectDataResult(Context, () => Context.Id, value => FormModel.ArtistId = value, value => FormModel.ArtistResult = value); showArtistDataResultOptions = false; }">Select</button>
-
-            </Template>
-        </ArtistDataResultOptions>
-    }
-
-    @if (showImageDataResultOptions)
-    {
-        <ImageDataResultOptions Context="Context">
-            <Header>
-                <button @onclick="() => showImageDataResultOptions = false" class="warning">&#128939;</button>
-
-                <h3>Select Image</h3>
-            </Header>
-
-            <FilterInputs>
-                <div>
-                    <label for="alt">Alt</label>
-
-                    <InputText @bind-Value="Context.Alt" id="alt" />
-                </div>
-            </FilterInputs>
-
-            <Template>
-                <ImageDataResultInfo DataResult="Context" />
-
-                <button @onclick="() => { editContext.SelectDataResult(Context, () => Context.Id, value => FormModel.ImageId = value, value => FormModel.ImageResult = value); showImageDataResultOptions = false; }">Select</button>
-            </Template>
-        </ImageDataResultOptions>
-    }
-</div>
+                <Template>
+                    <OptionsTemplate DataResult="Context"
+                                     EditContext="editContext"
+                                     TDataResult="ImageResult"
+                                     TDataResultInfo="ImageDataResultInfo"
+                                     GetDataResultId="() => Context.Id"
+                                     SetDataResultId="value => FormModel.ImageId = value"
+                                     SetDataResult="value => FormModel.ImageResult = value"
+                                     OnDataResultSelected="() => showImageDataResultOptions = false" />
+                </Template>
+            </ImageDataResultOptions>
+        }
+    </Content>
+</CreateEditContainer>
 
 @code {
     private bool showImageDataResultOptions = false;
