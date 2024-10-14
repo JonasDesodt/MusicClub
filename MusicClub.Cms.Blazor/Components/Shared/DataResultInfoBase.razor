@@ -3,4 +3,10 @@
 @code {
     [Parameter, EditorRequired]
     public required TDataResult DataResult { get; set; }
+
+    [Parameter]
+    public bool ShowImage { get; set; } = true;
+
+    [Parameter]
+    public string? HeaderClass { get; set; }
 }

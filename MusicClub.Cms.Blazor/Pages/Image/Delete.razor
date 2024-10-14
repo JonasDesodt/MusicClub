@@ -13,33 +13,31 @@
                Model="Image"
                Context="Context">
     <Info>
-        <ul>
-            <li>
-                <p class="label">Id</p>
-                <p class="input">@Context.Id</p>
-            </li>
+        <li>
+            <p class="label">Id</p>
+            <p class="input">@Context.DataResult.Id</p>
+        </li>
 
-            <li>
-                <p class="label">Alt</p>
-                <p class="input">@Context.Alt</p>
-            </li>
+        <li>
+            <p class="label">Alt</p>
+            <p class="input">@Context.DataResult.Alt</p>
+        </li>
 
-            <li>
-                <p class="label">Created</p>
-                <p class="input">@Context.Created.ToLongTimeString()</p>
-            </li>
+        <li>
+            <p class="label">Created</p>
+            <p class="input">@Context.DataResult.Created.ToLongTimeString()</p>
+        </li>
 
-            <li>
-                <p class="label">Updated</p>
-                <p class="input">@Context.Updated.ToLongTimeString()</p>
-            </li>
+        <li>
+            <p class="label">Updated</p>
+            <p class="input">@Context.DataResult.Updated.ToLongTimeString()</p>
+        </li>
 
-            <li>
-                <p class="label">Image</p>
+        <li>
+            <p class="label">Image</p>
 
-                <img src="@($"https://localhost:7061/image/download/{Context.Id}?updated={Context.Updated}")" />
-            </li>   
-        </ul>
+            <Image ImageResult="Context.DataResult" />
+        </li>
     </Info>
 </DeleteRequest>
 
@@ -47,5 +45,4 @@
 @code {
     [Parameter]
     public int Id { get; set; }
-
 }

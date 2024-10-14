@@ -4,20 +4,42 @@
 {
     var fullname = dataResult.ArtistResult.PersonResult.Firstname + " " + dataResult.ArtistResult.PersonResult.Lastname;
 
-    @if (dataResult.ArtistResult.Alias is { Length: > 0 } alias)
+    @if (!string.IsNullOrWhiteSpace(dataResult.ArtistResult.Alias))
     {
-        <h5>@dataResult.Instrument : @alias (@fullname)</h5>
-    } else
-    {
-        <h5>@dataResult.Instrument : @fullname</h5>
-    }     
+        var text = dataResult.Instrument + " : " + dataResult.ArtistResult.Alias + '(' + fullname + ')';
 
-    <Image ImageResult="dataResult.ImageResult" />
+        @if (!string.IsNullOrWhiteSpace(HeaderClass))
+        {
+            <h5 class="@HeaderClass.ToLower()">@text</h5>
+        }
+        else
+        {
+            <h5>@text</h5>
+        }
+    }
+    else
+    {
+        var text = @dataResult.Instrument + " : " + fullname;
+
+        @if (!string.IsNullOrWhiteSpace(HeaderClass))
+        {
+            <h5 class="@HeaderClass.ToLower()">@text</h5>
+        }
+        else
+        {
+            <h5>@text</h5>
+        }
+    }
+
+    @if (ShowImage)
+    {
+        <Image ImageResult="dataResult.ImageResult" />
+    }
 
     <ul class="info-list">
-        @if (dataResult.BandnameResult?.Name is { Length: > 0 } bandname)
+        @if (string.IsNullOrWhiteSpace(dataResult.BandnameResult?.Name))
         {
-            <li>Band: @bandname</li>
+            <li>Band: @dataResult.BandnameResult?.Name</li>
         }
         <li>Act: <b>@dataResult.ActResult.Name</b></li>
         <li>Lineup: <b>@dataResult.ActResult.LineupResult.Doors.ToShortDateString() @dataResult.ActResult.LineupResult.Title</b></li>

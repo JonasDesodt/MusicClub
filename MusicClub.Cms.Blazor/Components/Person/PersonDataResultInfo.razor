@@ -2,7 +2,17 @@
 
 @if (DataResult is { } dataResult)
 {
-    <h4>@dataResult.Firstname @dataResult.Lastname</h4>
+    @if (!string.IsNullOrWhiteSpace(HeaderClass))
+    {
+        <h5 class="@HeaderClass.ToLower()">@dataResult.Firstname @dataResult.Lastname</h5>
+    }
+    else
+    {
+        <h5>@dataResult.Firstname @dataResult.Lastname</h5>
+    }
 
-    <Image ImageResult="dataResult.ImageResult" />
+    @if (ShowImage)
+    {
+        <Image ImageResult="dataResult.ImageResult" />
+    }
 }

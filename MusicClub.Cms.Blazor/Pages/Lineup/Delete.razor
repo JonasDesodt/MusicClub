@@ -13,66 +13,49 @@
                Model="Lineup"
                Context="Context">
     <Info>
-        <ul>
-            <li>
-                <p class="label">Id</p>
-                <p class="input">@Context.Id</p>
-            </li>
+        <li>
+            <p class="label">Id</p>
+            <p class="input">@Context.DataResult.Id</p>
+        </li>
 
-            <li>
-                <p class="label">Title</p>
-                <p class="input">@Context.Title</p>
-            </li>
+        <li>
+            <p class="label">Title</p>
+            <p class="input">@Context.DataResult.Title</p>
+        </li>
 
-            <li>
-                <p class="label">Doors</p>
-                <p class="input">@Context.Doors.ToShortTimeString()</p>
-            </li>
+        <li>
+            <p class="label">Doors</p>
+            <p class="input">@Context.DataResult.Doors.ToShortTimeString()</p>
+        </li>
 
-            <li>
-                <p class="label">Created</p>
-                <p class="input">@Context.Created.ToLongTimeString()</p>
-            </li>
+        <li>
+            <p class="label">Created</p>
+            <p class="input">@Context.DataResult.Created.ToLongTimeString()</p>
+        </li>
 
-            <li>
-                <p class="label">Updated</p>
-                <p class="input">@Context.Updated.ToLongTimeString()</p>
-            </li>
+        <li>
+            <p class="label">Updated</p>
+            <p class="input">@Context.DataResult.Updated.ToLongTimeString()</p>
+        </li>
 
-            <li class="@(showImageImg ? "show-img" : "hide-img")">
-                <p class="label">Image</p>
-                <p class="input">@(Context.ImageResult?.Alt ?? "/")</p>
+        <li>
+            <p class="label">Image</p>
 
-                @if (Context.ImageResult is not null)
-                {
-                    @if (showImageImg)
-                    {
-                        <button @onclick="() => showImageImg = false">Hide image</button>
-                    }
-                    else
-                    {
-                        <button @onclick="() => showImageImg = true">Show image</button>
-                    }
+            <ImageDataResultInfo DataResult="Context.DataResult.ImageResult" HeaderClass="paragraph" ShowImage="Context.ShowImages" />
+        </li>
 
-                    <img src="@($"https://localhost:7061/image/download/{Context.ImageResult.Id}?updated={Context.ImageResult.Updated}")" />
-                }
-            </li>
+        <li>
+            <p class="label">Dependencies</p>
 
-            <li>
-                <p class="label">Dependencies</p>
-                        
-                <ul>
-                    <li>Acts: @Context.ActsCount</li>
-                    <li>Services: @Context.ServicesCount</li>
-                </ul>
-            </li>
-        </ul>
+            <ul>
+                <li>Acts: @Context.DataResult.ActsCount</li>
+                <li>Services: @Context.DataResult.ServicesCount</li>
+            </ul>
+        </li>
     </Info>
 </DeleteRequest>
 
 @code {
     [Parameter]
     public int Id { get; set; }
-
-    private bool showImageImg;
 }

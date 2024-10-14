@@ -1,8 +1,17 @@
 ﻿@inherits DataResultInfoBase<ImageResult>
 
-@if(DataResult is { } dataResult)
+@if (DataResult is { } dataResult)
 {
-    <h4>@dataResult.Alt</h4>
+    @if (!string.IsNullOrWhiteSpace(HeaderClass))
+    {
+        <h5 class="@HeaderClass.ToLower()">@dataResult.Alt</h5>
+    } else
+    {
+        <h5>@dataResult.Alt</h5>
+    }
 
-    <Image ImageResult="dataResult" />
+    @if (ShowImage)
+    {
+        <Image ImageResult="dataResult" />
+    }
 }

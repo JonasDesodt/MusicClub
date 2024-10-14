@@ -158,6 +158,11 @@ h5 {
     font-size: 1.25em;
 }
 
+h1.paragraph, h2.paragraph, h3.paragraph, h4.paragraph, h5.paragraph {
+    font-size: 1em;
+    font-weight: normal;
+}
+
 ul.data-list, ul.info-list {
     display: flex;
     flex-direction: column;

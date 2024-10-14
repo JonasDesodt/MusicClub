@@ -2,12 +2,21 @@
 
 @if (DataResult is { } dataResult)
 {
-    <h4>@dataResult.Start?.ToLongDateString() @DataResult.Name</h4>
-
-    @if (dataResult.Title is { Length: > 0 } title)
+    @if (!string.IsNullOrWhiteSpace(HeaderClass))
     {
-        <p>@title</p>
+        <h5 class="@HeaderClass.ToLower()">@dataResult.Start?.ToLongDateString() @DataResult.Name</h5>
+    } else
+    {
+        <h5>@dataResult.Start?.ToLongDateString() @DataResult.Name</h5>
     }
 
-    <Image ImageResult="dataResult.ImageResult" />
+    @if (!string.IsNullOrWhiteSpace(dataResult.Title))
+    {
+        <p>@dataResult.Title</p>
+    }
+
+    @if (ShowImage)
+    {
+        <Image ImageResult="dataResult.ImageResult" />
+    }
 }

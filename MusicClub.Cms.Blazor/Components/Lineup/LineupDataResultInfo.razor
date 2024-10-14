@@ -2,8 +2,18 @@
 
 @if(DataResult is { } dataResult)
 {
-    <p>@dataResult.Doors.ToShortDateString() @dataResult.Title</p>
+    @if (!string.IsNullOrWhiteSpace(HeaderClass))
+    {
+        <h5 class="@HeaderClass.ToLower()">@dataResult.Doors.ToShortDateString() @dataResult.Title</h5>
+    }
+    else
+    {
+        <h5>@dataResult.Doors.ToShortDateString() @dataResult.Title</h5>
+    }
 
-    <Image ImageResult="dataResult.ImageResult" />
+    @if (ShowImage)
+    {
+        <Image ImageResult="dataResult.ImageResult" />
+    }
 }
 

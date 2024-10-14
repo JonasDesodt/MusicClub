@@ -2,14 +2,33 @@
 
 @if (DataResult is { } dataResult)
 {
-    @if (DataResult.Alias is { Length: > 0 } alias)
+    @if (!string.IsNullOrWhiteSpace(dataResult.Alias))
     {
-        <h4>@alias (@DataResult.PersonResult.Firstname @DataResult.PersonResult.Lastname)</h4>
+        @if (!string.IsNullOrWhiteSpace(HeaderClass))
+        {
+            <h5 class="@HeaderClass.ToLower()">@dataResult.Alias (@dataResult.PersonResult.Firstname @dataResult.PersonResult.Lastname)</h5>
+
+        }
+        else
+        {
+            <h5>@dataResult.Alias (@dataResult.PersonResult.Firstname @dataResult.PersonResult.Lastname)</h5>
+        }
     }
     else
     {
-        <h4>@DataResult.PersonResult.Firstname @DataResult.PersonResult.Lastname</h4>
+        @if (!string.IsNullOrWhiteSpace(HeaderClass))
+        {
+            <h5 class="@HeaderClass.ToLower()">@dataResult.PersonResult.Firstname @dataResult.PersonResult.Lastname</h5>
+
+        }
+        else
+        {
+            <h5>@dataResult.PersonResult.Firstname @dataResult.PersonResult.Lastname</h5>
+        }
     }
 
-    <Image ImageResult="dataResult.ImageResult" />
+    @if (ShowImage)
+    {
+        <Image ImageResult="dataResult.ImageResult" />
+    }
 }
