@@ -1,6 +1,6 @@
 ﻿namespace MusicClub.Cms.Blazor.Contexts
 {
-    public class DeleteRequestContext<TDataResult> where TDataResult : class
+    public class DataResultContext<TDataResult> where TDataResult : class
     {
         public required TDataResult DataResult { get; set; }
 

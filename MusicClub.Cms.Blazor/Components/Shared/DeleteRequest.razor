@@ -30,7 +30,7 @@ else
     <button class="flex-end" @onclick="ToggleShowImages">@(ShowImages ? "Hide images" : "Show images")</button>
 
     <ul class="data-list">
-        @Info(new DeleteRequestContext<TDataResult> { DataResult = dataResult, ShowImages = ShowImages })
+        @Info(new DataResultContext<TDataResult> { DataResult = dataResult, ShowImages = ShowImages })
     </ul>
 }
 
@@ -54,7 +54,7 @@ else
     public int Id { get; set; }
 
     [Parameter, EditorRequired]
-    public required RenderFragment<DeleteRequestContext<TDataResult>> Info { get; set; }
+    public required RenderFragment<DataResultContext<TDataResult>> Info { get; set; }
 
     [Parameter, EditorRequired]
     public required string Model { get; set; }
