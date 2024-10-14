@@ -1,4 +1,5 @@
-﻿@typeparam TModel
+﻿@using MusicClub.Cms.Blazor.Contexts
+@typeparam TModel where TModel : class
 @typeparam TFilter
 
 @inject JsFunctions JsFunctions
@@ -15,11 +16,13 @@
             <h4>@PagedServiceResult.Pagination.TotalCount results</h4>
         }
 
+        <button class="flex-end" @onclick="ToggleShowImages">@(ShowImages ? "Hide images" : "Show images")</button>
+
         <ul class="data-list">
             @foreach (var result in results)
             {
                 <li>
-                    @ItemTemplate(result)
+                    @ItemTemplate(new DataResultContext<TModel> { DataResult = result, ShowImages = ShowImages })
                 </li>
             }
         </ul>
@@ -34,8 +37,16 @@
     public PagedServiceResult<IList<TModel>, TFilter>? PagedServiceResult { get; set; }
 
     [Parameter, EditorRequired]
-    public RenderFragment<TModel> ItemTemplate { get; set; } = default!;
+    public RenderFragment<DataResultContext<TModel>> ItemTemplate { get; set; } = default!;
 
     [Parameter, EditorRequired]
     public EventCallback<PaginationRequest> OnPageChanged { get; set; }
+
+    [Parameter]
+    public bool ShowImages { get; set; } = true;
+
+    private void ToggleShowImages()
+    {
+        ShowImages = !ShowImages;
+    }
 }

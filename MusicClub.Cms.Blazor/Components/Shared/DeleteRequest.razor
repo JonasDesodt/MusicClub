@@ -35,7 +35,6 @@ else
 }
 
 <div class="buttons flex-end">
-
     @if (!HasCritialDependencies)
     {
         <NavLink href="@($"{Model.ToLower()}/edit/{Id}")" class="button">No</NavLink>
@@ -46,7 +45,6 @@ else
     {
         <NavLink href="@($"{Model.ToLower()}/edit/{Id}")" class="button">Return</NavLink>
     }
-
 </div>
 
 @code {

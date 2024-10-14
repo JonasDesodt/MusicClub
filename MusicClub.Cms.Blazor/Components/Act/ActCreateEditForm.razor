@@ -70,11 +70,11 @@
                 </FilterInputs>
 
                 <Template>
-                    <OptionsTemplate DataResult="Context"
+                    <OptionsTemplate DataResult="Context.DataResult"
                                      EditContext="editContext"
                                      TDataResult="LineupResult"
                                      TDataResultInfo="LineupDataResultInfo"
-                                     GetDataResultId="() => Context.Id"
+                                     GetDataResultId="() => Context.DataResult.Id"
                                      SetDataResultId="value => FormModel.LineupId = value"
                                      SetDataResult="value => FormModel.LineupResult = value"
                                      OnDataResultSelected="() => showLineupDataResultOptions = false" />
@@ -94,11 +94,11 @@
                 </FilterInputs>
 
                 <Template>
-                    <OptionsTemplate DataResult="Context"
+                    <OptionsTemplate DataResult="Context.DataResult"
                                      EditContext="editContext"
                                      TDataResult="ImageResult"
                                      TDataResultInfo="ImageDataResultInfo"
-                                     GetDataResultId="() => Context.Id"
+                                     GetDataResultId="() => Context.DataResult.Id"
                                      SetDataResultId="value => FormModel.ImageId = value"
                                      SetDataResult="value => FormModel.ImageResult = value"
                                      OnDataResultSelected="() => showImageDataResultOptions = false" />

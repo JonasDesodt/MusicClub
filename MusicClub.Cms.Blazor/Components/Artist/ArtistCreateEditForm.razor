@@ -52,11 +52,11 @@
                 </FilterInputs>
 
                 <Template>
-                    <OptionsTemplate DataResult="Context"
+                    <OptionsTemplate DataResult="Context.DataResult"
                                      EditContext="editContext"
                                      TDataResult="PersonResult"
                                      TDataResultInfo="PersonDataResultInfo"
-                                     GetDataResultId="() => Context.Id"
+                                     GetDataResultId="() => Context.DataResult.Id"
                                      SetDataResultId="value => FormModel.PersonId = value"
                                      SetDataResult="value => FormModel.PersonResult = value"
                                      OnDataResultSelected="() => showPersonDataResultOptions = false" />
@@ -80,11 +80,11 @@
                 </FilterInputs>
 
                 <Template>
-                    <OptionsTemplate DataResult="Context"
+                    <OptionsTemplate DataResult="Context.DataResult"
                                      EditContext="editContext"
                                      TDataResult="ImageResult"
                                      TDataResultInfo="ImageDataResultInfo"
-                                     GetDataResultId="() => Context.Id"
+                                     GetDataResultId="() => Context.DataResult.Id"
                                      SetDataResultId="value => FormModel.ImageId = value"
                                      SetDataResult="value => FormModel.ImageResult = value"
                                      OnDataResultSelected="() => showImageDataResultOptions = false" />

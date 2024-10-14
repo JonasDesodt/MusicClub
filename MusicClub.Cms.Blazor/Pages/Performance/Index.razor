@@ -44,9 +44,9 @@
             </FilterInputs>
 
             <Template>
-                <IndexPageTemplate Model="Performance" Id="Context.Id">
+                <IndexPageTemplate Model="Performance" Id="Context.DataResult.Id">
                     <Info>
-                        <PerformanceDataResultInfo DataResult="Context" />
+                        <PerformanceDataResultInfo DataResult="Context.DataResult" ShowImage="Context.ShowImages"/>
                     </Info>
                 </IndexPageTemplate>
             </Template>
@@ -67,8 +67,8 @@
                             <OptionsTemplate TDataResult="ActResult"
                                              TDataResultInfo="ActDataResultInfo"
                                              EditContext="Context"
-                                             DataResult="DataResultOptionsContext"
-                                             GetDataResultId="() => DataResultOptionsContext.Id"
+                                             DataResult="DataResultOptionsContext.DataResult"
+                                             GetDataResultId="() => DataResultOptionsContext.DataResult.Id"
                                              SetDataResultId="value => ((PerformanceFilterFormModel)Context.Model).ActId = value"
                                              SetDataResult="value => ((PerformanceFilterFormModel)Context.Model).ActResult = value"
                                              OnDataResultSelected="() => showActDataResultOptions = false" />
@@ -91,8 +91,8 @@
                             <OptionsTemplate TDataResult="ArtistResult"
                                              TDataResultInfo="ArtistDataResultInfo"
                                              EditContext="Context"
-                                             DataResult="DataResultOptionsContext"
-                                             GetDataResultId="() => DataResultOptionsContext.Id"
+                                             DataResult="DataResultOptionsContext.DataResult"
+                                             GetDataResultId="() => DataResultOptionsContext.DataResult.Id"
                                              SetDataResultId="value => ((PerformanceFilterFormModel)Context.Model).ArtistId = value"
                                              SetDataResult="value => ((PerformanceFilterFormModel)Context.Model).ArtistResult = value"
                                              OnDataResultSelected="() => showArtistDataResultOptions = false" />
@@ -115,8 +115,8 @@
                             <OptionsTemplate TDataResult="ImageResult"
                                              TDataResultInfo="ImageDataResultInfo"
                                              EditContext="Context"
-                                             DataResult="DataResultOptionsContext"
-                                             GetDataResultId="() => DataResultOptionsContext.Id"
+                                             DataResult="DataResultOptionsContext.DataResult"
+                                             GetDataResultId="() => DataResultOptionsContext.DataResult.Id"
                                              SetDataResultId="value => ((PerformanceFilterFormModel)Context.Model).ImageId = value"
                                              SetDataResult="value => ((PerformanceFilterFormModel)Context.Model).ImageResult = value"
                                              OnDataResultSelected="() => showImageDataResultOptions = false" />

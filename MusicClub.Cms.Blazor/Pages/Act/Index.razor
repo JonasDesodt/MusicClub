@@ -34,9 +34,9 @@
             </FilterInputs>
 
             <Template>
-                <IndexPageTemplate Model="Act" Id="Context.Id">
+                <IndexPageTemplate Model="Act" Id="Context.DataResult.Id">
                     <Info>
-                        <ActDataResultInfo DataResult="Context" />
+                        <ActDataResultInfo DataResult="Context.DataResult" ShowImage="Context.ShowImages"/>
                     </Info>
                 </IndexPageTemplate>
             </Template>
@@ -67,8 +67,8 @@
                             <OptionsTemplate TDataResult="LineupResult"
                                              TDataResultInfo="LineupDataResultInfo"
                                              EditContext="Context"
-                                             DataResult="DataResultOptionsContext"
-                                             GetDataResultId="() => DataResultOptionsContext.Id"
+                                             DataResult="DataResultOptionsContext.DataResult"
+                                             GetDataResultId="() => DataResultOptionsContext.DataResult.Id"
                                              SetDataResultId="value => ((ActFilterFormModel)Context.Model).LineupId = value"
                                              SetDataResult="value => ((ActFilterFormModel)Context.Model).LineupResult = value"
                                              OnDataResultSelected="() => showLineupDataResultOptions = false" />
@@ -91,8 +91,8 @@
                             <OptionsTemplate TDataResult="ImageResult"
                                              TDataResultInfo="ImageDataResultInfo"
                                              EditContext="Context"
-                                             DataResult="DataResultOptionsContext"
-                                             GetDataResultId="() => DataResultOptionsContext.Id"
+                                             DataResult="DataResultOptionsContext.DataResult"
+                                             GetDataResultId="() => DataResultOptionsContext.DataResult.Id"
                                              SetDataResultId="value => ((ActFilterFormModel)Context.Model).ImageId = value"
                                              SetDataResult="value => ((ActFilterFormModel)Context.Model).ImageResult = value"
                                              OnDataResultSelected="() => showImageDataResultOptions = false" />

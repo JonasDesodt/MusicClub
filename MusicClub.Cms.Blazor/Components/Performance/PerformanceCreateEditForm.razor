@@ -64,9 +64,9 @@
                 <Template>
                     <OptionsTemplate TDataResult="ActResult"
                                      TDataResultInfo="ActDataResultInfo"
-                                     DataResult="Context"
+                                     DataResult="Context.DataResult"
                                      EditContext="editContext"
-                                     GetDataResultId="() => Context.Id"
+                                     GetDataResultId="() => Context.DataResult.Id"
                                      SetDataResultId="value => FormModel.ActId = value"
                                      SetDataResult="value => FormModel.ActResult = value"
                                      OnDataResultSelected="() => showActDataResultOptions = false" />
@@ -88,9 +88,9 @@
                 <Template>
                     <OptionsTemplate TDataResult="ArtistResult"
                                      TDataResultInfo="ArtistDataResultInfo"
-                                     DataResult="Context"
+                                     DataResult="Context.DataResult"
                                      EditContext="editContext"
-                                     GetDataResultId="() => Context.Id"
+                                     GetDataResultId="() => Context.DataResult.Id"
                                      SetDataResultId="value => FormModel.ArtistId = value"
                                      SetDataResult="value => FormModel.ArtistResult = value"
                                      OnDataResultSelected="() => showArtistDataResultOptions = false" />
@@ -110,11 +110,11 @@
                 </FilterInputs>
 
                 <Template>
-                    <OptionsTemplate DataResult="Context"
+                    <OptionsTemplate DataResult="Context.DataResult"
                                      EditContext="editContext"
                                      TDataResult="ImageResult"
                                      TDataResultInfo="ImageDataResultInfo"
-                                     GetDataResultId="() => Context.Id"
+                                     GetDataResultId="() => Context.DataResult.Id"
                                      SetDataResultId="value => FormModel.ImageId = value"
                                      SetDataResult="value => FormModel.ImageResult = value"
                                      OnDataResultSelected="() => showImageDataResultOptions = false" />

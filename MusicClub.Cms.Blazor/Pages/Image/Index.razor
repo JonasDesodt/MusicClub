@@ -14,9 +14,9 @@
             </FilterInputs>
 
             <Template>
-                <IndexPageTemplate Model="Image" Id="Context.Id">
+                <IndexPageTemplate Model="Image" Id="Context.DataResult.Id">
                     <Info>
-                        <ImageDataResultInfo DataResult="Context" />
+                        <ImageDataResultInfo DataResult="Context.DataResult" ShowImage="Context.ShowImages" />
                     </Info>
                 </IndexPageTemplate>
             </Template>

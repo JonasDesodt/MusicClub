@@ -24,9 +24,9 @@
             </FilterInputs>
 
             <Template>
-                <IndexPageTemplate Model="Artist" Id="Context.Id">
+                <IndexPageTemplate Model="Artist" Id="Context.DataResult.Id">
                     <Info>
-                        <ArtistDataResultInfo DataResult="Context" />
+                        <ArtistDataResultInfo DataResult="Context.DataResult" ShowImage="Context.ShowImages"/>
                     </Info>
                 </IndexPageTemplate>
             </Template>
@@ -48,8 +48,8 @@
                             <OptionsTemplate TDataResult="ImageResult"
                                              TDataResultInfo="ImageDataResultInfo"
                                              EditContext="Context"
-                                             DataResult="DataResultOptionsContext"
-                                             GetDataResultId="() => DataResultOptionsContext.Id"
+                                             DataResult="DataResultOptionsContext.DataResult"
+                                             GetDataResultId="() => DataResultOptionsContext.DataResult.Id"
                                              SetDataResultId="value => ((ArtistFilterFormModel)Context.Model).ImageId = value"
                                              SetDataResult="value => ((ArtistFilterFormModel)Context.Model).ImageResult = value"
                                              OnDataResultSelected="() => showImageDataResultOptions = false" />
