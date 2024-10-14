@@ -65,6 +65,7 @@
                     <OptionsTemplate TDataResult="ActResult"
                                      TDataResultInfo="ActDataResultInfo"
                                      DataResult="Context.DataResult"
+                                     ShowImage="Context.ShowImages"
                                      EditContext="editContext"
                                      GetDataResultId="() => Context.DataResult.Id"
                                      SetDataResultId="value => FormModel.ActId = value"
@@ -89,6 +90,7 @@
                     <OptionsTemplate TDataResult="ArtistResult"
                                      TDataResultInfo="ArtistDataResultInfo"
                                      DataResult="Context.DataResult"
+                                     ShowImage="Context.ShowImages"
                                      EditContext="editContext"
                                      GetDataResultId="() => Context.DataResult.Id"
                                      SetDataResultId="value => FormModel.ArtistId = value"
@@ -111,6 +113,7 @@
 
                 <Template>
                     <OptionsTemplate DataResult="Context.DataResult"
+                                     ShowImage="Context.ShowImages"
                                      EditContext="editContext"
                                      TDataResult="ImageResult"
                                      TDataResultInfo="ImageDataResultInfo"
