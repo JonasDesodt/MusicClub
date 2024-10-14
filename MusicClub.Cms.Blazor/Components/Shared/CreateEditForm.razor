@@ -39,8 +39,18 @@
         MemoryService.HasUnsavedData = true;
     }
 
-    protected void HandleOnReset()
+    protected void HandleOnReset(Action<int>[] ids, Action<object?>[] dataResults)
     {
+        foreach(var id in ids)
+        {
+            id(0);
+        }
+
+        foreach(var dataResult in dataResults)
+        {
+            dataResult(null);
+        }
+
         MemoryService.HasUnsavedData = false;
     }
 

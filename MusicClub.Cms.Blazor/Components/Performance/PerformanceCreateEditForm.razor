@@ -2,7 +2,7 @@
 
 <CreateEditContainer IsSelectOpen="showActDataResultOptions || showArtistDataResultOptions || showImageDataResultOptions">
     <Content>
-        <EditForm EditContext="editContext" OnValidSubmit="() => OnValidSubmit.InvokeAsync(FormModel)" @onreset="HandleOnReset">
+        <EditForm EditContext="editContext" OnValidSubmit="() => OnValidSubmit.InvokeAsync(FormModel)" @onreset="() => HandleOnReset([value => FormModel.ActId = value, value => FormModel.ArtistId = value, value => FormModel.ImageId = value], [value => FormModel.ActResult = (ActResult?)value, value => FormModel.ArtistResult = (ArtistResult?)value, value => FormModel.ImageResult = (ImageResult?)value])">
             <DataAnnotationsValidator></DataAnnotationsValidator>
 
             <ValidationSummary></ValidationSummary>

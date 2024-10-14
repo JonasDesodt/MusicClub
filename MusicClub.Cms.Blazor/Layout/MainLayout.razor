@@ -12,11 +12,11 @@
 
 @if (isOpen)
 {
-    <div id="modal">
+    <div class="modal">
         <div>
             <p>You have unsaved data.</p>
 
-            <div>
+            <div class="buttons">
                 <button @onclick="() => isOpen = false">Stay</button>
                 <button @onclick="HandleContinue" class="danger">Leave</button>
             </div>
@@ -60,6 +60,26 @@
 
         <main>
             <CascadingValue Value="isOpen">
+                <div class="buttons">
+                    @if (previousUrl is { } previous)
+                    {
+                        <NavLink href="@previous" class="button" @onclick="HandleOnPreviousNavigationHistoryLinkClicked">Previous</NavLink>
+                    }
+                    else
+                    {
+                        <NavLink class="button disabled">Previous</NavLink>
+                    }
+
+                    @if (nextUrl is { } next)
+                    {
+                        <NavLink href="@next" class="button" @onclick="HandleOnNextNavigationHistoryLinkClicked">Next</NavLink>
+                    }
+                    else
+                    {
+                        <NavLink class="button disabled">Next</NavLink>
+                    }
+                </div>
+
                 @Body
             </CascadingValue>
         </main>
@@ -90,6 +110,15 @@ else if (isInitCompleted is false)
 
     private bool? isInitCompleted = null;
 
+    private List<string> navigationHistory = [];
+    private int navigationHistoryIndex = -1;
+    private string? previousUrl = null;
+    private bool isPreviousNavigationLinkButtonClicked = false;
+    private string? nextUrl = null;
+    private bool isNextNavigationLinkButtonClicked = false;
+
+    private string? returnUrl = null;
+
     protected override async Task OnInitializedAsync()
     {
         await JsFunctions.AddHandleOnScroll();
@@ -106,6 +135,8 @@ else if (isInitCompleted is false)
 
                 MemoryService.RequestConfirmation();
 
+                isPreviousNavigationLinkButtonClicked = isNextNavigationLinkButtonClicked = false;
+
                 return;
             }
 
@@ -118,8 +149,12 @@ else if (isInitCompleted is false)
                 hasFetchError = true;
                 StateHasChanged();
 
+                isPreviousNavigationLinkButtonClicked = isNextNavigationLinkButtonClicked = false;
+
                 return; //this return needs more testing
             }
+
+            UpdateNavigationHistory(args.TargetLocation);
 
             _isMenuOverlayOpen = false;
         });
@@ -128,7 +163,13 @@ else if (isInitCompleted is false)
 
         MemoryService.OnConfirmationRequested += (sender, args) => { isOpen = true; StateHasChanged(); };
 
-        isInitCompleted = await DataControllerService.HandleLocationChanged(NavigationManager.Uri);
+        if (await DataControllerService.HandleLocationChanged(NavigationManager.Uri))
+        {
+            navigationHistory.Add(NavigationManager.Uri);
+            navigationHistoryIndex++;
+
+            isInitCompleted = true;
+        };
 
         base.OnInitialized();
     }
@@ -154,4 +195,65 @@ else if (isInitCompleted is false)
     private bool _isMenuOverlayOpen = false;
 
     private void ToggleOverlay() => _isMenuOverlayOpen = !_isMenuOverlayOpen;
+
+    private void UpdateNavigationHistory(string targetUri)
+    {
+        if ((isPreviousNavigationLinkButtonClicked || isNextNavigationLinkButtonClicked))
+        {
+            if (isPreviousNavigationLinkButtonClicked)
+            {
+                navigationHistoryIndex--;
+
+                if (navigationHistoryIndex == 0)
+                {
+                    previousUrl = null;
+                }
+                else
+                {
+                    previousUrl = navigationHistory[navigationHistoryIndex - 1];
+                }
+
+                nextUrl = navigationHistory[navigationHistoryIndex + 1];
+            }
+            else
+            {
+                navigationHistoryIndex++;
+
+                if (navigationHistoryIndex == navigationHistory.Count - 1)
+                {
+                    nextUrl = null;
+                }
+                else
+                {
+                    nextUrl = navigationHistory[navigationHistoryIndex + 1];
+                }
+
+                previousUrl = navigationHistory[navigationHistoryIndex - 1];
+            }
+        }
+        else
+        {
+            navigationHistory = navigationHistory[..(navigationHistoryIndex + 1)];
+
+            previousUrl = navigationHistory.Last();
+            nextUrl = null;
+
+            navigationHistory.Add(targetUri);
+            navigationHistoryIndex = navigationHistory.Count - 1;
+        }
+
+        StateHasChanged();
+
+        isPreviousNavigationLinkButtonClicked = isNextNavigationLinkButtonClicked = false;
+    }
+
+    private void HandleOnPreviousNavigationHistoryLinkClicked()
+    {
+        isPreviousNavigationLinkButtonClicked = true;
+    }
+
+    private void HandleOnNextNavigationHistoryLinkClicked()
+    {
+        isNextNavigationLinkButtonClicked = true;
+    }
 }
