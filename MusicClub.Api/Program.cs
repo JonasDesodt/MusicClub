@@ -7,13 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-
-builder.Services.AddCors(options =>
+builder.Services.AddCors(options => 
 {
     options.AddPolicy("AllowSpecificOrigin",
         builder => builder
@@ -21,7 +15,19 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials());
+
+    options.AddPolicy("MusicClub.Ui.Mvc",
+        builder => builder
+            .WithOrigins("https://localhost:7234")
+            .AllowAnyHeader()
+            .WithMethods("GET")
+            .AllowCredentials());
 });
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<MusicClubDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
@@ -36,6 +42,8 @@ builder.Services.AddScoped<IPersonService, PersonDbService>();
 
 var app = builder.Build();
 
+app.UseCors("AllowSpecificOrigin").UseCors("MusicClub.Ui.Mvc");
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -44,8 +52,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseCors("AllowSpecificOrigin");
 
 app.UseAuthorization();
 

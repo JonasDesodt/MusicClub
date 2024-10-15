@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using MusicClub.Api.Attributes;
 using MusicClub.Dto.Attributes;
 using MusicClub.Dto.Transfer;

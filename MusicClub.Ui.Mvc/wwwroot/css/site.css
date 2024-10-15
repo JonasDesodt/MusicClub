@@ -1,0 +1,175 @@
+:root {
+    --divider: 1px solid rgb(225,225,225);
+    --layout-padding: 1em;
+    --secondary-background-color: rgb(50,50,50);
+    --secondary-foreground-color: rgb(250,250,250);
+    --secondary-foreground-hover-color: rgb(200,200,200);
+    --tertiary-background-color: rgba(0,150,0, .8);
+    --tertiary-background-hover-color: rgba(0,15,0, 1);
+    --tertiary-foreground-color: rgb(250,250,250);
+    --tertiary-foreground-hover-color: rgb(200,200,200);
+}
+
+* {
+    box-sizing: border-box;
+    font-family: helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-y: scroll;
+}
+
+    body > header {
+        background-color: var(--secondary-background-color);
+        display: flex;
+        flex-direction: column;
+        padding: var(--layout-padding);
+        gap: 2em;
+    }
+
+        body > header * {
+            color: var(--secondary-foreground-color);
+            font-weight: bold;
+        }
+
+        body > header a {
+            text-decoration: none;
+        }
+
+            body > header a:hover, body > header button:hover, body > header button > *:hover {
+                color: var(--secondary-foreground-hover-color);
+            }
+
+        body > header > div {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        body > header > nav {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: row;
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+            body > header > nav > ul {
+                display: flex;
+                flex-direction: column;
+                gap: 1em;
+                list-style-type: none;
+            }
+
+    body > footer {
+        background-color: var(--secondary-background-color);
+        padding: var(--layout-padding);
+    }
+
+        body > footer * {
+            color: var(--secondary-foreground-color);
+        }
+
+        body > footer a {
+            text-decoration: none;
+        }
+
+            body > footer a:hover {
+                color: var(--secondary-foreground-hover-color);
+            }
+
+    body > main {
+        flex-grow: 1;
+        padding: var(--layout-padding);
+    }
+
+    body.toggle-container > header > div > button.toggle-button-menu-open > span:first-of-type {
+        display: inline;
+    }
+
+    body.toggle-container > header > div > button.toggle-button-menu-open > span:last-of-type {
+        display: none;
+    }
+
+    body.toggle-container.menu-open > header > div > button.toggle-button-menu-open > span:first-of-type {
+        display: none;
+    }
+
+    body.toggle-container.menu-open > header > div > button.toggle-button-menu-open > span:last-of-type {
+        display: inline;
+    }
+
+    body.toggle-container > header > nav {
+        display: none;
+    }
+
+    body.toggle-container.menu-open > header {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+        body.toggle-container.menu-open > header > nav {
+            display: flex;
+        }
+
+    body.toggle-container.menu-open > main,
+    body.toggle-container.menu-open > footer {
+        display: none;
+    }
+
+button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: .5em;
+}
+
+body > button#scroll-to-top {
+    align-items: center;
+    background-color: var(--tertiary-background-color);
+    bottom: 1em;
+    color: var(--tertiary-foreground-color);
+    display: none;
+    height: 2em;
+    justify-content: center;
+    position: fixed;
+    right: 1em;
+    width: 2em;
+}
+
+    body > button#scroll-to-top:hover {
+        color: var(--tertiary-foreground-hover-color);
+    }
+
+body.scroll > button#scroll-to-top {
+    display: flex;
+}
+
+html {
+    font-size: 14px;
+}
+
+ul.data-list {
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+}
+
+    ul.data-list > li {
+        border-bottom: var(--divider);
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+        padding: 2em 0;
+    }
+
+    ul.data-list > li > img {
+        aspect-ratio: 3/2;
+        max-width: 100%;
+    }

@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MusicClub.Ui.Mvc</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MusicClub.Ui.Mvc.styles.css" asp-append-version="true" />
+</head>
+<body class="toggle-container">
+    <header>
+        <div>
+            <h1><a href="">Music Club</a></h1>
+
+            <button class="toggle-button-menu-open">
+                <span>Menu</span>
+                <span>Close</span>
+            </button>
+        </div>
+
+        <nav>
+            <ul>
+                <li><a asp-controller="agenda" asp-action="index">Agenda</a></li>
+                <li><a asp-controller="contact" asp-action="index">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <footer>
+        <a asp-controller="Home" asp-action="Index">&copy; @DateTime.Now.Year@(DateTime.Now.Year > 2024 ? " - " + DateTime.Now.Year : string.Empty) Music Club</a>
+    </footer>
+
+    <button id="scroll-to-top">&#11205;</button>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

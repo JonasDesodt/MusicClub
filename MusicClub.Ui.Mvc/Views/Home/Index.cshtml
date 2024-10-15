@@ -1,0 +1,28 @@
+﻿@model PagedServiceResult<IList<LineupResult>, LineupFilterResult>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h2>Next up</h2>
+
+@if(Model.Data is { } data)
+{
+    <ul class="data-list">
+        @foreach (var lineupResult in Model.Data)
+        {
+            <li>
+                @if(lineupResult.ImageResult is { } imageResult)
+                {
+                    <img src="@($"https://localhost:7061/image/download/{imageResult.Id}")" alt="@imageResult.Alt" />
+                }
+
+                <h3>@lineupResult.Doors.ToShortDateString() @lineupResult.Title</h3>                
+            
+            </li>
+        }
+    </ul>
+} else
+{
+    <p>Kapot</p>
+}

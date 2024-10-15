@@ -60,26 +60,6 @@
 
         <main>
             <CascadingValue Value="isOpen">
-                <div class="buttons">
-                    @if (previousUrl is { } previous)
-                    {
-                        <NavLink href="@previous" class="button" @onclick="HandleOnPreviousNavigationHistoryLinkClicked">Previous</NavLink>
-                    }
-                    else
-                    {
-                        <NavLink class="button disabled">Previous</NavLink>
-                    }
-
-                    @if (nextUrl is { } next)
-                    {
-                        <NavLink href="@next" class="button" @onclick="HandleOnNextNavigationHistoryLinkClicked">Next</NavLink>
-                    }
-                    else
-                    {
-                        <NavLink class="button disabled">Next</NavLink>
-                    }
-                </div>
-
                 @Body
             </CascadingValue>
         </main>
@@ -101,7 +81,28 @@ else if (isInitCompleted is false)
     </div>
 }
 
-<button id="scroll-to-top" @onclick="() => JsFunctions.ScrollToTop()">&#11205;</button>
+<div class="navigation buttons">
+    @if (previousUrl is { } previous)
+    {
+        <NavLink href="@previous" class="button" @onclick="HandleOnPreviousNavigationHistoryLinkClicked">Previous</NavLink>
+    }
+    else
+    {
+        <NavLink class="button disabled">Previous</NavLink>
+    }
+
+    @if (nextUrl is { } next)
+    {
+        <NavLink href="@next" class="button" @onclick="HandleOnNextNavigationHistoryLinkClicked">Next</NavLink>
+    }
+    else
+    {
+        <NavLink class="button disabled">Next</NavLink>
+    }
+
+    <button id="scroll-to-top" @onclick="() => JsFunctions.ScrollToTop()">&#11205;</button>
+</div>
+
 
 @code {
     private bool isLoading;
