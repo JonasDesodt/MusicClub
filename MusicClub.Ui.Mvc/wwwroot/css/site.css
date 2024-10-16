@@ -1,6 +1,8 @@
 :root {
     --divider: 1px solid rgb(225,225,225);
     --layout-padding: 1em;
+    --primary-foreground-color: rgb(0,0,0);
+    --primary-foreground-hover-color: rgb(0,75,0);
     --secondary-background-color: rgb(50,50,50);
     --secondary-foreground-color: rgb(250,250,250);
     --secondary-foreground-hover-color: rgb(200,200,200);
@@ -163,13 +165,35 @@ ul.data-list {
 
     ul.data-list > li {
         border-bottom: var(--divider);
-        display: flex;
-        flex-direction: column;
-        gap: 1em;
         padding: 2em 0;
     }
 
-    ul.data-list > li > img {
-        aspect-ratio: 3/2;
-        max-width: 100%;
+        ul.data-list > li > a {
+            color: var(--primary-foreground-color);
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+            text-decoration: none;
+        }
+
+            ul.data-list > li > a:hover {
+                color: var(--primary-foreground-hover-color);
+            }
+
+            ul.data-list > li > a > img {
+                aspect-ratio: 3/2;
+                max-width: 100%;
+            }
+
+    ul.data-list > li > a > ul {
+        display: flex;
+        flex-direction: column;
+        gap: .5em;
+        list-style-type: none;
     }
+
+        ul.data-list > li > a > ul > li {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }

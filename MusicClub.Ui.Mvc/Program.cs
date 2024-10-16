@@ -11,6 +11,7 @@ builder.Services.AddHttpClient("MusicClubApi", httpClient =>
     httpClient.BaseAddress = new Uri("https://localhost:7061");
 });
 
+builder.Services.AddScoped<IActService, ActApiService>();
 builder.Services.AddScoped<ILineupService, LineupApiService>();
 
 var app = builder.Build();
