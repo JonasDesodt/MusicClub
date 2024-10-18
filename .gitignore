@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/MusicClub.Cms.Blazor/Pages/GoogleCalendar/Login.razor
+/MusicClub.Cms.Blazor/Pages/GoogleCalendar/Callback.razor
+/MusicClub.Api/appsettings.Development.json
