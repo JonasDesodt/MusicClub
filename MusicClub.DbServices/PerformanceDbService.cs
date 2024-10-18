@@ -88,7 +88,7 @@ namespace MusicClub.DbServices
                 if (await dbContext.Acts
                 .IncludeAll()
                 .ToResults()
-                .FirstOrDefaultAsync(i => i.Id == filterRequest.ArtistId) is not { } actResult)
+                .FirstOrDefaultAsync(i => i.Id == filterRequest.ActId) is not { } actResult)
                 {
                     return ((IList<PerformanceResult>?)null).Wrap(paginationRequest, 0, filterRequest.ToResult(), new ServiceMessages().AddNotFound(nameof(Act), filterRequest.ActId));
                 }

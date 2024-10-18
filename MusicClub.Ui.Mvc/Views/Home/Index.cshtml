@@ -12,7 +12,7 @@
         @foreach (var lineupUiModel in Model.Data)
         {
             <li>
-                <a asp-controller="agenda" asp-action="detail">
+                <a asp-controller="agenda" asp-action="detail" asp-route-id="@lineupUiModel.Id">
                     @if (lineupUiModel.ImageResult is { } imageResult)
                     {
                         <img src="@($"https://localhost:7061/image/download/{imageResult.Id}")" alt="@imageResult.Alt" />
@@ -38,7 +38,6 @@
                         {
                             <p>+ @(lineupUiModel.ActResultsTotalCount - actResults.Count) more</p>
                         }
-
                     }
                     else
                     {

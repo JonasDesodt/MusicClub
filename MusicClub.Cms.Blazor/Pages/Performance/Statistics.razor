@@ -1,0 +1,11 @@
+﻿@page "/performance/statistics"
+
+@layout PerformanceCrudLayout
+
+<button class="flex-end" @onclick="() => LastUpdate = DateTime.UtcNow">Refresh</button>
+
+<iframe src="@($"https://localhost:444/Reports/powerbi/DirectQueryInstruments?rs:Embed=true&updated={LastUpdate}")" frameborder="0"></iframe>
+
+@code {
+    private DateTime LastUpdate = DateTime.UtcNow;
+}

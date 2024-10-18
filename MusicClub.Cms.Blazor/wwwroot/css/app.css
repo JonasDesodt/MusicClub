@@ -276,6 +276,17 @@ div.modal {
             font-weight: bold;
         }
 
+section.layout {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 2em;
+}
+iframe {
+    flex-grow: 1;
+}
+
+
 @media (min-width: 320px) {
     html {
         font-size: 16px;

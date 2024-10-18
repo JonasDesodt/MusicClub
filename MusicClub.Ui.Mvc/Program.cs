@@ -13,6 +13,7 @@ builder.Services.AddHttpClient("MusicClubApi", httpClient =>
 
 builder.Services.AddScoped<IActService, ActApiService>();
 builder.Services.AddScoped<ILineupService, LineupApiService>();
+builder.Services.AddScoped<IPerformanceService, PerformanceApiService>();
 
 var app = builder.Build();
 

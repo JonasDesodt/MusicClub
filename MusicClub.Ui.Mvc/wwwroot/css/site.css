@@ -1,6 +1,7 @@
 :root {
     --divider: 1px solid rgb(225,225,225);
-    --layout-padding: 1em;
+    --layout-padding-left-right: 1em;
+    --layout-padding-bottom-top: 1em;
     --primary-foreground-color: rgb(0,0,0);
     --primary-foreground-hover-color: rgb(0,75,0);
     --secondary-background-color: rgb(50,50,50);
@@ -30,7 +31,10 @@ body {
         background-color: var(--secondary-background-color);
         display: flex;
         flex-direction: column;
-        padding: var(--layout-padding);
+        padding-bottom: var(--layout-padding-bottom-top);
+        padding-left: var(--layout-padding-left-right);
+        padding-right: var(--layout-padding-left-right);
+        padding-top: var(--layout-padding-bottom-top);
         gap: 2em;
     }
 
@@ -70,7 +74,10 @@ body {
 
     body > footer {
         background-color: var(--secondary-background-color);
-        padding: var(--layout-padding);
+        padding-bottom: var(--layout-padding-bottom-top);
+        padding-left: var(--layout-padding-left-right);
+        padding-right: var(--layout-padding-left-right);
+        padding-top: var(--layout-padding-bottom-top);
     }
 
         body > footer * {
@@ -86,8 +93,14 @@ body {
             }
 
     body > main {
+        display: flex;
+        flex-direction: column;
         flex-grow: 1;
-        padding: var(--layout-padding);
+        gap: 2em;
+        padding-bottom: 2em;
+        padding-left: var(--layout-padding-left-right);
+        padding-right: var(--layout-padding-left-right);
+        padding-top: 2em;
     }
 
     body.toggle-container > header > div > button.toggle-button-menu-open > span:first-of-type {
@@ -135,14 +148,15 @@ button {
 body > button#scroll-to-top {
     align-items: center;
     background-color: var(--tertiary-background-color);
+    border-radius: 50%;
     bottom: 1em;
     color: var(--tertiary-foreground-color);
     display: none;
-    height: 2em;
+    height: 2.5em;
     justify-content: center;
     position: fixed;
     right: 1em;
-    width: 2em;
+    width: 2.5em;
 }
 
     body > button#scroll-to-top:hover {
@@ -185,15 +199,71 @@ ul.data-list {
                 max-width: 100%;
             }
 
-    ul.data-list > li > a > ul {
+            ul.data-list > li > a > ul {
+                display: flex;
+                flex-direction: column;
+                gap: .5em;
+                list-style-type: none;
+            }
+
+                ul.data-list > li > a > ul > li {
+                    font-size: 1.5em;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                }
+
+ul.detail-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3em;
+    list-style-type: none;
+    padding: 2em 0;
+}
+
+    ul.detail-list > li {
         display: flex;
         flex-direction: column;
-        gap: .5em;
-        list-style-type: none;
+        gap: 1em;
     }
 
-        ul.data-list > li > a > ul > li {
-            font-size: 1.5em;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
+ul.detail-list > li > img,
+ul.detail-list > li > p.image {
+    aspect-ratio: 3/2;
+    max-width: 100%;
+}
+
+ul.detail-list > li > ul {
+    display: flex;
+    flex-direction: column;
+    gap: .5em;
+    list-style-type: none;
+}
+
+ul.detail-list > li > h3 {
+    font-size: 1.5em;
+    text-transform: uppercase;
+}
+
+article {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+p.image {
+    align-items: center;
+    background-color: rgb(240,240,240);
+    display: flex;
+    justify-content: center;
+}
+
+ul.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: .5em;
+    list-style-type: none;
+}
+
+ul.info-list > li {
+    font-style: italic;
+}

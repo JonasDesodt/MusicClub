@@ -1,0 +1,113 @@
+﻿@model LineupViewModel
+
+<article>
+    @if (!string.IsNullOrWhiteSpace(Model.Title))
+    {
+        <h2>@Model.Title.ToUpper()</h2>
+
+        <p><b>@Model.Doors.ToLongDateString()</b></p>
+
+        <ul class="info-list">
+            <li>doors open at @Model.Doors.ToShortTimeString()</li>
+
+            @if (Model.ActUiModels?.All(a => a.Start is not null) is true)
+            {
+                var minStart = Model.ActUiModels.Min(a => a.Start);
+
+                var actNames = Model.ActUiModels
+                .Where(a => a.Start == minStart)
+                .Select(a => a.Name)
+                .ToList();
+
+                @if (actNames.Count == 1)
+                {
+                    <li>@actNames[0] starts at @(minStart?.ToShortTimeString() ?? Model.Doors.AddMinutes(30).ToShortTimeString())</li>
+                }
+                else
+                {
+                    <li>first act starts at @Model.Doors.AddMinutes(30).ToShortTimeString()</li>
+                }
+            }
+            else
+            {
+                <li>first act starts at @Model.Doors.AddMinutes(30).ToShortTimeString()</li>
+            }
+        </ul>
+    }
+    else if (Model.ActUiModels?.Where(a => !string.IsNullOrWhiteSpace(a.Name)).Select(a => a.Name.ToUpper()) is { } actNames)
+    {
+        <h2>@string.Join("+ ", actNames)</h2>
+
+        <p><b>@Model.Doors.ToLongDateString()</b></p>
+    }
+    else
+    {
+        <h2>@Model.Doors.ToLongDateString().ToUpper()</h2>
+
+        <p>doors: @Model.Doors.ToShortTimeString()</p>
+    }
+
+    @if (Model.ImageResult is { } lineupImageResult)
+    {
+        <img src="@($"https://localhost:7061/image/download/{lineupImageResult.Id}")" alt="@lineupImageResult.Alt" />
+    }
+
+    <!-- description not yet implemented in dbModel-->
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+    @if (Model.ActUiModels is { Count: > 0 } actUiModels)
+    {
+        <ul class="detail-list">
+            @foreach (var actUiModel in actUiModels)
+            {
+                <li>
+                    @if (actUiModel.ImageResult is { } actImageResult)
+                    {
+                        <img src="@($"https://localhost:7061/image/download/{actImageResult.Id}")" alt="@actImageResult.Alt" />
+                    }
+                    else
+                    {
+                        <p class="image">Nothing to see here... but they are very cool!</p>
+                    }
+
+                    <h3>@actUiModel.Name</h3>
+
+                    @if (!string.IsNullOrWhiteSpace(actUiModel.Title))
+                    {
+                        <p>'@actUiModel.Title'</p>
+                    }
+
+                    <!-- description not yet implemented in dbModel-->
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+                    @if (actUiModel.PerformanceResults is { Count: > 0 } performanceResults)
+                    {
+                        <ul>
+                            @foreach (var groupedPerformanceResults in performanceResults.GroupBy(p => p.ArtistResult.Id))
+                            {
+                                var instruments = new List<string>();
+                                ArtistResult? artistResult = null;
+
+                                foreach (var performanceResult in groupedPerformanceResults)
+                                {
+                                    instruments.Add(performanceResult.Instrument.ToLower());
+
+                                    artistResult = performanceResult.ArtistResult;
+                                }
+
+                                @if (!string.IsNullOrWhiteSpace(artistResult?.Alias))
+                                {
+                                    <li>@artistResult.Alias (@string.Join(", ", instruments))</li>
+                                }
+                                else
+                                {
+                                    <li>@artistResult?.PersonResult.Firstname @artistResult?.PersonResult.Lastname (@string.Join(", ", instruments))</li>
+                                }
+                            }
+                        </ul>
+                    }
+                </li>
+            }
+        </ul>
+    }
+</article>
