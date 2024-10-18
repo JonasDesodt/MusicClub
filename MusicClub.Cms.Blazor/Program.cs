@@ -17,6 +17,10 @@ builder.Services.AddHttpClient("MusicClubApi", httpClient =>
 {
     httpClient.BaseAddress = new Uri("https://localhost:7061");
 });
+builder.Services.AddHttpClient("OAuth2.GoogleApis", httpClient =>
+{
+    httpClient.BaseAddress = new Uri("https://oauth2.googleapis.com");
+});
 
 builder.Services.AddScoped<IActService, ActApiService>();
 builder.Services.AddScoped<IArtistService, ArtistApiService>();

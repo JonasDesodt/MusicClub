@@ -1,0 +1,36 @@
+﻿@page "/power-bi/performance"
+
+@layout PowerBiLayout
+
+@inject IJSRuntime JavaScriptRuntime
+
+<h3>Performance</h3>
+
+<div id="powerbi-report-container" style="height:600px;"></div>
+
+@code {
+    [JSInvokable]
+    public static Task SaveFilters(object filters)
+    {
+        // You can convert the filter object to JSON and save it to the database
+        // Alternatively, save it to session or local storage if required
+        Console.WriteLine("Received Filters: " + filters.ToString());
+        return Task.CompletedTask;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        // // await JavaScriptRuntime.InvokeVoidAsync("alert", "Hello BlazorSchool!");
+        // if (firstRender)
+        // {
+        //     await JavaScriptRuntime.InvokeVoidAsync("test", "https://localhost:444/Reports/powerbi/DirectQueryInstruments?rs:Embed=true");
+       // }
+
+        // await JavaScriptRuntime.InvokeVoidAsync("embedPowerBIReportFromServer", "https://localhost:444/Reports/powerbi/DirectQueryInstruments?rs:Embed=true");
+
+        await JavaScriptRuntime.InvokeVoidAsync("embedPowerBIReportFromServer", "https://localhost:444/Reports/powerbi/DirectQueryInstruments");
+
+        await base.OnInitializedAsync();
+    }
+}

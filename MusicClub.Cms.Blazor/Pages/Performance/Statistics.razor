@@ -4,7 +4,9 @@
 
 <button class="flex-end" @onclick="() => LastUpdate = DateTime.UtcNow">Refresh</button>
 
-<iframe src="@($"https://localhost:444/Reports/powerbi/DirectQueryInstruments?rs:Embed=true&updated={LastUpdate}")" frameborder="0"></iframe>
+<iframe id="power-bi" src="@($"https://localhost:444/Reports/powerbi/MusicClub?rs:Embed=true&updated={LastUpdate}")" frameborder="0"></iframe>
+
+<script src="js/power-bi.js"></script>
 
 @code {
     private DateTime LastUpdate = DateTime.UtcNow;

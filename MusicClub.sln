@@ -37,6 +37,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{7922AA70-2FC0-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicClub.Ui.Mvc", "MusicClub.Ui.Mvc\MusicClub.Ui.Mvc.csproj", "{0953AE35-3AE2-4954-9B87-33D1808901D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorApp1", "BlazorApp1\BlazorApp1.csproj", "{DB0978D3-E5C6-40DD-A6E6-B09D64DCE38A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -191,6 +193,18 @@ Global
 		{0953AE35-3AE2-4954-9B87-33D1808901D8}.Release|x64.Build.0 = Release|Any CPU
 		{0953AE35-3AE2-4954-9B87-33D1808901D8}.Release|x86.ActiveCfg = Release|Any CPU
 		{0953AE35-3AE2-4954-9B87-33D1808901D8}.Release|x86.Build.0 = Release|Any CPU
+		{DB0978D3-E5C6-40DD-A6E6-B09D64DCE38A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB0978D3-E5C6-40DD-A6E6-B09D64DCE38A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB0978D3-E5C6-40DD-A6E6-B09D64DCE38A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DB0978D3-E5C6-40DD-A6E6-B09D64DCE38A}.Debug|x64.Build.0 = Debug|Any CPU
+		{DB0978D3-E5C6-40DD-A6E6-B09D64DCE38A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DB0978D3-E5C6-40DD-A6E6-B09D64DCE38A}.Debug|x86.Build.0 = Debug|Any CPU
+		{DB0978D3-E5C6-40DD-A6E6-B09D64DCE38A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB0978D3-E5C6-40DD-A6E6-B09D64DCE38A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB0978D3-E5C6-40DD-A6E6-B09D64DCE38A}.Release|x64.ActiveCfg = Release|Any CPU
+		{DB0978D3-E5C6-40DD-A6E6-B09D64DCE38A}.Release|x64.Build.0 = Release|Any CPU
+		{DB0978D3-E5C6-40DD-A6E6-B09D64DCE38A}.Release|x86.ActiveCfg = Release|Any CPU
+		{DB0978D3-E5C6-40DD-A6E6-B09D64DCE38A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
