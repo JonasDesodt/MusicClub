@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /MusicClub.Cms.Blazor/Pages/GoogleCalendar/Login.razor
 /MusicClub.Cms.Blazor/Pages/GoogleCalendar/Callback.razor
 /MusicClub.Api/appsettings.Development.json
+/MusicClub.Api/Secrets/google-calendar-service-account-key.json
