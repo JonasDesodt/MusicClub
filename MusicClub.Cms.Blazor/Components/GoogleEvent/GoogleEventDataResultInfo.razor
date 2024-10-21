@@ -1,0 +1,15 @@
+﻿@inherits DataResultInfoBase<GoogleEventResult>
+
+@if (DataResult is { ActResult: not null, ActResult.Start: not null, ActResult.Duration: > 0 } dataResult)
+{
+    <ul>
+        <li>Summary: @DataResult.ActResult.Name</li>
+        <li>Description: @DataResult.ActResult.Description</li>
+        <li>Start: @DataResult.ActResult.Start?.ToLongDateString()</li>
+        <li>End: @DataResult.ActResult.Start?.AddMinutes((double)DataResult.ActResult.Duration)</li>
+    </ul>
+}
+else
+{
+    <p>Error. Unable to prepare the data.</p>
+}

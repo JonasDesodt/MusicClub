@@ -5,6 +5,7 @@
 @using MusicClub.Cms.Blazor.Models.FormModels.Data
 
 @inject IActService ActApiService
+@inject IGoogleEventService GoogleEventApiService
 @inject NavigationManager NavigationManager
 @inject DataController DataController
 @inject MemoryService MemoryService
@@ -66,8 +67,14 @@
         }
 
         var serviceResult = await DataController.Fetch(async () => await ActApiService.Update(Id, actRequest));
-        if (serviceResult.Messages is null)
+        if (serviceResult.Data is not null && serviceResult.Messages is null)
         {
+            if (actFormModel.Push && serviceResult.Data.GoogleEventDbIdentity > 0)
+            {
+                //todo: get the GoogleCalendar.Id dynamically
+                await DataController.Fetch(async () => await GoogleEventApiService.Update((int)serviceResult.Data.GoogleEventDbIdentity, new GoogleEventRequest { ActId = serviceResult.Data.Id, GoogleCalendarId = 1 }));
+            }
+
             MemoryService.HasUnsavedData = false;
 
             NavigationManager.NavigateTo("/act");

@@ -53,7 +53,7 @@ namespace MusicClub.DbServices
             var eventRequest = new Event
             {
                 Summary = act.Name,
-                Description = act.Title,
+                Description = act.Description,
                 Start = new EventDateTime
                 {
                     DateTimeRaw = act.Start?.ToString("o"),
@@ -72,10 +72,12 @@ namespace MusicClub.DbServices
                 return EmptyDataResult.Wrap();
             }
 
+
             var googleEvent = request.ToModel(eventResponse.Id);
 
             await dbContext.GoogleEvents.AddAsync(googleEvent);
             await dbContext.SaveChangesAsync();
+
 
             return await Get(googleEvent.Id);
         }
@@ -109,9 +111,76 @@ namespace MusicClub.DbServices
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResult<GoogleEventResult>> Update(int id, GoogleEventRequest request)
+        public async Task<ServiceResult<GoogleEventResult>> Update(int id, GoogleEventRequest request)
         {
-            throw new NotImplementedException();
+            var googleEvent = await dbContext.GoogleEvents.FindAsync(id);
+            if (googleEvent == null)
+            {
+                return EmptyDataResult.Wrap();
+            }                    
+
+
+            var act = await dbContext.Acts.FindAsync(request.ActId);
+            if (act is null)
+            {
+                return EmptyDataResult.Wrap();
+            }
+
+            if (act.GoogleEventId is null)
+            {
+                return EmptyDataResult.Wrap();
+            }
+
+            if (act.Start is null)
+            {
+                return EmptyDataResult.Wrap();
+            }
+
+            if (!(act.Duration > 0))
+            {
+                return EmptyDataResult.Wrap();
+            }
+
+
+
+            var googleCalendar = await dbContext.GoogleCalendars.FindAsync(request.GoogleCalendarId);
+            if (googleCalendar is null)
+            {
+                return EmptyDataResult.Wrap();
+            }
+
+
+
+            var currentEventResponse = await googleCalendarService.Events.Get(googleCalendar.GoogleIdentifier, googleEvent.GoogleIdentifier).ExecuteAsync();
+            if(currentEventResponse is null)
+            {
+                return EmptyDataResult.Wrap();
+            }
+
+            var eventRequest = new Event
+            {
+                Summary = act.Name,
+                Description = act.Title,
+                Start = new EventDateTime
+                {
+                    DateTimeRaw = act.Start?.ToString("o"),
+                    TimeZone = "Europe/Brussels"
+                },
+                End = new EventDateTime
+                {
+                    DateTimeRaw = (act.Start?.AddMinutes((double)act.Duration))?.ToString("o"),
+                    TimeZone = "Europe/Brussels"
+                }
+            };
+
+            var updatedEventResponse = await googleCalendarService.Events.Update(eventRequest, googleCalendar.GoogleIdentifier, googleEvent.GoogleIdentifier).ExecuteAsync();
+            if (updatedEventResponse is null)
+            {
+                return EmptyDataResult.Wrap();
+            }
+
+
+            return await Get(googleEvent.Id);
         }
     }
 }

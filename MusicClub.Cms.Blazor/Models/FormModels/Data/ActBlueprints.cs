@@ -7,7 +7,10 @@ namespace MusicClub.Cms.Blazor.Models.FormModels.Data
     {
         public ImageResult? ImageResult { get; set; }
     }
-    public partial class ActFormModel { }
+    public partial class ActFormModel 
+    {
+        public bool Push { get; set; } = false;
+    }
 
     [GenerateDataFormModelExtensions("Act")]
     public abstract class ActDataFormModelExtensionsBlueprint : ActRequest { }

@@ -25,6 +25,7 @@ builder.Services.AddHttpClient("OAuth2.GoogleApis", httpClient =>
 builder.Services.AddScoped<IActService, ActApiService>();
 builder.Services.AddScoped<IArtistService, ArtistApiService>();
 builder.Services.AddScoped<IImageApiService, ImageApiService>();
+builder.Services.AddScoped<IGoogleEventService, GoogleEventApiService>();
 builder.Services.AddScoped<ILineupService, LineupApiService>();
 builder.Services.AddScoped<IPerformanceService, PerformanceApiService>();
 builder.Services.AddScoped<IPersonService, PersonApiService>();

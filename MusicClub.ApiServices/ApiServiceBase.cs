@@ -3,7 +3,7 @@ using MusicClub.ApiServices.Extensions;
 
 namespace MusicClub.ApiServices
 {
-    [GenerateApiServices("Act", "Artist", "Lineup", "Performance", "Person")]
+    [GenerateApiServices("Act", "Artist", "GoogleEvent", "Lineup", "Performance", "Person")]
     public abstract class ApiServiceBase<TDataRequest, TDataResult, TFilterRequest, TFilterResult>(IHttpClientFactory httpClientFactory) : IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult>  where TFilterRequest : IFilterRequestConverter<TFilterResult>
     {
         protected abstract string Endpoint { get; }
@@ -26,7 +26,6 @@ namespace MusicClub.ApiServices
         public async Task<ServiceResult<TDataResult>> Get(int id)
         {
             return await httpClientFactory.Get<TDataResult>("MusicClubApi", $"{Endpoint}/", id);
-
         }
 
         public async Task<PagedServiceResult<IList<TDataResult>, TFilterResult>> GetAll(PaginationRequest paginationRequest, TFilterRequest filterRequest)

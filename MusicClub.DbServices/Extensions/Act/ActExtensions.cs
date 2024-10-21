@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Google.Apis.Calendar.v3.Data;
+using Microsoft.EntityFrameworkCore;
 using MusicClub.DbCore.Models;
 using MusicClub.DbServices.Extensions.Act;
 using MusicClub.DbServices.Extensions.GoogleEvent;
@@ -31,6 +32,7 @@ namespace MusicClub.DbServices.Extensions.Act
         {
             return query.Select(a => new ActResult
             {
+                Description = a.Description,
                 Duration = a.Duration,
                 Start = a.Start,
                 Name = a.Name,
@@ -42,12 +44,13 @@ namespace MusicClub.DbServices.Extensions.Act
                 Updated = a.Updated,
                 JobsCount = a.Jobs.Count,
                 LineupResult = a.Lineup!.ToResult(), //TODO: temp hack (!), deal w/ null reference
-                //GoogleEventResult = a.GoogleEvent != null ? a.GoogleEvent.ToResult() : null,
+                GoogleEventDbIdentity = a.GoogleEvent != null ? a.GoogleEvent.Id : null,
             });
         }
 
         public static IQueryable<DbCore.Models.Act> Filter(this IQueryable<DbCore.Models.Act> acts, ActFilterRequest filter)
         {
+            //todo: description
 
             if (!string.IsNullOrWhiteSpace(filter.Name))
             {
@@ -121,15 +124,16 @@ namespace MusicClub.DbServices.Extensions.Act
         }
 
 
-        public static DbCore.Models.Act Update(this DbCore.Models.Act act, ActRequest personRequest)
+        public static DbCore.Models.Act Update(this DbCore.Models.Act act, ActRequest actRequest)
         {
-            act.Name = personRequest.Name;
-            act.Title = personRequest.Title;
-            act.ImageId = personRequest.ImageId;
+            act.Name = actRequest.Name;
+            act.Title = actRequest.Title;
+            act.ImageId = actRequest.ImageId;
             act.Updated = DateTime.UtcNow;
-            act.Duration = personRequest.Duration;
-            act.Start = personRequest.Start;
-            act.LineupId = personRequest.LineupId;
+            act.Duration = actRequest.Duration;
+            act.Start = actRequest.Start;
+            act.LineupId = actRequest.LineupId;
+            act.Description = actRequest.Description;
 
             return act;
         }
@@ -141,6 +145,7 @@ namespace MusicClub.DbServices.Extensions.Act
                 //GoogleEventResult = act.GoogleEvent != null ? act.GoogleEvent.ToResult() : null,
                 Name = act.Name,
                 Title = act.Title,
+                Description = act.Description,
                 PerformancesCount = act.Performances.Count,
                 Created = act.Created,
                 Id = act.Id,
@@ -150,6 +155,7 @@ namespace MusicClub.DbServices.Extensions.Act
                 LineupResult = act.Lineup!.ToResult(), //TODO: temp hack (!), deal w/ null reference
                 Duration = act.Duration,
                 Start = act.Start,
+                GoogleEventDbIdentity = act.GoogleEvent != null ? act.GoogleEvent.Id : null
             };
         }
     }

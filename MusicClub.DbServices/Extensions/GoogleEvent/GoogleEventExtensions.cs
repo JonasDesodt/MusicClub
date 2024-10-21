@@ -9,7 +9,7 @@ namespace MusicClub.DbServices.Extensions.GoogleEvent
     {
         public static IQueryable<DbCore.Models.GoogleEvent> IncludeAll(this IQueryable<DbCore.Models.GoogleEvent> query)
         {
-            return query.Include(g => g.Act).Include(g => g.GoogleCalendar);
+            return query.Include(g => g.Act).ThenInclude(a => a != null ? a.Lineup : null).Include(g => g.GoogleCalendar);
         }
 
         public static IQueryable<GoogleEventResult> ToResults(this IQueryable<DbCore.Models.GoogleEvent> query)

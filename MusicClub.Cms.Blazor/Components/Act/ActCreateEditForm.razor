@@ -34,6 +34,33 @@
                     <InputNumber @bind-Value="FormModel.Duration" id="duration" />
                 </div>
 
+                @if (FormModel.Start is not null && FormModel.Duration > 0)
+                {
+                    <div>
+                        <label for="push">Sync</label>
+
+                        <div>
+                            <InputCheckbox @bind-Value="FormModel.Push" id="push" />
+
+                            <p>Push to Google Calendar</p>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    FormModel.Push = false;
+
+                    <div class="disabled">
+                        <label for="push">Sync</label>
+
+                        <div> 
+                            <p>Push to Google Calendar</p>
+
+                            <InputCheckbox @bind-Value="FormModel.Push" id="push" disabled />
+                        </div>
+                    </div>
+                }
+
                 <LineupDataResultSelect DataResult="FormModel.LineupResult"
                                         Context="ActResult"
                                         OnDataRequest="() => showLineupDataResultOptions = true"
