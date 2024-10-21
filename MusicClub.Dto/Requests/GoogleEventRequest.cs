@@ -6,8 +6,8 @@ namespace MusicClub.Dto.Requests
     [GenerateDataResult]
     public class GoogleEventRequest
     {
-        [Required]
-        public required string GoogleIdentifier { get; set; }
+        //[Required]
+        //public required string GoogleIdentifier { get; set; }
 
         [Required]
         [Min(1)]

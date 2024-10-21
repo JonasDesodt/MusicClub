@@ -1,15 +1,10 @@
 ﻿using MusicClub.Dto.Requests;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MusicClub.DbServices.Extensions.GoogleEvent
 {
     internal static class GoogleEventRequestExtensions
     {
-        public static DbCore.Models.GoogleEvent ToModel(this GoogleEventRequest request)
+        public static DbCore.Models.GoogleEvent ToModel(this GoogleEventRequest request, string googleIdentifier)
         {
             var now = DateTime.UtcNow;
 
@@ -17,7 +12,7 @@ namespace MusicClub.DbServices.Extensions.GoogleEvent
             {
                 Created = now,
                 Updated = now,
-                GoogleIdentifier = request.GoogleIdentifier,
+                GoogleIdentifier = googleIdentifier,
                 GoogleCalendarId = request.GoogleCalendarId,
             };
         }

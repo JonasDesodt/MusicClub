@@ -16,7 +16,7 @@ namespace MusicClub.DbServices.Extensions.GoogleEvent
         {
             return query.Select(a => new GoogleEventResult
             {
-                GoogleIdentifier = a.GoogleIdentifier,
+                //GoogleIdentifier = a.GoogleIdentifier,
                 Created = a.Created,
                 Id = a.Id,
                 Updated = a.Updated,
@@ -29,7 +29,7 @@ namespace MusicClub.DbServices.Extensions.GoogleEvent
         {
             return new GoogleEventResult
             {
-                GoogleIdentifier = googleEvent.GoogleIdentifier,
+                //GoogleIdentifier = googleEvent.GoogleIdentifier,
                 Created = googleEvent.Created,
                 Id = googleEvent.Id,
                 Updated = googleEvent.Updated,

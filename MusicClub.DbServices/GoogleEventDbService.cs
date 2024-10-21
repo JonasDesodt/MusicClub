@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Google.Apis.Calendar.v3;
+using Google.Apis.Calendar.v3.Data;
+using Microsoft.EntityFrameworkCore;
 using MusicClub.DbCore;
 using MusicClub.DbCore.Models;
 using MusicClub.DbServices.Extensions;
@@ -13,21 +15,66 @@ using MusicClub.Dto.Transfer;
 
 namespace MusicClub.DbServices
 {
-    public class GoogleEventDbService(MusicClubDbContext dbContext) : IGoogleEventService
+    public class GoogleEventDbService(MusicClubDbContext dbContext, CalendarService googleCalendarService) : IGoogleEventService
     {
         private const GoogleEventResult? EmptyDataResult = null;
 
         public async Task<ServiceResult<GoogleEventResult>> Create(GoogleEventRequest request)
         {
-            if (dbContext.GoogleEvents.Any(g => g.GoogleIdentifier.ToLower() == request.GoogleIdentifier.ToLower() && g.GoogleCalendarId == request.GoogleCalendarId))
+            var act = await dbContext.Acts.FindAsync(request.ActId);
+            if (act is null)
             {
-                return EmptyDataResult.Wrap(new ServiceMessages().AddDuplicate(nameof(GoogleEvent)).AddNotCreated(nameof(GoogleEvent)));
+                return EmptyDataResult.Wrap();
             }
 
-            var googleEvent = request.ToModel();
+            if (act.GoogleEventId > 0)
+            {
+                return EmptyDataResult.Wrap();
+            }
+
+            if (act.Start is null)
+            {
+                return EmptyDataResult.Wrap();
+            }
+
+            if (!(act.Duration > 0))
+            {
+                return EmptyDataResult.Wrap();
+            }
+
+
+            var googleCalendar = await dbContext.GoogleCalendars.FindAsync(request.GoogleCalendarId);
+            if (googleCalendar is null)
+            {
+                return EmptyDataResult.Wrap();
+            }
+
+
+            var eventRequest = new Event
+            {
+                Summary = act.Name,
+                Description = act.Title,
+                Start = new EventDateTime
+                {
+                    DateTimeRaw = act.Start?.ToString("o"),
+                    TimeZone = "Europe/Brussels"
+                },
+                End = new EventDateTime
+                {
+                    DateTimeRaw = (act.Start?.AddMinutes((double)act.Duration))?.ToString("o"),
+                    TimeZone = "Europe/Brussels"
+                }
+            };
+
+            var eventResponse = await googleCalendarService.Events.Insert(eventRequest, googleCalendar.GoogleIdentifier).ExecuteAsync();
+            if (eventResponse is null)
+            {
+                return EmptyDataResult.Wrap();
+            }
+
+            var googleEvent = request.ToModel(eventResponse.Id);
 
             await dbContext.GoogleEvents.AddAsync(googleEvent);
-
             await dbContext.SaveChangesAsync();
 
             return await Get(googleEvent.Id);

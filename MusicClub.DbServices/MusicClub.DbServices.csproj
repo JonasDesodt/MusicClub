@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google.Apis.Calendar.v3" Version="1.68.0.3557" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MusicClub.DbCore\MusicClub.DbCore.csproj" />
     <ProjectReference Include="..\MusicClub.Dto\MusicClub.Dto.csproj" />
   </ItemGroup>

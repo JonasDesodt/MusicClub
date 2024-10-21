@@ -61,7 +61,7 @@ namespace MusicClub.Api.Controllers
                 {
                     ActId = act.Id,
                     GoogleCalendarId = googleCalendar.Id,
-                    GoogleIdentifier = eventResponse.Id
+                    //GoogleIdentifier = eventResponse.Id
                 });
                 if (googleEventServiceresult.Data is null)
                 {

@@ -15,10 +15,10 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\GoogleOAuthController.cs" />
+    <Compile Remove="Controllers\PushController.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Apis.Calendar.v3" Version="1.68.0.3557" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
