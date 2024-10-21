@@ -39,6 +39,10 @@
         if (actServiceResult?.Data is { } actResult)
         {
             actFormModel = actResult.ToFormModel();
+            if (actResult.Start is not null && actResult.Duration > 0 && actResult.GoogleEventDbIdentity is not null)
+            {
+                actFormModel.Push = true;
+            }
         }
 
         base.OnInitialized();
@@ -69,11 +73,22 @@
         var serviceResult = await DataController.Fetch(async () => await ActApiService.Update(Id, actRequest));
         if (serviceResult.Data is not null && serviceResult.Messages is null)
         {
-            if (actFormModel.Push && serviceResult.Data.GoogleEventDbIdentity > 0)
+            @if (actFormModel.Start is not null && actFormModel.Duration > 0 && actFormModel.Push)
             {
-                //todo: get the GoogleCalendar.Id dynamically
-                await DataController.Fetch(async () => await GoogleEventApiService.Update((int)serviceResult.Data.GoogleEventDbIdentity, new GoogleEventRequest { ActId = serviceResult.Data.Id, GoogleCalendarId = 1 }));
+                if (serviceResult.Data.GoogleEventDbIdentity > 0)
+                {
+                    //todo: get the GoogleCalendar.Id dynamically
+                    await DataController.Fetch(async () => await GoogleEventApiService.Update((int)serviceResult.Data.GoogleEventDbIdentity, new GoogleEventRequest { ActId = serviceResult.Data.Id, GoogleCalendarId = 1 }));
+                }
+                else if (serviceResult.Data.GoogleEventDbIdentity is null)
+                {
+                    //todo: get the GoogleCalendar.Id dynamically
+                    await DataController.Fetch(async () => await GoogleEventApiService.Create(new GoogleEventRequest { ActId = serviceResult.Data.Id, GoogleCalendarId = 1 }));
+
+                } // what if serviceResult.Data.GoogleEventDbIdentity < 0 ??
             }
+
+
 
             MemoryService.HasUnsavedData = false;
 

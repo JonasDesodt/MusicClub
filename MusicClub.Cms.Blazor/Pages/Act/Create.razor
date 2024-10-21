@@ -46,7 +46,7 @@
         var serviceResult = await DataController.Fetch(async () => await ActApiService.Create(actRequest));
         if (serviceResult.Data is not null && serviceResult.Messages is null)
         {
-            if (actFormModel.Push)
+            if (actFormModel.Start is not null && actFormModel.Duration > 0 && actFormModel.Push)
             {
                 //todo: get the GoogleCalendar.Id dynamically
                 await DataController.Fetch(async () => await GoogleEventApiService.Create(new GoogleEventRequest { ActId = serviceResult.Data.Id, GoogleCalendarId = 1 }));

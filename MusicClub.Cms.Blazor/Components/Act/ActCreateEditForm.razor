@@ -39,10 +39,10 @@
                     <div>
                         <label for="push">Sync</label>
 
-                        <div>
-                            <InputCheckbox @bind-Value="FormModel.Push" id="push" />
-
+                        <div class="checkbox">
                             <p>Push to Google Calendar</p>
+
+                            <InputCheckbox @bind-Value="FormModel.Push" id="push" />
                         </div>
                     </div>
                 }
@@ -53,7 +53,7 @@
                     <div class="disabled">
                         <label for="push">Sync</label>
 
-                        <div> 
+                        <div class="checkbox">
                             <p>Push to Google Calendar</p>
 
                             <InputCheckbox @bind-Value="FormModel.Push" id="push" disabled />

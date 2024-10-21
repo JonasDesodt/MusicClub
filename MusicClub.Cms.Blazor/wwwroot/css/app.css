@@ -116,9 +116,9 @@ a.button, button {
     padding: .75em;
 }
 
-a.button.disabled, button.disabled {
-    opacity: .5;
-}
+    a.button.disabled, button.disabled {
+        opacity: .5;
+    }
 
     a.button:hover, button:hover {
         background-color: rgba(0,150,0,1);
@@ -162,10 +162,10 @@ h5 {
     font-size: 1.25em;
 }
 
-h1.paragraph, h2.paragraph, h3.paragraph, h4.paragraph, h5.paragraph {
-    font-size: 1em;
-    font-weight: normal;
-}
+    h1.paragraph, h2.paragraph, h3.paragraph, h4.paragraph, h5.paragraph {
+        font-size: 1em;
+        font-weight: normal;
+    }
 
 ul.data-list, ul.info-list {
     display: flex;
@@ -230,6 +230,10 @@ div.section, section, form {
             flex-direction: column;
         }
 
+            form > div > div.disabled * {
+                color: rgb(200,200,200);
+            }
+
             input, form > div > div > div {
                 border: 1px solid rgb(200,200,200);
                 border-radius: 5px;
@@ -244,10 +248,14 @@ div.section, section, form {
                 gap: 1em;
             }
 
-            form > div > div > div > h4 {
-                font-size: 1em;
-                font-weight: normal;
+            form > div > div > div.checkbox {
+                flex-direction: row;
             }
+
+                form > div > div > div > h4 {
+                    font-size: 1em;
+                    font-weight: normal;
+                }
 
 div.modal {
     align-items: center;
@@ -282,9 +290,11 @@ section.layout {
     flex-grow: 1;
     gap: 2em;
 }
+
 iframe {
     flex-grow: 1;
 }
+
 
 
 @media (min-width: 320px) {

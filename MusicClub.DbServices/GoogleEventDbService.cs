@@ -78,6 +78,9 @@ namespace MusicClub.DbServices
             await dbContext.GoogleEvents.AddAsync(googleEvent);
             await dbContext.SaveChangesAsync();
 
+            act.GoogleEventId = googleEvent.Id;
+            dbContext.Acts.Update(act);
+            await dbContext.SaveChangesAsync();
 
             return await Get(googleEvent.Id);
         }
@@ -117,7 +120,7 @@ namespace MusicClub.DbServices
             if (googleEvent == null)
             {
                 return EmptyDataResult.Wrap();
-            }                    
+            }
 
 
             var act = await dbContext.Acts.FindAsync(request.ActId);
@@ -152,7 +155,7 @@ namespace MusicClub.DbServices
 
 
             var currentEventResponse = await googleCalendarService.Events.Get(googleCalendar.GoogleIdentifier, googleEvent.GoogleIdentifier).ExecuteAsync();
-            if(currentEventResponse is null)
+            if (currentEventResponse is null)
             {
                 return EmptyDataResult.Wrap();
             }
