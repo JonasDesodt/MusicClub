@@ -1,5 +1,7 @@
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Calendar.v3;
+using Google.Apis.Services;
 using Microsoft.EntityFrameworkCore;
-using MusicClub.Dto.Abstractions;
 using MusicClub.DbCore;
 using MusicClub.DbServices;
 
@@ -8,6 +10,22 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddHttpClient();
+
+var credentialPath = Path.Combine(Directory.GetCurrentDirectory(), "secrets", "google-calendar-service-account-key.json");
+
+var googleCredential = GoogleCredential.FromFile(credentialPath).CreateScoped(CalendarService.Scope.Calendar);
+
+var calendarService = new CalendarService(new BaseClientService.Initializer()
+{
+    HttpClientInitializer = googleCredential,
+    ApplicationName = "MusicClub"
+});
+
+builder.Services.AddSingleton(provider =>
+{
+    return calendarService;
+});
+
 
 builder.Services.AddCors(options => 
 {
@@ -37,6 +55,8 @@ builder.Services.AddDbContext<MusicClubDbContext>(options =>
 
 builder.Services.AddScoped<IArtistService, ArtistDbService>();
 builder.Services.AddScoped<IActService, ActDbService>();
+builder.Services.AddScoped<IGoogleCalendarService, GoogleCalendarDbService>();
+builder.Services.AddScoped<IGoogleEventService, GoogleEventDbService>();
 builder.Services.AddScoped<IImageDbService, ImageDbService>();
 builder.Services.AddScoped<ILineupService, LineupDbService>();
 builder.Services.AddScoped<IPerformanceService, PerformanceDbService>();

@@ -15,6 +15,10 @@ namespace MusicClub.DbCore
 
         public DbSet<Bandname> Bandnames => Set<Bandname>();
 
+        public DbSet<GoogleCalendar> GoogleCalendars => Set<GoogleCalendar>();
+
+        public DbSet<GoogleEvent> GoogleEvents => Set<GoogleEvent>();
+
         public DbSet<Function> Functions => Set<Function>();
 
         public DbSet<Image> Images => Set<Image>();
@@ -72,6 +76,19 @@ namespace MusicClub.DbCore
                  .HasForeignKey(b => b.BandId)
                  .IsRequired(true);
 
+            builder.Entity<GoogleEvent>()
+                .HasOne(g => g.Act)
+                .WithOne(a => a.GoogleEvent)
+                .HasForeignKey<Act>(a => a.GoogleEventId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<GoogleEvent>()
+                .HasOne(g => g.GoogleCalendar)
+                .WithMany(g => g.GoogleEvents)
+                .HasForeignKey(g => g.GoogleCalendarId)
+                .IsRequired(true);
+
             builder.Entity<Job>()
                 .HasOne(j => j.Worker)
                 .WithMany(w => w.Jobs)
@@ -119,7 +136,7 @@ namespace MusicClub.DbCore
             builder.Entity<Performance>()
                 .HasOne(p => p.Act)
                 .WithMany(a => a.Performances)
-                .HasForeignKey(p => p.ActId)       
+                .HasForeignKey(p => p.ActId)
                 .IsRequired(true);
 
             builder.Entity<Service>()

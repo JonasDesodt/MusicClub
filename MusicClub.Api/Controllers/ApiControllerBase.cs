@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MusicClub.Api.Attributes;
 using MusicClub.Dto.Attributes;
 using MusicClub.Dto.Transfer;
@@ -8,7 +7,7 @@ namespace MusicClub.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [GenerateApiControllers("Act", "Artist", "Lineup", "Performance", "Person")]
+    [GenerateApiControllers("Act", "Artist", "GoogleCalendar", "GoogleEvent", "Lineup", "Performance", "Person")]
     public class ApiControllerBase<TDataRequest, TDataResult, TFilterRequest, TFilterResult>(IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult> dbService) : Controller
     {
         [HttpPost]

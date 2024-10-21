@@ -16,6 +16,7 @@ using MusicClub.DbServices.Extensions.Job;
 using MusicClub.Dto.Filters.Extensions;
 using MusicClub.DbServices.Extensions.Image;
 
+
 namespace MusicClub.DbServices
 {
     public class ActDbService(MusicClubDbContext dbContext) : IActService

@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MusicClub.DbCore.Models;
 using MusicClub.DbServices.Extensions.Act;
+using MusicClub.DbServices.Extensions.GoogleEvent;
 using MusicClub.DbServices.Extensions.Image;
 using MusicClub.DbServices.Extensions.Lineup;
 using MusicClub.Dto.Enums;
@@ -21,6 +23,7 @@ namespace MusicClub.DbServices.Extensions.Act
             return query.Include(x => x.Image)
                         .Include(x => x.Jobs)
                         .Include(x => x.Lineup)
+                        .Include(x => x.GoogleEvent)
                         .Include(x => x.Performances);
         }
 
@@ -38,7 +41,8 @@ namespace MusicClub.DbServices.Extensions.Act
                 ImageResult = a.Image != null ? a.Image.ToResult() : null,
                 Updated = a.Updated,
                 JobsCount = a.Jobs.Count,
-                LineupResult = a.Lineup!.ToResult() //TODO: temp hack (!), deal w/ null reference
+                LineupResult = a.Lineup!.ToResult(), //TODO: temp hack (!), deal w/ null reference
+                //GoogleEventResult = a.GoogleEvent != null ? a.GoogleEvent.ToResult() : null,
             });
         }
 
@@ -134,6 +138,7 @@ namespace MusicClub.DbServices.Extensions.Act
         {
             return new ActResult
             {
+                //GoogleEventResult = act.GoogleEvent != null ? act.GoogleEvent.ToResult() : null,
                 Name = act.Name,
                 Title = act.Title,
                 PerformancesCount = act.Performances.Count,
@@ -142,7 +147,9 @@ namespace MusicClub.DbServices.Extensions.Act
                 ImageResult = act.Image != null ? act.Image.ToResult() : null,
                 Updated = act.Updated,
                 JobsCount = act.Jobs.Count,
-                LineupResult = act.Lineup!.ToResult() //TODO: temp hack (!), deal w/ null reference
+                LineupResult = act.Lineup!.ToResult(), //TODO: temp hack (!), deal w/ null reference
+                Duration = act.Duration,
+                Start = act.Start,
             };
         }
     }

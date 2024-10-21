@@ -71,5 +71,17 @@ namespace MusicClub.DbServices.Extensions
 
             return serviceMessages;
         }
+
+        public static ServiceMessages AddDuplicate(this ServiceMessages serviceMessages, string entity)
+        {
+            serviceMessages.Add(new ServiceMessage
+            {
+
+                Code = ErrorCode.Duplicate,
+                Description = $"You are trying to duplicate a {entity}. The GoogleIdentifier already exists in the database."
+            });
+
+            return serviceMessages;
+        }
     }
 }
