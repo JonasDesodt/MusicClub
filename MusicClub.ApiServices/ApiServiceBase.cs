@@ -1,10 +1,11 @@
 ﻿using MusicClub.Dto.Transfer;
 using MusicClub.ApiServices.Extensions;
+using MusicClub.Dto.Helpers;
 
 namespace MusicClub.ApiServices
 {
     [GenerateApiServices("Act", "Artist", "GoogleEvent", "Lineup", "Performance", "Person")]
-    public abstract class ApiServiceBase<TDataRequest, TDataResult, TFilterRequest, TFilterResult>(IHttpClientFactory httpClientFactory) : IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult>  where TFilterRequest : IFilterRequestConverter<TFilterResult>
+    public abstract class ApiServiceBase<TDataRequest, TDataResult, TFilterRequest, TFilterResult>(IHttpClientFactory httpClientFactory, IFilterRequestHelpers<TFilterRequest, TFilterResult> filterRequestHelpers) : IService<TDataRequest, TDataResult, TFilterRequest, TFilterResult> // where TFilterRequest : IFilterRequestConverter<TFilterResult>
     {
         protected abstract string Endpoint { get; }
 
@@ -30,7 +31,7 @@ namespace MusicClub.ApiServices
 
         public async Task<PagedServiceResult<IList<TDataResult>, TFilterResult>> GetAll(PaginationRequest paginationRequest, TFilterRequest filterRequest)
         {
-            return await httpClientFactory.GetAll<TDataResult, TFilterRequest, TFilterResult>("MusicClubApi", $"{Endpoint}?", paginationRequest, filterRequest);
+            return await httpClientFactory.GetAll<TDataResult, TFilterRequest, TFilterResult>(filterRequestHelpers,"MusicClubApi", $"{Endpoint}?", paginationRequest, filterRequest);
 
         }
 

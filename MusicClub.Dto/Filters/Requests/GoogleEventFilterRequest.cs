@@ -1,11 +1,9 @@
-﻿using MusicClub.Dto.Abstractions;
-using MusicClub.Dto.Attributes;
-using MusicClub.Dto.Filters.Extensions;
+﻿using MusicClub.Dto.Attributes;
 
 namespace MusicClub.Dto.Filters.Requests
 {
     [GenerateFilterResult]
-    public class GoogleEventFilterRequest : Sort, IFilterRequestConverter<GoogleEventFilterResult>
+    public class GoogleEventFilterRequest : Sort//, IFilterRequestConverter<GoogleEventFilterResult>
     {
         public string? GoogleIdentifier { get; set; }
 
@@ -15,14 +13,14 @@ namespace MusicClub.Dto.Filters.Requests
         [Min(1)]
         public int? ActId { get; set; }
 
-        public string ToQueryString()
-        {
-            return GoogleEventFilterRequestExtensions.ToQueryString(this);
-        }
+        //public string ToQueryString()
+        //{
+        //    return GoogleEventFilterRequestExtensions.ToQueryString(this);
+        //}
 
-        public GoogleEventFilterResult ToResult()
-        {
-            return GoogleEventFilterRequestExtensions.ToResult(this);
-        }
+        //public GoogleEventFilterResult ToResult()
+        //{
+        //    return GoogleEventFilterRequestExtensions.ToResult(this);
+        //}
     }
 }

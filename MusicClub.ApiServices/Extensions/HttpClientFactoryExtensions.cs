@@ -3,6 +3,7 @@ using MusicClub.Dto.Abstractions;
 using MusicClub.Dto.Enums;
 using MusicClub.Dto.Extensions;
 using MusicClub.Dto.Filters.Extensions;
+using MusicClub.Dto.Helpers;
 using MusicClub.Dto.Transfer;
 using System.Net.Http.Json;
 
@@ -61,11 +62,11 @@ namespace MusicClub.ApiServices.Extensions
             return serviceResult;
         }
 
-        public static async Task<PagedServiceResult<IList<TDataResult>, TFilterResult>> GetAll<TDataResult, TFilterRequest, TFilterResult>(this IHttpClientFactory httpClientFactory, string client, string endpoint, PaginationRequest paginationRequest, TFilterRequest filterRequest) where TFilterRequest : IFilterRequestConverter<TFilterResult>
+        public static async Task<PagedServiceResult<IList<TDataResult>, TFilterResult>> GetAll<TDataResult, TFilterRequest, TFilterResult>(this IHttpClientFactory httpClientFactory, IFilterRequestHelpers<TFilterRequest, TFilterResult> filterRequestHelpers, string client, string endpoint, PaginationRequest paginationRequest, TFilterRequest filterRequest) //where TFilterRequest : IFilterRequestConverter<TFilterResult>
         {
             var httpClient = httpClientFactory.CreateClient(client);
 
-            var httpResponseMessage = await TryCatchHelpers.HandleHttpRequestExceptions(async () => await httpClient.GetAsync(endpoint + paginationRequest.ToQueryString() + filterRequest.ToQueryString()));
+            var httpResponseMessage = await TryCatchHelpers.HandleHttpRequestExceptions(async () => await httpClient.GetAsync(endpoint + paginationRequest.ToQueryString() + filterRequestHelpers.ToQueryString(filterRequest)));
 
             //TODO: verify async implementation, also in HandleHttpRequestExceptions!!
 
@@ -78,7 +79,7 @@ namespace MusicClub.ApiServices.Extensions
                 {
                     Messages = [new ServiceMessage { Code = ErrorCode.FetchError, Description = $"Failed to fetch the {typeof(TDataResult)}s." }],
                     Pagination = paginationRequest.ToResult(0),
-                    Filter = filterRequest.ToResult()
+                    Filter = filterRequestHelpers.ToResult(filterRequest)
                 };
             }
 

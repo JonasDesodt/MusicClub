@@ -1,12 +1,9 @@
 ﻿using MusicClub.Dto.Attributes;
-using MusicClub.Dto.Filters.Results;
-using MusicClub.Dto.Filters.Extensions;
-using MusicClub.Dto.Abstractions;
 
 namespace MusicClub.Dto.Filters.Requests
 {
     [GenerateFilterResult]
-    public class ActFilterRequest : Sort, IFilterRequestConverter<ActFilterResult>
+    public class ActFilterRequest : Sort//, IFilterRequestConverter<ActFilterResult>
     {
         public string? Name { get; set; }
 
@@ -23,14 +20,14 @@ namespace MusicClub.Dto.Filters.Requests
         [Min(1)]
         public int? ImageId { get; set; }
 
-        public string ToQueryString()
-        {
-            return ActFilterRequestExtensions.ToQueryString(this);
-        }
+        //public string ToQueryString()
+        //{
+        //    return ActFilterRequestExtensions.ToQueryString(this);
+        //}
 
-        public ActFilterResult ToResult()
-        {
-            return ActFilterRequestExtensions.ToResult(this);
-        }
+        //public ActFilterResult ToResult()
+        //{
+        //    return ActFilterRequestExtensions.ToResult(this);
+        //}
     }
 }

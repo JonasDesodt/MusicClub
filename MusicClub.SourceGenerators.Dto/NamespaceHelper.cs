@@ -19,4 +19,21 @@ internal static class NamespaceHelper
         // If no namespace is found, it means the class is in the global namespace
         return "global";
     }
+
+    public static string GetContainingNamespace(InterfaceDeclarationSyntax interfaceDeclaration)
+    {
+        // Traverse up the tree to find the nearest NamespaceDeclarationSyntax
+        var namespaceDeclaration = interfaceDeclaration.Ancestors()
+            .OfType<BaseNamespaceDeclarationSyntax>() // This covers both NamespaceDeclarationSyntax and FileScopedNamespaceDeclarationSyntax
+            .FirstOrDefault();
+
+        if (namespaceDeclaration != null)
+        {
+            // Retrieve the namespace as a string
+            return namespaceDeclaration.Name.ToString();
+        }
+
+        // If no namespace is found, it means the class is in the global namespace
+        return "global";
+    }
 }

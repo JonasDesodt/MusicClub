@@ -268,6 +268,13 @@ namespace MusicClub.SourceGenerators.Dto
             return builder.ToString();
         }
 
+        private string GenerateFilterRequestHelpersClass()
+        {
+            var builder = new StringBuilder();
+
+            return builder.ToString();
+        }
+
         private static string ConvertFirstLetterToLowerCase(string input)
         {
             if (string.IsNullOrEmpty(input))
@@ -277,5 +284,7 @@ namespace MusicClub.SourceGenerators.Dto
 
             return char.ToLower(input[0]) + input.Substring(1);
         }
+
+        
     }
 }

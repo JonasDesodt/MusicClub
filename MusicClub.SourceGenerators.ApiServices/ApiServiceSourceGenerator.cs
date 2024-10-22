@@ -80,9 +80,11 @@ namespace MusicClub.SourceGenerators.ApiServices
             builder.AppendLine($"#nullable enable");
             builder.AppendLine();
 
+            //todo: get APIService params dynamically 
+
             builder.AppendLine($"namespace {containingNamespace}");
             builder.AppendLine($"{{");
-            builder.AppendLine($"\tpublic class {model}ApiService(IHttpClientFactory httpClientFactory) : {baseClassName}<{model}Request,{model}Result, {model}FilterRequest, {model}FilterResult>(httpClientFactory), I{model}Service"); // todo: make the constructor params dynamic
+            builder.AppendLine($"\tpublic class {model}ApiService(IHttpClientFactory httpClientFactory, IFilterRequestHelpers<{model}FilterRequest, {model}FilterResult> filterRequestHelpers) : {baseClassName}<{model}Request,{model}Result, {model}FilterRequest, {model}FilterResult>(httpClientFactory, filterRequestHelpers), I{model}Service"); // todo: make the constructor params dynamic
             builder.AppendLine($"\t{{");
             builder.AppendLine($"\t\tprotected override string Endpoint {{ get; }} = \"{model}\";");
             builder.AppendLine($"\t}}");

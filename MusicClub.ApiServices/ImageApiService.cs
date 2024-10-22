@@ -3,7 +3,7 @@ using MusicClub.Dto.Transfer;
 
 namespace MusicClub.ApiServices
 {
-    public class ImageApiService(IHttpClientFactory httpClientFactory) : IImageApiService
+    public class ImageApiService(IHttpClientFactory httpClientFactory, IFilterRequestHelpers<ImageFilterRequest, ImageFilterResult> filterRequestHelpers) : IImageApiService
     {
         public async Task<ServiceResult<ImageResult>> Create(ImageApiRequest request)
         {
@@ -27,7 +27,7 @@ namespace MusicClub.ApiServices
 
         public async Task<PagedServiceResult<IList<ImageResult>, ImageFilterResult>> GetAll(PaginationRequest paginationRequest, ImageFilterRequest filterRequest)
         {
-            return await httpClientFactory.GetAll<ImageResult, ImageFilterRequest, ImageFilterResult>("MusicClubApi", "Image?", paginationRequest, filterRequest);
+            return await httpClientFactory.GetAll<ImageResult, ImageFilterRequest, ImageFilterResult>(filterRequestHelpers, "MusicClubApi", "Image?", paginationRequest, filterRequest);
         }
 
         public Task<ServiceResult<bool>> IsReferenced(int id)
